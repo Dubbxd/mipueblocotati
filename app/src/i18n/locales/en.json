@@ -1,0 +1,195 @@
+{
+  "nav": {
+    "home": "Home",
+    "menu": "Menu",
+    "locations": "Locations",
+    "reserve": "Reserve",
+    "promotions": "Promotions",
+    "catering": "Catering",
+    "foodTruck": "Food Truck",
+    "reviews": "Reviews",
+    "contact": "Contact"
+  },
+  "cta": {
+    "orderOnline": "Order Online",
+    "reserve": "Reserve a Table",
+    "viewMenu": "View Menu",
+    "callUs": "Call Us",
+    "directions": "Directions",
+    "subscribe": "Subscribe",
+    "send": "Send",
+    "loadMore": "Load more"
+  },
+  "promoBar": {
+    "burritoThursday": "Burrito Thursday · $10 with any drink"
+  },
+  "home": {
+    "heroTitle": "Authentic Mexican Flavors",
+    "heroSubtitle": "Mi Pueblo Family · Serving Sonoma County since 1997",
+    "today": {
+      "kicker": "Today at Mi Pueblo",
+      "title": "Today's highlights",
+      "sub": "Daily deal, signature dish, and 30-second reservation",
+      "promoLabel": "Today's deal",
+      "starLabel": "Signature dish",
+      "reserveLabel": "Quick reserve",
+      "reserveTitle": "Table for tonight",
+      "reserveBody": "Book in under 30 seconds. Instant confirmation.",
+      "orCall": "or call us"
+    },
+    "carousel": {
+      "kicker": "Most ordered",
+      "title": "Dishes you'll love",
+      "sub": "From abuela's kitchen to your table — traditional recipes served every day"
+    },
+    "story": {
+      "kicker": "Our Story",
+      "title": "Tradition served with passion",
+      "body": "Since 1997, Mi Pueblo has been a family-owned restaurant celebrating authentic Mexican cuisine with traditional recipes, fresh ingredients, and the warmth of our culture.",
+      "badgeSubtitle": "years serving Cotati",
+      "stats": {
+        "sinceLabel": "Since",
+        "familyLabel": "Family",
+        "familyValue": "García"
+      }
+    },
+    "catering": {
+      "kicker": "Authentic Flavors",
+      "title": "Catering for Your Event",
+      "body": "We bring the taste of Mi Pueblo to your next gathering, wedding or corporate celebration. Customized menus for every occasion.",
+      "cta": "Request a quote",
+      "badgeSubtitle": "events per year",
+      "stats": {
+        "guestsLabel": "Guests",
+        "menusLabel": "Menus",
+        "deliveryLabel": "Delivery",
+        "deliveryValue": "Included"
+      }
+    },
+    "parties": {
+      "kicker": "Celebrate With Us",
+      "title": "Private Parties & Events",
+      "body": "Our space is perfect for birthdays, showers and family reunions. Personalize your experience.",
+      "cta": "Book Your Event",
+      "badgeSubtitle": "parties celebrated",
+      "stats": {
+        "capacityLabel": "Capacity",
+        "daysLabel": "Available",
+        "musicLabel": "Mariachi",
+        "musicValue": "On request"
+      }
+    },
+    "gallery": { "title": "Our Kitchen", "sub": "Flavors that delight the eye" },
+    "menuPreview": { "title": "Customer Favorites", "sub": "Most loved by our guests" },
+    "awards": { "kicker": "Awards & recognition", "title": "Recognitions" },
+    "categories": {
+      "kicker": "Explore the menu",
+      "title": "Categories you'll love",
+      "sub": "Tap a category and jump straight into what you're craving.",
+      "bestSeller": "Best Seller",
+      "viewMenu": "See the full menu"
+    },
+    "reviews": {
+      "kicker": "What people say",
+      "title": "Don't just take our word for it",
+      "viewAll": "View all on Google Maps",
+      "writeReview": "Leave a Google review",
+      "viewOnMaps": "Open in Maps",
+      "googleReviews": "Google reviews",
+      "stars": "stars"
+    }
+  },
+  "menu": {
+    "title": "Full Menu",
+    "sub": "Over 130 dishes prepared with tradition",
+    "tabs": { "food": "Food", "drinks": "Beverages" },
+    "search": "Search dish…",
+    "noResults": "No dishes found.",
+    "dishes": "dishes",
+    "viewShort": "View",
+    "filters": {
+      "all": "All",
+      "vegetarian": "Vegetarian",
+      "seafood": "Seafood",
+      "spicy": "Spicy",
+      "kids": "Kids"
+    },
+    "tags": {
+      "popular": "Popular",
+      "new": "New",
+      "spicy": "Spicy",
+      "vegetarian": "Vegetarian",
+      "seafood": "Seafood",
+      "kids": "Kids",
+      "gluten_free": "Gluten-free",
+      "chefchoice": "Chef's choice"
+    }
+  },
+  "locations": {
+    "title": "Our Locations",
+    "sub": "6 spots in Sonoma & Marin County",
+    "actions": { "pickup": "Pickup", "delivery": "Delivery", "catering": "Catering", "parties": "Parties" },
+    "viewMap": "View Map",
+    "backToList": "Back to list"
+  },
+  "reserve": {
+    "title": "Reserve a Table",
+    "sub": "Secure your spot — instant email confirmation",
+    "successTitle": "Reservation received!",
+    "successBody": "We'll send a confirmation to",
+    "form": {
+      "branch": "Location",
+      "date": "Date",
+      "time": "Time",
+      "party": "Guests",
+      "name": "Full Name",
+      "phone": "Phone",
+      "email": "Email",
+      "notes": "Notes or special requests (optional)",
+      "submit": "Confirm Reservation"
+    },
+    "policy": "Policy: cancel up to 2 hours in advance at no cost. Parties of 6+ may require a deposit."
+  },
+  "newsletter": {
+    "title": "Subscribe to our Newsletter",
+    "sub": "Get $5 off when you spend $40 + birthday voucher",
+    "placeholder": "you{'@'}email.com",
+    "success": "All set! Check your inbox to confirm.",
+    "error": "Something went wrong. Please try again."
+  },
+  "contact": {
+    "title": "Contact Us",
+    "address": "Address",
+    "phone": "Phone",
+    "email": "Email",
+    "hours": "Hours",
+    "weekdays": "Mon-Fri",
+    "weekend": "Sat-Sun"
+  },
+  "footer": {
+    "rights": "All rights reserved",
+    "since": "Serving since 1997",
+    "follow": "Follow us",
+    "powered": "Family restaurant · Cotati, California",
+    "deliveryWith": "Order delivery with",
+    "privacy": "Privacy",
+    "terms": "Terms"
+  },
+  "common": {
+    "loading": "Loading…",
+    "from": "From",
+    "to": "To",
+    "open": "Open",
+    "closed": "Closed",
+    "today": "Today",
+    "prev": "Previous",
+    "next": "Next",
+    "review": "Review"
+  },
+  "catering": {
+    "howTitle": "How does it work?",
+    "step1": "1. Tell us about your event (date, guest count, type).",
+    "step2": "2. We send you a custom menu proposal.",
+    "step3": "3. We confirm details and deliver to your location."
+  }
+}

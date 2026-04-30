@@ -1,0 +1,27 @@
+{
+  "name": "mipueblo",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Mi Pueblo Cotati — Monorepo (PWA web + Elysia API + shared)",
+  "packageManager": "pnpm@10.8.1",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "concurrently -k -n web,api -c magenta,cyan \"pnpm --filter @mipueblo/web dev\" \"pnpm --filter @mipueblo/api dev\"",
+    "dev:web": "pnpm --filter @mipueblo/web dev",
+    "dev:api": "pnpm --filter @mipueblo/api dev",
+    "build": "pnpm --filter @mipueblo/web build && pnpm --filter @mipueblo/api build",
+    "build:web": "pnpm --filter @mipueblo/web build",
+    "build:api": "pnpm --filter @mipueblo/api build",
+    "db:generate": "pnpm --filter @mipueblo/api db:generate",
+    "db:migrate": "pnpm --filter @mipueblo/api db:migrate",
+    "db:seed": "pnpm --filter @mipueblo/api db:seed",
+    "db:studio": "pnpm --filter @mipueblo/api db:studio",
+    "lint": "pnpm -r run lint --if-present",
+    "type-check": "pnpm -r run type-check --if-present"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}

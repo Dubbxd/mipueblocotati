@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <path id="circle-text" d="M 100,100 m -76,0 a 76,76 0 1,1 152,0 a 76,76 0 1,1 -152,0"/>
+  </defs>
+  <!-- Texto curvo dorado -->
+  <text font-family="Anton, sans-serif" font-size="22" fill="#E2592A" letter-spacing="2">
+    <textPath href="#circle-text" startOffset="0">YOU HAD ME AT TACO · MI PUEBLO · DESDE 1997 · </textPath>
+  </text>
+  <!-- Centro: chile con flama -->
+  <g transform="translate(100 100)">
+    <circle r="42" fill="#1A0E08" opacity="0.92"/>
+    <!-- Chile -->
+    <g transform="translate(-14 -22) rotate(-8)">
+      <path d="M0 10 Q-4 32 8 46 Q24 56 30 40 Q32 22 16 12 Z" fill="#AD0A09"/>
+      <path d="M14 6 q4 -10 14 -8 q-2 6 -10 10 z" fill="#16823a"/>
+      <!-- Flama saliendo del tallo -->
+      <path d="M22 -2 q-4 -10 0 -16 q6 6 4 14 z" fill="#F08056"/>
+      <path d="M22 -4 q-2 -6 1 -10 q3 4 1 8 z" fill="#FBE067"/>
+    </g>
+  </g>
+</svg>

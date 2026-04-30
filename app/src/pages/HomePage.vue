@@ -1,0 +1,92 @@
+<script setup lang="ts">
+import HeroSection from '@/components/sections/HeroSection.vue'
+import TodaySection from '@/components/sections/TodaySection.vue'
+import AboutSection from '@/components/sections/AboutSection.vue'
+import GalleryMasonry from '@/components/sections/GalleryMasonry.vue'
+import MenuPreview from '@/components/sections/MenuPreview.vue'
+import CategoriesSection from '@/components/sections/CategoriesSection.vue'
+import ReviewsBand from '@/components/sections/ReviewsBand.vue'
+import AwardsBand from '@/components/sections/AwardsBand.vue'
+import MapLeaflet from '@/components/sections/MapLeaflet.vue'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
+</script>
+
+<template>
+  <main>
+    <HeroSection />
+
+    <TodaySection />
+
+    <CategoriesSection />
+
+    <MenuPreview />
+
+    <AboutSection
+      :kicker="t('home.story.kicker')"
+      :title="t('home.story.title')"
+      :body="t('home.story.body')"
+      image="/assets/gallery/restaurant-building-garden.jpg"
+      image-alt="Restaurante Mi Pueblo Cotati"
+      bg="white"
+      kicker-icon="Heart"
+      :stats="[
+        { icon: 'Calendar', label: t('home.story.stats.sinceLabel'), value: '1997' },
+        { icon: 'People',   label: t('home.story.stats.familyLabel'), value: t('home.story.stats.familyValue') },
+        { icon: 'Star1',    label: 'Google',  value: '4.7 ★' }
+      ]"
+      :badge="{ icon: 'Award', title: '25+', subtitle: t('home.story.badgeSubtitle') }"
+    />
+
+    <ReviewsBand />
+
+    <AboutSection
+      :kicker="t('home.catering.kicker')"
+      :title="t('home.catering.title')"
+      :body="t('home.catering.body')"
+      :cta-label="t('home.catering.cta')"
+      cta-href="/catering"
+      image="/assets/gallery/catering-buffet-setup.jpg"
+      image-alt="Catering Mi Pueblo"
+      reverse
+      bg="cream"
+      kicker-icon="Cake"
+      :stats="[
+        { icon: 'People',     label: t('home.catering.stats.guestsLabel'), value: '20–500' },
+        { icon: 'MenuBoard',  label: t('home.catering.stats.menusLabel'),  value: '15+' },
+        { icon: 'Truck',      label: t('home.catering.stats.deliveryLabel'), value: t('home.catering.stats.deliveryValue') }
+      ]"
+      :badge="{ icon: 'Crown1', title: '500+', subtitle: t('home.catering.badgeSubtitle') }"
+    />
+
+    <AwardsBand />
+
+    <GalleryMasonry />
+
+    <AboutSection
+      :kicker="t('home.parties.kicker')"
+      :title="t('home.parties.title')"
+      :body="t('home.parties.body')"
+      :cta-label="t('home.parties.cta')"
+      cta-href="/reservar"
+      image="/assets/gallery/dining-room-tables-set.jpg"
+      image-alt="Salón privado Mi Pueblo"
+      bg="white"
+      kicker-icon="Music"
+      :stats="[
+        { icon: 'People',   label: t('home.parties.stats.capacityLabel'), value: '120' },
+        { icon: 'Calendar', label: t('home.parties.stats.daysLabel'),     value: '7/7' },
+        { icon: 'Music',    label: t('home.parties.stats.musicLabel'),    value: t('home.parties.stats.musicValue') }
+      ]"
+      :badge="{ icon: 'Cake', title: '100+', subtitle: t('home.parties.badgeSubtitle') }"
+    />
+
+    <section class="section bg-sand-100">
+      <div class="container-page">
+        <h2 class="section-header">¿Dónde encontrarnos?</h2>
+        <p class="section-sub">6 sucursales en Sonoma & Marin County</p>
+        <MapLeaflet height="500px" />
+      </div>
+    </section>
+  </main>
+</template>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <path id="circle-text-2" d="M 100,100 m -76,0 a 76,76 0 1,0 152,0 a 76,76 0 1,0 -152,0"/>
+  </defs>
+  <text font-family="Anton, sans-serif" font-size="22" fill="#FBE067" letter-spacing="2">
+    <textPath href="#circle-text-2" startOffset="0">SABOR DE CASA · FAMILY RECIPES · 1997 · </textPath>
+  </text>
+  <g transform="translate(100 100)">
+    <circle r="42" fill="#AD0A09"/>
+    <!-- Sombrero estilizado -->
+    <g transform="translate(-22 -16)">
+      <ellipse cx="22" cy="22" rx="22" ry="5" fill="#7C0606"/>
+      <ellipse cx="22" cy="14" rx="11" ry="11" fill="#E2592A"/>
+      <path d="M11 14 q11 -6 22 0" fill="#7C0606"/>
+      <circle cx="22" cy="22" r="2" fill="#FBE067"/>
+    </g>
+  </g>
+</svg>

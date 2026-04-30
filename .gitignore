@@ -1,0 +1,44 @@
+# Deps
+node_modules/
+.pnpm-store/
+
+# Build
+dist/
+build/
+.vite/
+
+# Env (NUNCA commitear)
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Uploads (Railway volume / local dev)
+server/uploads/
+uploads/
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# IDE
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Drizzle
+server/drizzle/meta/_journal.json.bak
+
+# PWA generated
+app/dev-dist/
+app/public/sw.js
+app/public/workbox-*.js
+
+# Scraping (raw HTML), keep curated .md
+mipueblocotati/scraping/output/
+mipueblonovato/scraping/output/
+
+# Bun
+.bun/

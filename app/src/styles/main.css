@@ -1,0 +1,124 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { scroll-behavior: smooth; }
+  body { @apply antialiased font-body bg-sand-50 text-secondary-dark; }
+  h1, h2, h3, h4 { @apply font-display font-bold text-secondary-dark; }
+  ::selection { @apply bg-brand text-white; }
+
+  /* Estilos oscuros para form controls dentro del panel admin */
+  .admin-dark, .admin-dark * { color-scheme: dark; }
+}
+
+@layer components {
+  .container-page { @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8; }
+
+  .brand-script   { @apply font-script text-accent leading-none; }
+  .display-serif  { @apply font-display font-bold tracking-tight; }
+  .headline-impact{ @apply font-impact uppercase tracking-tight leading-[0.92]; }
+  .text-stroke    { -webkit-text-stroke: 1.5px #1A0E08; }
+
+  /* Sección oscura tipo "cantina nocturna" */
+  .section-dark   { @apply bg-night text-sand-100; }
+  .section-dark .section-header { @apply text-white; }
+  .section-dark .section-sub    { @apply text-sand-200; }
+
+  /* Animaciones flotantes para ingredientes */
+  @keyframes floaty {
+    0%, 100% { transform: translateY(0) rotate(var(--r,0deg)); }
+    50%      { transform: translateY(-14px) rotate(calc(var(--r,0deg) + 4deg)); }
+  }
+  .floaty   { animation: floaty 6s ease-in-out infinite; }
+  .floaty-2 { animation: floaty 8s ease-in-out infinite reverse; }
+  .floaty-3 { animation: floaty 10s ease-in-out infinite; }
+
+  @keyframes spin-slow {
+    to { transform: rotate(360deg); }
+  }
+  .spin-slow { animation: spin-slow 22s linear infinite; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fadeIn { animation: fadeIn 0.8s ease-out both; }
+
+  /* Botones cálidos, redondeados, sin uppercase agresivo */
+  .btn            { @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-bold text-sm tracking-wide transition-all duration-200 whitespace-nowrap; }
+  .btn-primary    { @apply btn bg-brand text-white hover:bg-brand-dark shadow-soft hover:shadow-elev; }
+  .btn-accent     { @apply btn bg-accent text-white hover:bg-accent-dark shadow-soft hover:shadow-elev; }
+  .btn-outline    { @apply btn border-2 border-brand text-brand bg-white/80 hover:bg-brand hover:text-white; }
+  .btn-ghost      { @apply btn text-secondary hover:text-brand; }
+  .btn-light      { @apply btn bg-white/95 text-secondary-dark hover:bg-white border border-sand-200 shadow-soft; }
+
+  .section        { @apply py-16 md:py-24; }
+  .section-cream  { @apply bg-sand-100; }
+  .section-sand   { @apply bg-sand-200; }
+
+  .section-kicker { @apply text-center text-accent uppercase tracking-[0.25em] text-xs font-bold mb-3; }
+  .section-header { @apply text-3xl md:text-5xl font-display font-bold text-secondary-dark text-center mb-4 leading-[1.05] tracking-tight; }
+  .section-sub    { @apply text-secondary text-center max-w-prose mx-auto mb-12 text-base md:text-lg; }
+
+  .card           { @apply bg-white rounded-2xl overflow-hidden shadow-soft hover:shadow-elev transition-shadow; }
+
+  /* Cinta papel picado SVG (banderines triangulares perforados) */
+  .papel-strip {
+    background-image: url('/assets/decor/papel-picado.svg');
+    background-repeat: repeat-x;
+    background-size: auto 100%;
+    background-position: top center;
+    height: 56px;
+  }
+
+  /* Badge cálido para confianza/horarios */
+  .pill {
+    @apply inline-flex items-center gap-2 bg-white/85 backdrop-blur px-3 py-1.5 rounded-full text-xs font-bold text-secondary-dark border border-sand-200 shadow-soft;
+  }
+  .pill-dot {
+    @apply inline-block w-2 h-2 rounded-full bg-emerald-500;
+    box-shadow: 0 0 0 4px rgba(16,185,129,0.18);
+  }
+}
+
+@layer utilities {
+  /* Safe-area helpers para iOS notch / home indicator */
+  .pb-safe { padding-bottom: env(safe-area-inset-bottom, 0px); }
+  .pt-safe { padding-top: env(safe-area-inset-top, 0px); }
+  .px-safe { padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px); }
+  .mb-bottomnav { margin-bottom: calc(env(safe-area-inset-bottom, 0px) + 4.5rem); }
+  @media (min-width: 768px) { .mb-bottomnav { margin-bottom: 0; } }
+}
+
+/* Evita zoom autom\u00e1tico de iOS al enfocar inputs (necesita >=16px) */
+@media (max-width: 767px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="number"],
+  input[type="password"],
+  input[type="search"],
+  input[type="date"],
+  input[type="time"],
+  input[type="url"],
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Scrollbar para filtros horizontales */
+.scrollbar-hide { scrollbar-width: none; -ms-overflow-style: none; }
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+
+/* Respetar prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+  .floaty, .floaty-2, .floaty-3, .spin-slow { animation: none !important; }
+}
+
+/* Mejor handling overflow horizontal accidental en m\u00f3vil */
+html, body { overflow-x: hidden; }
+
+

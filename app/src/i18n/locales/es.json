@@ -1,0 +1,195 @@
+{
+  "nav": {
+    "home": "Inicio",
+    "menu": "Menú",
+    "locations": "Sucursales",
+    "reserve": "Reservar",
+    "promotions": "Promociones",
+    "catering": "Catering",
+    "foodTruck": "Food Truck",
+    "reviews": "Reseñas",
+    "contact": "Contacto"
+  },
+  "cta": {
+    "orderOnline": "Ordena en línea",
+    "reserve": "Reservar mesa",
+    "viewMenu": "Ver menú",
+    "callUs": "Llámanos",
+    "directions": "Cómo llegar",
+    "subscribe": "Suscribirme",
+    "send": "Enviar",
+    "loadMore": "Ver más"
+  },
+  "promoBar": {
+    "burritoThursday": "Jueves de Burrito · $10 con cualquier bebida"
+  },
+  "home": {
+    "heroTitle": "Auténticos sabores mexicanos",
+    "heroSubtitle": "Familia Mi Pueblo · Sirviendo a Sonoma County desde 1997",
+    "today": {
+      "kicker": "Hoy en Mi Pueblo",
+      "title": "Lo bueno de hoy",
+      "sub": "Promociones del día, plato estrella y reserva en 30 segundos",
+      "promoLabel": "Promo del día",
+      "starLabel": "Plato estrella",
+      "reserveLabel": "Reserva express",
+      "reserveTitle": "Mesa para esta noche",
+      "reserveBody": "Reserva en menos de 30 segundos. Confirmación inmediata.",
+      "orCall": "o llámanos"
+    },
+    "carousel": {
+      "kicker": "Lo más pedido",
+      "title": "Platillos que enamoran",
+      "sub": "De la abuela a tu mesa — recetas tradicionales servidas todos los días"
+    },
+    "story": {
+      "kicker": "Nuestra historia",
+      "title": "Tradición servida con pasión",
+      "body": "Desde 1997, Mi Pueblo es un restaurante familiar que celebra la cocina mexicana auténtica con recetas tradicionales, ingredientes frescos y la calidez de nuestra cultura.",
+      "badgeSubtitle": "años sirviendo Cotati",
+      "stats": {
+        "sinceLabel": "Desde",
+        "familyLabel": "Familia",
+        "familyValue": "García"
+      }
+    },
+    "catering": {
+      "kicker": "Sabores auténticos",
+      "title": "Catering para tu evento",
+      "body": "Llevamos el sabor de Mi Pueblo a tu próxima reunión, boda o celebración corporativa. Menús personalizados para cada ocasión.",
+      "cta": "Solicitar cotización",
+      "badgeSubtitle": "eventos al año",
+      "stats": {
+        "guestsLabel": "Invitados",
+        "menusLabel": "Menús",
+        "deliveryLabel": "Entrega",
+        "deliveryValue": "Incluída"
+      }
+    },
+    "parties": {
+      "kicker": "Celebra con nosotros",
+      "title": "Fiestas privadas y eventos",
+      "body": "Nuestro espacio es perfecto para cumpleaños, despedidas y reuniones familiares. Personaliza tu experiencia.",
+      "cta": "Reservar evento",
+      "badgeSubtitle": "fiestas celebradas",
+      "stats": {
+        "capacityLabel": "Capacidad",
+        "daysLabel": "Disponible",
+        "musicLabel": "Mariachi",
+        "musicValue": "Bajo pedido"
+      }
+    },
+    "gallery": { "title": "Nuestra cocina", "sub": "Sabores que enamoran a la vista" },
+    "menuPreview": { "title": "Platillos favoritos", "sub": "Lo más amado por nuestros clientes" },
+    "awards": { "kicker": "Premios y reconocimientos", "title": "Reconocimientos" },
+    "categories": {
+      "kicker": "Explora el menú",
+      "title": "Categorías que enamoran",
+      "sub": "Toca una categoría y abre el menú directamente en lo que más te late.",
+      "bestSeller": "Lo más vendido",
+      "viewMenu": "Ver menú completo"
+    },
+    "reviews": {
+      "kicker": "Lo que dicen de nosotros",
+      "title": "No solo lo decimos nosotros",
+      "viewAll": "Ver todas en Google Maps",
+      "writeReview": "Deja tu reseña en Google",
+      "viewOnMaps": "Ver en Maps",
+      "googleReviews": "reseñas en Google",
+      "stars": "estrellas"
+    }
+  },
+  "menu": {
+    "title": "Menú completo",
+    "sub": "Más de 130 platillos preparados con tradición",
+    "tabs": { "food": "Comida", "drinks": "Bebidas" },
+    "search": "Buscar platillo…",
+    "noResults": "No encontramos platillos con ese término.",
+    "dishes": "platillos",
+    "viewShort": "Ver",
+    "filters": {
+      "all": "Todos",
+      "vegetarian": "Vegetariano",
+      "seafood": "Mariscos",
+      "spicy": "Picante",
+      "kids": "Niños"
+    },
+    "tags": {
+      "popular": "Popular",
+      "new": "Nuevo",
+      "spicy": "Picante",
+      "vegetarian": "Vegetariano",
+      "seafood": "Mariscos",
+      "kids": "Niños",
+      "gluten_free": "Sin gluten",
+      "chefchoice": "Recomendado"
+    }
+  },
+  "locations": {
+    "title": "Nuestras sucursales",
+    "sub": "6 ubicaciones en Sonoma & Marin County",
+    "actions": { "pickup": "Pickup", "delivery": "Delivery", "catering": "Catering", "parties": "Fiestas" },
+    "viewMap": "Ver mapa",
+    "backToList": "Volver a sucursales"
+  },
+  "reserve": {
+    "title": "Reservar mesa",
+    "sub": "Asegura tu lugar — confirmación inmediata por email",
+    "successTitle": "¡Reservación recibida!",
+    "successBody": "Te enviaremos una confirmación a",
+    "form": {
+      "branch": "Sucursal",
+      "date": "Fecha",
+      "time": "Hora",
+      "party": "Personas",
+      "name": "Nombre completo",
+      "phone": "Teléfono",
+      "email": "Correo electrónico",
+      "notes": "Notas o solicitudes especiales (opcional)",
+      "submit": "Confirmar reservación"
+    },
+    "policy": "Política: cancela hasta 2 horas antes sin costo. Grupos de 6+ personas pueden requerir depósito."
+  },
+  "newsletter": {
+    "title": "Suscríbete al newsletter",
+    "sub": "Recibe $5 de descuento al consumir $40 + cupón de cumpleaños",
+    "placeholder": "tu{'@'}email.com",
+    "success": "¡Listo! Revisa tu correo para confirmar.",
+    "error": "Hubo un problema. Inténtalo de nuevo."
+  },
+  "contact": {
+    "title": "Contáctanos",
+    "address": "Dirección",
+    "phone": "Teléfono",
+    "email": "Email",
+    "hours": "Horario",
+    "weekdays": "L-V",
+    "weekend": "S-D"
+  },
+  "footer": {
+    "rights": "Todos los derechos reservados",
+    "since": "Sirviendo desde 1997",
+    "follow": "Síguenos",
+    "powered": "Restaurante familiar · Cotati, California",
+    "deliveryWith": "Pide a domicilio con",
+    "privacy": "Privacidad",
+    "terms": "Términos"
+  },
+  "common": {
+    "loading": "Cargando…",
+    "from": "Desde",
+    "to": "Hasta",
+    "open": "Abierto",
+    "closed": "Cerrado",
+    "today": "Hoy",
+    "prev": "Anterior",
+    "next": "Siguiente",
+    "review": "Reseña"
+  },
+  "catering": {
+    "howTitle": "¿Cómo funciona?",
+    "step1": "1. Cuéntanos sobre tu evento (fecha, número de invitados, tipo).",
+    "step2": "2. Te enviamos una propuesta de menú personalizada.",
+    "step3": "3. Confirmamos detalles y entregamos en tu locación."
+  }
+}
