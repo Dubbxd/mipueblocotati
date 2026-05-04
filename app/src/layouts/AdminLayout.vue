@@ -93,7 +93,7 @@ onMounted(() => {
                 :to="item.to"
                 @click="open = false"
                 class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm hover:bg-white/5 transition"
-                :class="(item.exact ? route.path === item.to : route.path.startsWith(item.to)) ? 'bg-brand/15 text-white border border-brand/30' : 'text-white/75'"
+                :class="((item as any).exact ? route.path === item.to : route.path.startsWith(item.to)) ? 'bg-brand/15 text-white border border-brand/30' : 'text-white/75'"
               >
                 <Icon :name="item.icon" :size="18" />
                 <span class="flex-1">{{ item.label }}</span>
