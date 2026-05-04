@@ -17,12 +17,19 @@ const API_URL = process.env.API_URL ?? `http://localhost:${process.env.PORT ?? 3
 
 // Logo loaded as base64 for CID inline attachment (Gmail blocks data: URIs)
 function getLogoBase64(): string | null {
-  try {
-    const logoPath = join(process.cwd(), '../app/public/assets/logos/logo-cotati-secondary.png')
-    return readFileSync(logoPath).toString('base64')
-  } catch {
-    return null
+  const candidates = [
+    process.env.LOGO_PATH,
+    join(process.cwd(), 'email-logo.png'),
+    join(process.cwd(), '../app/public/assets/logos/logo-cotati-secondary.png'),
+  ].filter(Boolean) as string[]
+  for (const p of candidates) {
+    try {
+      return readFileSync(p).toString('base64')
+    } catch {
+      // try next path
+    }
   }
+  return null
 }
 const LOGO_BASE64 = getLogoBase64()
 // CID used in HTML — works across Gmail, Outlook, Apple Mail
