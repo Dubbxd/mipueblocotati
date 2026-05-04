@@ -6,14 +6,13 @@ WORKDIR /app
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
 # Copy workspace manifests for dependency install
-COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml ./
 COPY app/package.json ./app/package.json
-# server/package.json is referenced by the pnpm workspace — create a stub so
-# pnpm doesn't fail when resolving the workspace graph
-COPY server/package.json ./server/package.json
+# Restrict workspace to app/ only so server's bun-managed deps don't cause lockfile mismatch
+RUN printf 'packages:\n  - '"'"'app'"'"'\n' > pnpm-workspace.yaml
 
-# Install all workspace deps (includes app's devDependencies for building)
-RUN pnpm install --frozen-lockfile
+# Install app deps only
+RUN pnpm install --frozen-lockfile --filter @mipueblo/web
 
 # Copy app source and build
 COPY app ./app
