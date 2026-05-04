@@ -213,7 +213,7 @@ onMounted(load)
 
       <div class="grid sm:grid-cols-2 gap-4">
         <FormField label="Título (ES)" required>
-          <input v-model="form.titleEs" @input="if (!form.id) form.slug = slugify(form.titleEs || '')" class="w-full bg-night border border-white/15 rounded-lg px-3 py-2 text-sm" />
+          <input v-model="form.titleEs" @input="() => { if (!form.id) form.slug = slugify(form.titleEs || '') }" class="w-full bg-night border border-white/15 rounded-lg px-3 py-2 text-sm" />
         </FormField>
         <FormField label="Título (EN)" required>
           <input v-model="form.titleEn" class="w-full bg-night border border-white/15 rounded-lg px-3 py-2 text-sm" />
