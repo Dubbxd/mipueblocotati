@@ -11,8 +11,19 @@ import {
   reservations,
   cateringRequests,
   newsletterSubscribers,
+  blogPosts,
+  emailCampaigns,
 } from '../db/schema'
 import { authPlugin, requireAuth, requireRole } from '../lib/auth'
+import {
+  sendReservationConfirmation,
+  notifyAdminReservation,
+  sendCateringConfirmation,
+  notifyAdminCatering,
+  sendContactAutoReply,
+  notifyAdminContact,
+  sendCampaign,
+} from '../lib/mailjet'
 
 /* ─── PUBLIC ROUTES (sin auth, leen solo activos) ─────────────── */
 export const publicRoutes = new Elysia({ prefix: '/public' })
@@ -61,7 +72,28 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
   .post(
     '/reservations',
     async ({ body }) => {
-      const [r] = await db.insert(reservations).values(body).returning()
+      const rows = await db.insert(reservations).values(body).returning()
+      const r = rows[0]!
+      // Send emails in background — don't block response
+      if (body.email) {
+        sendReservationConfirmation({
+          name: body.name,
+          email: body.email,
+          date: body.date,
+          time: body.time,
+          partySize: body.partySize,
+          notes: body.notes,
+        }).catch(e => console.error('[mail] reservation confirmation:', e))
+      }
+      notifyAdminReservation({
+        name: body.name,
+        email: body.email ?? 'no-email',
+        phone: body.phone,
+        date: body.date,
+        time: body.time,
+        partySize: body.partySize,
+        notes: body.notes,
+      }).catch(e => console.error('[mail] admin reservation notify:', e))
       return { ok: true, id: r.id }
     },
     {
@@ -80,7 +112,27 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
   .post(
     '/catering',
     async ({ body }) => {
-      const [r] = await db.insert(cateringRequests).values(body).returning()
+      const rows2 = await db.insert(cateringRequests).values(body).returning()
+      const r = rows2[0]!
+      // Send emails in background
+      sendCateringConfirmation({
+        name: body.name,
+        email: body.email,
+        eventType: body.eventType,
+        eventDate: body.eventDate,
+        guests: body.guests,
+        budget: body.budget,
+      }).catch(e => console.error('[mail] catering confirmation:', e))
+      notifyAdminCatering({
+        name: body.name,
+        email: body.email,
+        phone: body.phone,
+        eventType: body.eventType,
+        eventDate: body.eventDate,
+        guests: body.guests,
+        budget: body.budget,
+        message: body.message,
+      }).catch(e => console.error('[mail] admin catering notify:', e))
       return { ok: true, id: r.id }
     },
     {
@@ -93,6 +145,34 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
         guests: t.Optional(t.Number()),
         budget: t.Optional(t.String()),
         message: t.Optional(t.String()),
+      }),
+    }
+  )
+  .post(
+    '/contact',
+    async ({ body }) => {
+      // Send emails in background
+      sendContactAutoReply({
+        name: body.name,
+        email: body.email,
+        message: body.message,
+      }).catch(e => console.error('[mail] contact auto-reply:', e))
+      notifyAdminContact({
+        name: body.name,
+        email: body.email,
+        phone: body.phone,
+        subject: body.subject,
+        message: body.message,
+      }).catch(e => console.error('[mail] admin contact notify:', e))
+      return { ok: true }
+    },
+    {
+      body: t.Object({
+        name: t.String({ minLength: 2 }),
+        email: t.String({ format: 'email' }),
+        phone: t.Optional(t.String()),
+        subject: t.Optional(t.String()),
+        message: t.String({ minLength: 10 }),
       }),
     }
   )
@@ -120,6 +200,32 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
       }),
     }
   )
+  .get(
+    '/newsletter/unsubscribe',
+    async ({ query, set }) => {
+      const email = query.email as string | undefined
+      if (!email) { set.status = 400; return { error: 'Missing email' } }
+      await db.update(newsletterSubscribers)
+        .set({ isActive: false, unsubscribedAt: new Date() })
+        .where(eq(newsletterSubscribers.email, email))
+      // Return simple HTML confirmation page
+      set.headers['Content-Type'] = 'text/html; charset=utf-8'
+      const pubUrl = process.env.PUBLIC_URL ?? 'https://mipueblocotati.com'
+      return `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Cancelar suscripción</title><style>body{font-family:Arial,sans-serif;max-width:500px;margin:80px auto;text-align:center;color:#3A2010;background:#FFFCF0;}h1{color:#C8501C;}a{color:#C8501C;}</style></head><body><h1>🌮 Mi Pueblo Cotati</h1><p>Tu suscripción fue cancelada correctamente.</p><p><a href="${pubUrl}">Volver al sitio</a></p></body></html>`
+    }
+  )
+  .get('/blog', async () => {
+    return db.select().from(blogPosts)
+      .where(eq(blogPosts.status, 'published'))
+      .orderBy(desc(blogPosts.publishedAt))
+  })
+  .get('/blog/:slug', async ({ params, set }) => {
+    const [post] = await db.select().from(blogPosts)
+      .where(and(eq(blogPosts.slug, params.slug), eq(blogPosts.status, 'published')))
+      .limit(1)
+    if (!post) { set.status = 404; return { error: 'Not found' } }
+    return post
+  })
 
 /* ─── ADMIN: helper genérico CRUD ─────────────────────────────── */
 function adminCrud<T extends { id: any }>(opts: {
@@ -308,6 +414,39 @@ const newsletterBody = t.Object({
   isActive: t.Optional(t.Boolean()),
 })
 
+const blogPostBody = t.Object({
+  slug: t.String(),
+  titleEs: t.String(),
+  titleEn: t.String(),
+  excerptEs: t.Optional(t.String()),
+  excerptEn: t.Optional(t.String()),
+  bodyEs: t.String(),
+  bodyEn: t.Optional(t.String()),
+  coverImage: t.Optional(t.String()),
+  category: t.Optional(t.String()),
+  tags: t.Optional(t.Array(t.String())),
+  status: t.Optional(t.Union([t.Literal('draft'), t.Literal('published'), t.Literal('archived')])),
+  aiGenerated: t.Optional(t.Boolean()),
+  metaTitleEs: t.Optional(t.String()),
+  metaTitleEn: t.Optional(t.String()),
+  metaDescriptionEs: t.Optional(t.String()),
+  metaDescriptionEn: t.Optional(t.String()),
+  publishedAt: t.Optional(t.String()),
+})
+
+const campaignBody = t.Object({
+  name: t.String(),
+  subjectEs: t.String(),
+  subjectEn: t.String(),
+  previewTextEs: t.Optional(t.String()),
+  previewTextEn: t.Optional(t.String()),
+  bodyHtmlEs: t.String(),
+  bodyHtmlEn: t.Optional(t.String()),
+  blogPostId: t.Optional(t.Number()),
+  status: t.Optional(t.Union([t.Literal('draft'), t.Literal('scheduled'), t.Literal('sending'), t.Literal('sent'), t.Literal('cancelled')])),
+  scheduledAt: t.Optional(t.String()),
+})
+
 /* ─── ADMIN ROUTES ────────────────────────────────────────────── */
 export const adminRoutes = new Elysia({ prefix: '/admin' })
   .use(adminCrud({ prefix: '/menu/categories', table: menuCategories, schema: categoryBody, orderBy: asc(menuCategories.sortOrder) }))
@@ -319,3 +458,84 @@ export const adminRoutes = new Elysia({ prefix: '/admin' })
   .use(adminCrud({ prefix: '/reservations', table: reservations, schema: reservationBody, orderBy: desc(reservations.createdAt) }))
   .use(adminCrud({ prefix: '/catering', table: cateringRequests, schema: cateringBody, orderBy: desc(cateringRequests.createdAt) }))
   .use(adminCrud({ prefix: '/newsletter', table: newsletterSubscribers, schema: newsletterBody, orderBy: desc(newsletterSubscribers.createdAt) }))
+  .use(adminCrud({ prefix: '/blog', table: blogPosts, schema: blogPostBody, orderBy: desc(blogPosts.createdAt) }))
+  .use(adminCrud({ prefix: '/campaigns', table: emailCampaigns, schema: campaignBody, orderBy: desc(emailCampaigns.createdAt) }))
+  // ── AI generation endpoint ──────────────────────────────────────
+  .use(authPlugin)
+  .post(
+    '/ai/generate',
+    async ({ body, set }) => {
+      const { generateBlogPost, generateCampaign, improveText } = await import('../lib/ai')
+      try {
+        if (body.type === 'blog_post') {
+          const result = await generateBlogPost(body.topic, body.category ?? 'news')
+          return { ok: true, result }
+        }
+        if (body.type === 'campaign') {
+          const result = await generateCampaign(body.topic, body.promotion)
+          return { ok: true, result }
+        }
+        if (body.type === 'improve') {
+          const result = await improveText(body.topic, body.instruction ?? 'Mejora este texto', body.lang as 'es' | 'en' ?? 'es')
+          return { ok: true, result }
+        }
+        set.status = 400
+        return { error: 'Unknown type. Use: blog_post | campaign | improve' }
+      } catch (e: any) {
+        set.status = 500
+        return { error: e?.message ?? 'AI generation failed' }
+      }
+    },
+    {
+      beforeHandle: requireAuth,
+      body: t.Object({
+        type: t.String(),
+        topic: t.String(),
+        category: t.Optional(t.String()),
+        promotion: t.Optional(t.String()),
+        instruction: t.Optional(t.String()),
+        lang: t.Optional(t.String()),
+      }),
+    }
+  )
+  // ── Send campaign endpoint ─────────────────────────────────────
+  .post(
+    '/campaigns/:id/send',
+    async ({ params, set, user }) => {
+      const [campaign] = await db.select().from(emailCampaigns).where(eq(emailCampaigns.id, Number(params.id))).limit(1)
+      if (!campaign) { set.status = 404; return { error: 'Campaign not found' } }
+      if (campaign.status === 'sent') { set.status = 400; return { error: 'Campaign already sent' } }
+
+      // Get active subscribers
+      const subs = await db.select().from(newsletterSubscribers)
+        .where(eq(newsletterSubscribers.isActive, true))
+
+      if (!subs.length) { set.status = 400; return { error: 'No active subscribers' } }
+
+      // Mark as sending
+      await db.update(emailCampaigns).set({ status: 'sending', updatedAt: new Date() }).where(eq(emailCampaigns.id, campaign.id))
+
+      // Send in background
+      sendCampaign({
+        subjectEs: campaign.subjectEs,
+        subjectEn: campaign.subjectEn,
+        bodyHtmlEs: campaign.bodyHtmlEs,
+        bodyHtmlEn: campaign.bodyHtmlEn,
+        subscribers: subs.map(s => ({ email: s.email, name: s.name, locale: s.locale })),
+      }).then(async ({ sent, errors }) => {
+        await db.update(emailCampaigns).set({
+          status: 'sent',
+          sentCount: sent,
+          sentAt: new Date(),
+          updatedAt: new Date(),
+        }).where(eq(emailCampaigns.id, campaign.id))
+        console.log(`[campaign] sent=${sent} errors=${errors}`)
+      }).catch(async (e) => {
+        console.error('[campaign] send error', e)
+        await db.update(emailCampaigns).set({ status: 'draft', updatedAt: new Date() }).where(eq(emailCampaigns.id, campaign.id))
+      })
+
+      return { ok: true, subscribers: subs.length, message: `Enviando a ${subs.length} suscriptores…` }
+    },
+    { beforeHandle: requireRole('superadmin', 'admin') }
+  )

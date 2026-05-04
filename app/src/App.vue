@@ -1,14 +1,17 @@
 <script setup lang="ts">
-import { computed, defineAsyncComponent } from 'vue'
+import { computed, defineAsyncComponent, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import AppNavbar from '@/components/layout/AppNavbar.vue'
 import AppFooter from '@/components/layout/AppFooter.vue'
-import MobileBottomNav from '@/components/layout/MobileBottomNav.vue'
 import PromoBar from '@/components/marketing/PromoBar.vue'
+import { useMenuStore } from '@/stores'
 const PwaUpdatePrompt = defineAsyncComponent(() => import('@/components/system/PwaUpdatePrompt.vue'))
 
 const route = useRoute()
 const isAdmin = computed(() => (route.meta?.layout === 'admin') || (route.meta?.layout === 'blank') || route.path.startsWith('/admin'))
+
+const menu = useMenuStore()
+onMounted(() => menu.init())
 </script>
 
 <template>
@@ -17,17 +20,20 @@ const isAdmin = computed(() => (route.meta?.layout === 'admin') || (route.meta?.
 
   <!-- Layout público -->
   <template v-else>
-    <PromoBar />
-    <AppNavbar />
-    <main class="min-h-screen pb-20 md:pb-0">
+    <div class="fixed top-0 inset-x-0 z-40 flex flex-col bg-[#FFFCF0]">
+      <PromoBar />
+      <AppNavbar />
+    </div>
+    <main class="min-h-screen pt-32">
       <RouterView v-slot="{ Component, route: r }">
         <Transition name="fade" mode="out-in">
-          <component :is="Component" :key="r.fullPath" />
+          <KeepAlive :include="['MenuPage']">
+            <component :is="Component" :key="r.fullPath" />
+          </KeepAlive>
         </Transition>
       </RouterView>
     </main>
     <AppFooter />
-    <MobileBottomNav />
     <PwaUpdatePrompt />
   </template>
 </template>

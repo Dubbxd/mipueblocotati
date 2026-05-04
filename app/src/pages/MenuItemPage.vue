@@ -9,7 +9,7 @@ const item = computed(() => menuItems.find(m => m.slug === route.params.slug))
 </script>
 
 <template>
-  <main class="container-page py-12">
+  <main class="container-page pb-12">
     <RouterLink to="/menu" class="text-secondary hover:text-brand text-sm">← Menú</RouterLink>
     <div v-if="item" class="grid md:grid-cols-2 gap-10 mt-6">
       <img v-if="item.photo" :src="item.photo.replace('.webp','.jpg')" :alt="item.name.es" class="w-full rounded-2xl shadow-elev" />

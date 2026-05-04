@@ -33,6 +33,8 @@ export const cateringStatusEnum = pgEnum('catering_status', [
   'lost',
 ])
 export const reviewStatusEnum = pgEnum('review_status', ['pending', 'approved', 'hidden'])
+export const blogPostStatusEnum = pgEnum('blog_post_status', ['draft', 'published', 'archived'])
+export const campaignStatusEnum = pgEnum('campaign_status', ['draft', 'scheduled', 'sending', 'sent', 'cancelled'])
 
 // ─────────────────────────────────────────────────────────────────
 // AUTH
@@ -272,6 +274,70 @@ export const media = pgTable('media', {
 })
 
 // ─────────────────────────────────────────────────────────────────
+// BLOG POSTS
+// ─────────────────────────────────────────────────────────────────
+export const blogPosts = pgTable(
+  'blog_posts',
+  {
+    id: serial('id').primaryKey(),
+    slug: varchar('slug', { length: 160 }).notNull().unique(),
+    titleEs: varchar('title_es', { length: 300 }).notNull(),
+    titleEn: varchar('title_en', { length: 300 }).notNull(),
+    excerptEs: text('excerpt_es'),
+    excerptEn: text('excerpt_en'),
+    bodyEs: text('body_es').notNull(),
+    bodyEn: text('body_en'),
+    coverImage: varchar('cover_image', { length: 400 }),
+    /** food, culture, recipes, news, promotions */
+    category: varchar('category', { length: 60 }).notNull().default('news'),
+    tags: jsonb('tags').$type<string[]>().notNull().default([]),
+    status: blogPostStatusEnum('status').notNull().default('draft'),
+    /** true si el contenido fue generado / asistido por IA */
+    aiGenerated: boolean('ai_generated').notNull().default(false),
+    /** SEO */
+    metaTitleEs: varchar('meta_title_es', { length: 160 }),
+    metaTitleEn: varchar('meta_title_en', { length: 160 }),
+    metaDescriptionEs: varchar('meta_description_es', { length: 320 }),
+    metaDescriptionEn: varchar('meta_description_en', { length: 320 }),
+    authorId: integer('author_id').references(() => users.id, { onDelete: 'set null' }),
+    publishedAt: timestamp('published_at'),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+    updatedAt: timestamp('updated_at').notNull().defaultNow(),
+  },
+  (t) => ({
+    slugIdx: uniqueIndex('blog_posts_slug_idx').on(t.slug),
+    statusIdx: index('blog_posts_status_idx').on(t.status),
+  })
+)
+
+// ─────────────────────────────────────────────────────────────────
+// EMAIL CAMPAIGNS (newsletter)
+// ─────────────────────────────────────────────────────────────────
+export const emailCampaigns = pgTable('email_campaigns', {
+  id: serial('id').primaryKey(),
+  name: varchar('name', { length: 200 }).notNull(),
+  subjectEs: varchar('subject_es', { length: 200 }).notNull(),
+  subjectEn: varchar('subject_en', { length: 200 }).notNull(),
+  previewTextEs: varchar('preview_text_es', { length: 200 }),
+  previewTextEn: varchar('preview_text_en', { length: 200 }),
+  /** HTML completo del correo */
+  bodyHtmlEs: text('body_html_es').notNull(),
+  bodyHtmlEn: text('body_html_en'),
+  /** ID del blog post vinculado (opcional) */
+  blogPostId: integer('blog_post_id').references(() => blogPosts.id, { onDelete: 'set null' }),
+  status: campaignStatusEnum('status').notNull().default('draft'),
+  /** cuántos correos se enviaron */
+  sentCount: integer('sent_count').notNull().default(0),
+  /** Mailjet bulk campaign ID (para tracking de aperturas) */
+  mailjetCampaignId: varchar('mailjet_campaign_id', { length: 80 }),
+  scheduledAt: timestamp('scheduled_at'),
+  sentAt: timestamp('sent_at'),
+  createdById: integer('created_by_id').references(() => users.id, { onDelete: 'set null' }),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+})
+
+// ─────────────────────────────────────────────────────────────────
 // RELATIONS
 // ─────────────────────────────────────────────────────────────────
 export const menuCategoriesRelations = relations(menuCategories, ({ many }) => ({
@@ -307,3 +373,5 @@ export type Review = typeof reviews.$inferSelect
 export type GalleryItem = typeof gallery.$inferSelect
 export type NewsletterSubscriber = typeof newsletterSubscribers.$inferSelect
 export type Media = typeof media.$inferSelect
+export type BlogPost = typeof blogPosts.$inferSelect
+export type EmailCampaign = typeof emailCampaigns.$inferSelect

@@ -17,6 +17,7 @@ export const promotions: Promotion[] = [
       en: 'Regular burrito for $10 with the purchase of any drink. Thursdays only.'
     },
     recurrence: 'weekly', dayOfWeek: 4, active: true,
+    photo: '/assets/gallery/burrito-served.jpg',
     validAt: ['cotati'],
     cta: { label: { es: 'Ver menú', en: 'View Menu' }, href: '/menu#burritos' }
   },
@@ -28,6 +29,7 @@ export const promotions: Promotion[] = [
       en: 'Special taco promotion every Tuesday at select locations.'
     },
     recurrence: 'weekly', dayOfWeek: 2, active: true,
+    photo: '/assets/gallery/taco-tuesday.jpg',
     validAt: ['novato', 'petaluma-blvd', 'petaluma-kentucky'],
     cta: { label: { es: 'Ver sucursales', en: 'See locations' }, href: '/sucursales' }
   },
@@ -39,6 +41,7 @@ export const promotions: Promotion[] = [
       en: 'Get $5 off when you spend $40 after subscribing to our newsletter.'
     },
     recurrence: 'one_time', active: true,
+    photo: '/assets/gallery/served-drinks.jpg',
     cta: { label: { es: 'Suscribirme', en: 'Subscribe' }, href: '#newsletter' }
   }
 ]

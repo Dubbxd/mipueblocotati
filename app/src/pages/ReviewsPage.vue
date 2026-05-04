@@ -1,5 +1,5 @@
 <template>
-  <main class="container-page py-16">
+  <main class="container-page pb-16">
     <h1 class="font-display text-4xl md:text-5xl font-bold text-secondary-dark text-center">Reseñas</h1>
     <p class="text-ink-muted text-center mt-2">Lo que opinan nuestros clientes</p>
     <div class="grid md:grid-cols-3 gap-6 mt-10">

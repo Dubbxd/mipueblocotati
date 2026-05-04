@@ -27,29 +27,32 @@ const links = [
 
 <template>
   <header
-    class="fixed top-0 inset-x-0 z-40 transition-all duration-300 border-b bg-night/95 backdrop-blur-md shadow-elev border-night-light"
-    :class="scrolled || !transparent ? 'py-2' : 'py-3'"
+    class="relative transition-all duration-300 border-b bg-[#FFFCF0] border-sand-200"
+    :class="scrolled ? 'py-1 shadow-soft' : 'py-2'"
   >
     <div class="container-page flex items-center justify-between gap-4">
       <RouterLink to="/" class="flex items-center gap-3 shrink-0">
         <img src="/logo.png" alt="Mi Pueblo Cotati · Est. 1997"
-             class="h-12 md:h-14 w-auto transition-all drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]" />
+             class="h-12 md:h-14 w-auto transition-all" />
       </RouterLink>
 
       <nav class="hidden lg:flex items-center gap-6">
         <RouterLink
           v-for="l in links" :key="l.to" :to="l.to"
-          class="text-sm font-bold uppercase tracking-wider text-sand-100 hover:text-accent transition-colors"
-          active-class="!text-accent"
+          class="text-sm font-bold uppercase tracking-wider transition-colors text-secondary-dark hover:text-brand"
+          active-class="!text-brand"
         >{{ t(l.key) }}</RouterLink>
-        <RouterLink to="/reservar" class="text-xs font-bold uppercase tracking-wider px-4 py-2 rounded-full border-2 border-accent text-accent hover:bg-accent hover:text-white transition-all whitespace-nowrap">{{ t('cta.reserve') }}</RouterLink>
+        <RouterLink to="/reservar"
+          class="text-xs font-bold uppercase tracking-wider px-4 py-2 rounded-full border-2 transition-all whitespace-nowrap border-brand text-brand hover:bg-brand hover:text-white"
+        >{{ t('cta.reserve') }}</RouterLink>
         <a href="https://mi-pueblo-real-mex-cotati.cloveronline.com/menu/all"
-           target="_blank" rel="noopener" class="text-xs font-bold uppercase tracking-wider px-4 py-2 rounded-full bg-brand text-white hover:bg-brand-dark shadow-md whitespace-nowrap">{{ t('cta.orderOnline') }}</a>
+           target="_blank" rel="noopener"
+           class="text-xs font-bold uppercase tracking-wider px-4 py-2 rounded-full bg-brand text-white hover:bg-brand-dark shadow-md whitespace-nowrap transition-colors">{{ t('cta.orderOnline') }}</a>
         <LanguageSwitcher />
       </nav>
 
       <button
-        class="lg:hidden p-2 text-sand-100"
+        class="lg:hidden p-2 transition-colors text-secondary-dark"
         :aria-expanded="open" aria-label="Menu"
         @click="open = !open"
       >
@@ -59,12 +62,12 @@ const links = [
     </div>
 
     <Transition name="slide">
-      <nav v-if="open" class="lg:hidden bg-night border-t border-night-light">
+      <nav v-if="open" class="lg:hidden bg-sand-50 border-t border-sand-200">
         <div class="container-page py-4 flex flex-col gap-3">
           <RouterLink v-for="l in links" :key="l.to" :to="l.to" @click="open = false"
-            class="py-2 text-sand-100 font-bold uppercase text-sm tracking-wider"
-            active-class="!text-accent">{{ t(l.key) }}</RouterLink>
-          <RouterLink to="/reservar" class="btn-outline text-xs !border-accent !text-accent !bg-transparent" @click="open = false">{{ t('cta.reserve') }}</RouterLink>
+            class="py-2 text-secondary-dark font-bold uppercase text-sm tracking-wider hover:text-brand"
+            active-class="!text-brand">{{ t(l.key) }}</RouterLink>
+          <RouterLink to="/reservar" class="btn-outline text-xs" @click="open = false">{{ t('cta.reserve') }}</RouterLink>
           <a href="https://mi-pueblo-real-mex-cotati.cloveronline.com/menu/all" target="_blank" rel="noopener" class="btn-primary text-xs">{{ t('cta.orderOnline') }}</a>
           <div class="pt-2"><LanguageSwitcher /></div>
         </div>

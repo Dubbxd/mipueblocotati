@@ -18,7 +18,9 @@ const routes: RouteRecordRaw[] = [
       { path: 'reviews', name: 'admin-reviews', component: () => import('@/pages/admin/ReviewsPage.vue'), meta: { title: 'Reseñas' } },
       { path: 'gallery', name: 'admin-gallery', component: () => import('@/pages/admin/GalleryPage.vue'), meta: { title: 'Galería' } },
       { path: 'locations', name: 'admin-locations', component: () => import('@/pages/admin/LocationsPage.vue'), meta: { title: 'Sucursales' } },
-      { path: 'newsletter', name: 'admin-newsletter', component: () => import('@/pages/admin/NewsletterPage.vue'), meta: { title: 'Newsletter' } }
+      { path: 'newsletter', name: 'admin-newsletter', component: () => import('@/pages/admin/NewsletterPage.vue'), meta: { title: 'Newsletter' } },
+      { path: 'blog', name: 'admin-blog', component: () => import('@/pages/admin/BlogPage.vue'), meta: { title: 'Blog' } },
+      { path: 'campaigns', name: 'admin-campaigns', component: () => import('@/pages/admin/CampaignsPage.vue'), meta: { title: 'Campañas' } }
     ]
   },
   // ── PÚBLICO ───────────────────────────────────────────────────
@@ -34,6 +36,8 @@ const routes: RouteRecordRaw[] = [
   { path: '/resenas', name: 'reviews', component: () => import('@/pages/ReviewsPage.vue') },
   { path: '/encuesta', name: 'survey', component: () => import('@/pages/SurveyPage.vue') },
   { path: '/contacto', name: 'contact', component: () => import('@/pages/ContactPage.vue') },
+  { path: '/blog', name: 'blog', component: () => import('@/pages/BlogPage.vue'), meta: { title: 'Blog · Mi Pueblo Cotati' } },
+  { path: '/blog/:slug', name: 'blog-post', component: () => import('@/pages/BlogPostPage.vue') },
   { path: '/legal/privacidad', name: 'privacy', component: () => import('@/pages/legal/PrivacyPage.vue') },
   { path: '/legal/terminos', name: 'terms', component: () => import('@/pages/legal/TermsPage.vue') },
   { path: '/:pathMatch(.*)*', name: 'not-found', component: () => import('@/pages/NotFoundPage.vue') }

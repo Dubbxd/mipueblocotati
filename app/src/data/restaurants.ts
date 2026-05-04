@@ -8,6 +8,7 @@ export const restaurants: Restaurant[] = [
     address: '7384 Commerce Blvd', city: 'Cotati', state: 'CA', zip: '94931',
     phone: '+1-707-792-4380', email: 'mipueblocotati1@gmail.com',
     lat: 38.3274, lng: -122.7094,
+    photo: '/assets/gallery/restaurantmx.jpg',
     hours: { mon_fri: '11:00 AM – 9:00 PM', sat_sun: '10:00 AM – 9:00 PM' },
     links: {
       pickup: 'https://mi-pueblo-real-mex-cotati.cloveronline.com/menu/all',
@@ -36,6 +37,7 @@ export const restaurants: Restaurant[] = [
     address: '905 Grant Ave', city: 'Novato', state: 'CA', zip: '94945',
     phone: '+1-415-878-0122', email: 'mipueblonovato@gmail.com',
     lat: 38.1057, lng: -122.5697,
+    photo: '/assets/hero/novato-building.jpg',
     hours: { mon_fri: '11:00 AM – 9:00 PM', sat_sun: '10:00 AM – 9:00 PM' },
     links: { pickup: 'https://eatmipueblonovato.com/' }
   },

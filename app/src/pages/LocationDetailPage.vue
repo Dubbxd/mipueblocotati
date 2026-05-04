@@ -10,7 +10,7 @@ const r = computed(() => restaurants.find(x => x.id === route.params.slug))
 </script>
 
 <template>
-  <main class="container-page py-10">
+  <main class="container-page pb-10">
     <RouterLink to="/sucursales" class="text-secondary hover:text-brand text-sm">← {{ t('locations.backToList') }}</RouterLink>
     <div v-if="r" class="grid md:grid-cols-2 gap-10 mt-6">
       <div>

@@ -15,6 +15,7 @@ export interface Restaurant {
   lng: number
   hours: { mon_fri: string; sat_sun: string }
   isMain?: boolean
+  photo?: string
   links: {
     pickup?: string
     delivery?: string
@@ -70,6 +71,7 @@ export interface Promotion {
   dayOfWeek?: number // 0..6 (sólo si weekly)
   validAt?: string[] // restaurant ids
   active: boolean
+  photo?: string
   cta?: { label: LocaleText; href: string }
 }
 

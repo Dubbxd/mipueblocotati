@@ -7,7 +7,7 @@ const submit = async () => { await new Promise(r => setTimeout(r, 400)); submitt
 </script>
 
 <template>
-  <main class="container-page py-12 max-w-2xl">
+  <main class="container-page pb-12 max-w-2xl">
     <h1 class="font-display text-4xl font-bold text-secondary-dark">Encuesta de satisfacción</h1>
     <p class="text-ink-muted mt-2">Tu opinión nos ayuda a mejorar.</p>
 

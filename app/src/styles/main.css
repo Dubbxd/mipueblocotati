@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 @layer base {
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; scroll-padding-top: 8rem; }
   body { @apply antialiased font-body bg-sand-50 text-secondary-dark; }
   h1, h2, h3, h4 { @apply font-display font-bold text-secondary-dark; }
   ::selection { @apply bg-brand text-white; }
@@ -20,7 +20,7 @@
   .headline-impact{ @apply font-impact uppercase tracking-tight leading-[0.92]; }
   .text-stroke    { -webkit-text-stroke: 1.5px #1A0E08; }
 
-  /* Sección oscura tipo "cantina nocturna" */
+  /* Sección oscura tipo "atardecer mexicano" */
   .section-dark   { @apply bg-night text-sand-100; }
   .section-dark .section-header { @apply text-white; }
   .section-dark .section-sub    { @apply text-sand-200; }
@@ -62,6 +62,10 @@
   .section-sub    { @apply text-secondary text-center max-w-prose mx-auto mb-12 text-base md:text-lg; }
 
   .card           { @apply bg-white rounded-2xl overflow-hidden shadow-soft hover:shadow-elev transition-shadow; }
+
+  /* Formularios */
+  .form-label     { @apply block text-xs font-bold uppercase tracking-wider text-ink-muted mb-1.5; }
+  .form-input     { @apply block w-full px-4 py-2.5 rounded-xl border border-sand-300 bg-sand-50 text-sm text-secondary-dark placeholder-ink-muted/50 focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-shadow; }
 
   /* Cinta papel picado SVG (banderines triangulares perforados) */
   .papel-strip {

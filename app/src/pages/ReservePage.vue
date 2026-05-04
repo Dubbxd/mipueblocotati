@@ -26,7 +26,7 @@ const submit = async () => {
 </script>
 
 <template>
-  <main class="container-page py-12 max-w-3xl">
+  <main class="container-page pb-12 max-w-3xl">
     <h1 class="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-secondary-dark">{{ t('reserve.title') }}</h1>
     <p class="text-ink-muted mt-2">{{ t('reserve.sub') }}</p>
 

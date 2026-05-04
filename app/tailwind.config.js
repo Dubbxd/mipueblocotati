@@ -4,13 +4,13 @@ export default {
   theme: {
     extend: {
       colors: {
-        brand:     { DEFAULT: '#AD0A09', dark: '#7C0606', light: '#D62828' },
-        accent:    { DEFAULT: '#E2592A', dark: '#B8431A', light: '#F08056' },
-        secondary: { DEFAULT: '#745545', dark: '#4A3528', light: '#A87D63' },
-        // Tema oscuro tipo "cantina nocturna"
-        night:     { DEFAULT: '#1A0E08', soft: '#2A1812', light: '#3D2620', dark: '#0F0805' },
-        sand:      { 50: '#FBF6EC', 100: '#F5ECD9', 200: '#EBDFCE', 300: '#D8C4A8' },
-        ink:       { DEFAULT: '#232323', muted: '#5A5A5A' }
+        brand:     { DEFAULT: '#C8501C', dark: '#9E3D15', light: '#E8703C' },
+        accent:    { DEFAULT: '#F09828', dark: '#C87018', light: '#F8C058' },
+        secondary: { DEFAULT: '#8A5A38', dark: '#5A3820', light: '#B88060' },
+        // Tema cálido tipo "atardecer mexicano"
+        night:     { DEFAULT: '#3D1A08', soft: '#5C2E14', light: '#7C4828', dark: '#201004' },
+        sand:      { 50: '#FFFCF0', 100: '#FFF5DE', 200: '#FFE8C0', 300: '#F0CF98' },
+        ink:       { DEFAULT: '#3A2010', muted: '#7A5530' }
       },
       fontFamily: {
         script:   ['"Pacifico"', '"Brush Script MT"', 'cursive'],
@@ -24,8 +24,8 @@ export default {
         'fiesta-pattern':"url('/assets/decor/fiesta-pattern.svg')"
       },
       boxShadow: {
-        soft: '0 4px 14px rgba(74,53,40,0.10)',
-        elev: '0 12px 32px rgba(74,53,40,0.18)'
+        soft: '0 4px 14px rgba(90,56,32,0.10)',
+        elev: '0 12px 32px rgba(90,56,32,0.20)'
       },
       maxWidth: {
         prose: '70ch'

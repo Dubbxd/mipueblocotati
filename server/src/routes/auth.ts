@@ -35,4 +35,4 @@ export const authRoutes = new Elysia({ prefix: '/auth' })
       }),
     }
   )
-  .get('/me', ({ user }) => ({ user }), { beforeHandle: requireAuth })
+  .get('/me', ({ user }) => user, { beforeHandle: requireAuth })

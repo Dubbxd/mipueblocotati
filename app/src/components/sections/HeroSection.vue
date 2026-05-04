@@ -23,19 +23,18 @@ const headline = computed(() =>
   <section class="relative overflow-hidden bg-night text-sand-100">
     <!-- Foto de fondo (cocina con flameado), tintada -->
     <img src="/assets/gallery/chef-flames.jpg" alt=""
-         class="absolute inset-0 w-full h-full object-cover opacity-35" loading="eager" />
-    <div class="absolute inset-0 bg-gradient-to-r from-night via-night/80 to-night/20"></div>
-    <div class="absolute inset-0 bg-gradient-to-t from-night via-night/30 to-night/60"></div>
+         class="absolute inset-0 w-full h-full object-cover opacity-55" loading="eager" />
+    <div class="absolute inset-0 bg-gradient-to-r from-night via-night/70 to-night/10"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-night via-night/20 to-transparent"></div>
 
     <!-- Wordmark gigante semi-transparente como marca de agua -->
     <span class="absolute top-1/2 -translate-y-1/2 right-[-4%] brand-script text-[18rem] md:text-[26rem] text-accent/10 leading-none select-none pointer-events-none whitespace-nowrap">
       Mi&nbsp;Pueblo
     </span>
 
-    <!-- Cinta de papel picado superior -->
-    <div class="papel-strip absolute top-0 inset-x-0 z-20"></div>
 
-    <div class="relative z-10 container-page pt-32 pb-28 md:pt-40 md:pb-40 min-h-[92vh] flex flex-col justify-center">
+
+    <div class="relative z-10 container-page pt-8 pb-24 md:pt-12 md:pb-32 min-h-[92vh] flex flex-col justify-center">
       <!-- Pills de confianza -->
       <div class="flex flex-wrap items-center gap-2 mb-8 animate-fadeIn">
         <span class="pill !bg-night-soft !text-sand-100 !border-night-light">
@@ -83,18 +82,6 @@ const headline = computed(() =>
          class="hidden md:block absolute right-[-6%] lg:right-[-2%] top-[-6%] h-[115%] w-auto opacity-55 pointer-events-none select-none drop-shadow-[0_10px_30px_rgba(0,0,0,0.6)]" />
     <!-- Gradiente extra para que el lado izquierdo (donde va el headline) quede limpio -->
     <div class="absolute inset-0 bg-gradient-to-r from-night via-night/70 to-transparent pointer-events-none"></div>
-
-    <!-- Ingredientes flotando (decoración) -->
-    <img src="/assets/decor/cilantro.svg" alt="" aria-hidden="true"
-         class="hidden md:block absolute top-[18%] right-[8%] w-32 lg:w-44 floaty pointer-events-none" style="--r: 18deg" />
-    <img src="/assets/decor/lime.svg" alt="" aria-hidden="true"
-         class="hidden md:block absolute top-[55%] right-[18%] w-20 lg:w-28 floaty-2 pointer-events-none" style="--r: -12deg" />
-    <img src="/assets/decor/onion.svg" alt="" aria-hidden="true"
-         class="hidden md:block absolute bottom-[18%] right-[6%] w-16 lg:w-20 floaty-3 pointer-events-none" style="--r: 25deg" />
-
-    <!-- Sticker mascot girando lento -->
-    <img src="/assets/decor/sticker-taco.svg" alt="" aria-hidden="true"
-         class="hidden lg:block absolute bottom-12 right-12 w-40 spin-slow pointer-events-none drop-shadow-[0_8px_20px_rgba(0,0,0,0.5)]" />
 
     <!-- Cinta papel picado inferior (invertida) -->
     <div class="papel-strip absolute bottom-0 inset-x-0 z-20 rotate-180"></div>

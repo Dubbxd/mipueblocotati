@@ -80,7 +80,6 @@ const columns = [
 
 const filtered = computed(() => filterStatus.value === 'all' ? rows.value : rows.value.filter(r => r.status === filterStatus.value))
 
-import { computed } from 'vue'
 onMounted(load)
 </script>
 
