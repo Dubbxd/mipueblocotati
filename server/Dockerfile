@@ -32,4 +32,4 @@ ENV LOGO_PATH=/app/email-logo.png
 EXPOSE 3001
 
 # Run migrations then start the API
-CMD ["sh", "-c", "bun run src/db/migrate.ts && bun run src/index.ts"]
+CMD ["sh", "-c", "bun run src/db/migrate.ts && bun run src/db/seed.ts && bun run src/index.ts"]
