@@ -245,7 +245,7 @@
     "fieldPhone": "Phone",
     "phonePlaceholder": "+1 (707) ...",
     "fieldEmail": "Email address",
-    "emailPlaceholder": "you@email.com",
+    "emailPlaceholder": "you{'@'}email.com",
     "fieldMessage": "Additional comments",
     "messagePlaceholder": "Any special details...",
     "submitBtn": "Send request",

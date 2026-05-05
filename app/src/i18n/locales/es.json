@@ -245,7 +245,7 @@
     "fieldPhone": "Teléfono",
     "phonePlaceholder": "+1 (707) ...",
     "fieldEmail": "Correo electrónico",
-    "emailPlaceholder": "tu@correo.com",
+    "emailPlaceholder": "tu{'@'}correo.com",
     "fieldMessage": "Comentarios adicionales",
     "messagePlaceholder": "Cuéntanos cualquier detalle especial...",
     "submitBtn": "Enviar solicitud",
