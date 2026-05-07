@@ -15,6 +15,7 @@ import {
   emailCampaigns,
 } from '../db/schema'
 import { authPlugin, requireAuth, requireRole } from '../lib/auth'
+import { verifyUnsubToken } from '../lib/hmac'
 import {
   sendReservationConfirmation,
   notifyAdminReservation,
@@ -204,7 +205,13 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
     '/newsletter/unsubscribe',
     async ({ query, set }) => {
       const email = query.email as string | undefined
-      if (!email) { set.status = 400; return { error: 'Missing email' } }
+      const token = query.token as string | undefined
+      if (!email || !token) { set.status = 400; return { error: 'Parámetros faltantes' } }
+      // Verify HMAC token to prevent mass-unsubscribe by guessing emails
+      if (!verifyUnsubToken(email, token)) {
+        set.status = 403
+        return { error: 'Token inválido' }
+      }
       await db.update(newsletterSubscribers)
         .set({ isActive: false, unsubscribedAt: new Date() })
         .where(eq(newsletterSubscribers.email, email))
@@ -212,6 +219,12 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
       set.headers['Content-Type'] = 'text/html; charset=utf-8'
       const pubUrl = process.env.PUBLIC_URL ?? 'https://mipueblocotati.com'
       return `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Cancelar suscripción</title><style>body{font-family:Arial,sans-serif;max-width:500px;margin:80px auto;text-align:center;color:#3A2010;background:#FFFCF0;}h1{color:#C8501C;}a{color:#C8501C;}</style></head><body><h1>🌮 Mi Pueblo Cotati</h1><p>Tu suscripción fue cancelada correctamente.</p><p><a href="${pubUrl}">Volver al sitio</a></p></body></html>`
+    },
+    {
+      query: t.Object({
+        email: t.String({ format: 'email' }),
+        token: t.String({ minLength: 32, maxLength: 32 }),
+      }),
     }
   )
   .get('/blog', async () => {

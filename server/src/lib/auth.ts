@@ -4,7 +4,15 @@ import { eq } from 'drizzle-orm'
 import { db } from '../db/client'
 import { users } from '../db/schema'
 
-const JWT_SECRET = process.env.JWT_SECRET ?? 'dev-secret-change-me'
+const _JWT_SECRET_RAW = process.env.JWT_SECRET
+const _IS_PROD = process.env.NODE_ENV === 'production' || process.env.RAILWAY_ENVIRONMENT != null
+if (!_JWT_SECRET_RAW || _JWT_SECRET_RAW.length < 32) {
+  if (_IS_PROD) {
+    throw new Error('[auth] JWT_SECRET must be set to a random string of at least 32 characters in production.')
+  }
+  console.warn('[auth] ⚠️  JWT_SECRET not set or too short. Using insecure default — DO NOT use in production.')
+}
+const JWT_SECRET = (_JWT_SECRET_RAW && _JWT_SECRET_RAW.length >= 32) ? _JWT_SECRET_RAW : 'dev-secret-change-me-32-chars-min'
 const JWT_EXP = process.env.JWT_EXPIRES_IN ?? '7d'
 
 /**

@@ -3,6 +3,7 @@ import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { api } from '@/lib/api'
 import { useI18n } from 'vue-i18n'
+import DOMPurify from 'dompurify'
 
 const { locale } = useI18n()
 const route = useRoute()
@@ -27,7 +28,8 @@ const loading = ref(true)
 const notFound = ref(false)
 
 const title = computed(() => post.value ? (locale.value === 'en' ? post.value.titleEn : post.value.titleEs) : '')
-const body = computed(() => post.value ? (locale.value === 'en' ? post.value.bodyEn : post.value.bodyEs) : '')
+const rawBody = computed(() => post.value ? (locale.value === 'en' ? post.value.bodyEn : post.value.bodyEs) : '')
+const body = computed(() => rawBody.value ? DOMPurify.sanitize(rawBody.value) : '')
 const excerpt = computed(() => post.value ? (locale.value === 'en' ? post.value.excerptEn : post.value.excerptEs) : '')
 
 async function load() {

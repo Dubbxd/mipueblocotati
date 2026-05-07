@@ -12,6 +12,9 @@ const PORT = Number(process.env.PORT ?? 3001)
 const CORS_ORIGIN = process.env.CORS_ORIGIN ?? 'http://localhost:5173'
 const UPLOAD_DIR = process.env.UPLOAD_DIR ?? './uploads'
 const STORAGE_DRIVER = (process.env.STORAGE_DRIVER ?? 'local').toLowerCase()
+const IS_PROD = process.env.NODE_ENV === 'production' || process.env.RAILWAY_ENVIRONMENT != null
+// Set SWAGGER_ENABLED=true in env to expose /docs in production (off by default in prod)
+const SWAGGER_ENABLED = IS_PROD ? process.env.SWAGGER_ENABLED === 'true' : true
 
 // Initialize storage (creates bucket on MinIO if needed)
 await getStorage()
@@ -34,8 +37,9 @@ if (STORAGE_DRIVER === 'local') {
   )
 }
 
-app
-  .use(
+// Only mount Swagger docs when enabled (always on in dev, off by default in prod)
+if (SWAGGER_ENABLED) {
+  app.use(
     swagger({
       path: '/docs',
       documentation: {
@@ -47,8 +51,11 @@ app
       },
     })
   )
+}
+
+app
   .get('/health', () => ({ ok: true, time: new Date().toISOString(), storage: STORAGE_DRIVER }))
   .group('/api', (a) => a.use(authRoutes).use(publicRoutes).use(adminRoutes).use(uploadRoutes))
   .listen(PORT)
 
-console.log(`🌶️  API ready → http://localhost:${PORT}  ·  docs: /docs  ·  storage: ${STORAGE_DRIVER}`)
+console.log(`🌶️  API ready → http://localhost:${PORT}  ·  docs: ${SWAGGER_ENABLED ? '/docs' : '(disabled)'}  ·  storage: ${STORAGE_DRIVER}`)

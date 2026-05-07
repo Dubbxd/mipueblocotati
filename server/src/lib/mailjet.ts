@@ -5,6 +5,7 @@
 import Mailjet from 'node-mailjet'
 import { readFileSync } from 'fs'
 import { join } from 'path'
+import { unsubToken } from './hmac'
 
 const MJ_API_KEY = process.env.MAILJET_API_KEY ?? ''
 const MJ_SECRET_KEY = process.env.MAILJET_SECRET_KEY ?? ''
@@ -425,7 +426,8 @@ export async function sendCampaign(opts: {
 }
 
 function addUnsubscribeFooter(html: string, email: string) {
-  const unsubLink = `${API_URL}/api/public/newsletter/unsubscribe?email=${encodeURIComponent(email)}`
+  const token = unsubToken(email)
+  const unsubLink = `${API_URL}/api/public/newsletter/unsubscribe?email=${encodeURIComponent(email)}&token=${token}`
   const footer = `
     <div style="text-align:center;padding:20px;font-size:11px;color:#8A5A38;background:#F9F0DF;border-top:1px solid #E8D5B0;">
       <p>Recibiste este correo porque estás suscrito al newsletter de Mi Pueblo Cotati.</p>

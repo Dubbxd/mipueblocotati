@@ -11,8 +11,8 @@ const ALLOWED_MIME = new Set([
   'image/png',
   'image/webp',
   'image/gif',
-  'image/svg+xml',
   'image/avif',
+  // SVG intentionally excluded: can contain embedded JS (XSS vector)
 ])
 const MAX_BYTES = 8 * 1024 * 1024 // 8 MB
 
@@ -55,7 +55,7 @@ export const uploadRoutes = new Elysia({ prefix: '/upload' })
   )
   .delete(
     '/:id',
-    async ({ params, set }) => {
+    async ({ params, user, set }) => {
       const id = Number(params.id)
       if (!Number.isFinite(id)) {
         set.status = 400
@@ -65,6 +65,11 @@ export const uploadRoutes = new Elysia({ prefix: '/upload' })
       if (!row) {
         set.status = 404
         return { error: 'no encontrado' }
+      }
+      // Only owner or admin/superadmin can delete
+      if (row.uploadedById !== user!.id && !['superadmin', 'admin'].includes(user!.role)) {
+        set.status = 403
+        return { error: 'Forbidden' }
       }
       const storage = await getStorage()
       await storage.remove(row.filename)
