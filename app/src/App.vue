@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router'
 import AppNavbar from '@/components/layout/AppNavbar.vue'
 import AppFooter from '@/components/layout/AppFooter.vue'
 import PromoBar from '@/components/marketing/PromoBar.vue'
+import CookieBanner from '@/components/system/CookieBanner.vue'
 import { useMenuStore } from '@/stores'
 const PwaUpdatePrompt = defineAsyncComponent(() => import('@/components/system/PwaUpdatePrompt.vue'))
 
@@ -35,6 +36,7 @@ onMounted(() => menu.init())
     </main>
     <AppFooter />
     <PwaUpdatePrompt />
+    <CookieBanner />
   </template>
 </template>
 

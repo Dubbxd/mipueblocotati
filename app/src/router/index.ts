@@ -40,6 +40,7 @@ const routes: RouteRecordRaw[] = [
   { path: '/blog/:slug', name: 'blog-post', component: () => import('@/pages/BlogPostPage.vue') },
   { path: '/legal/privacidad', name: 'privacy', component: () => import('@/pages/legal/PrivacyPage.vue') },
   { path: '/legal/terminos', name: 'terms', component: () => import('@/pages/legal/TermsPage.vue') },
+  { path: '/legal/cookies', name: 'cookies', component: () => import('@/pages/legal/CookiesPage.vue') },
   { path: '/:pathMatch(.*)*', name: 'not-found', component: () => import('@/pages/NotFoundPage.vue') }
 ]
 

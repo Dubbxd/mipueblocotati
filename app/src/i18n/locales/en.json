@@ -210,7 +210,26 @@
     "powered": "Family restaurant · Cotati, California",
     "deliveryWith": "Order delivery with",
     "privacy": "Privacy",
-    "terms": "Terms"
+    "terms": "Terms",
+    "cookies": "Cookies"
+  },
+  "cookies": {
+    "bannerLabel": "Cookie notice",
+    "title": "We use cookies 🍪",
+    "desc": "We use essential cookies for the site to work, and optional analytics cookies. You can accept all or only the necessary ones.",
+    "learnMore": "Learn more",
+    "customize": "Customize",
+    "essential": "Essential only",
+    "acceptAll": "Accept all",
+    "alwaysOn": "Always on",
+    "cat": {
+      "essential": "Essential",
+      "essentialDesc": "Required for the site to function (session, preferences). Cannot be disabled.",
+      "analytics": "Analytics",
+      "analyticsDesc": "Help us understand how the site is used. No personal data is collected.",
+      "marketing": "Marketing / Third-party",
+      "marketingDesc": "Used by delivery platforms and embedded maps. Managed by external providers."
+    }
   },
   "common": {
     "loading": "Loading…",

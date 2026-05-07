@@ -79,9 +79,10 @@ const main = restaurants[0]
     </div>
 
     <div class="border-t border-night-light text-center text-xs text-sand-300 py-4">
-      © {{ new Date().getFullYear() }} Mi Pueblo Cotati · {{ t('footer.rights') }} ·
-      <RouterLink to="/legal/privacidad" class="underline hover:text-accent">{{ t('footer.privacy') }}</RouterLink> ·
-      <RouterLink to="/legal/terminos" class="underline hover:text-accent">{{ t('footer.terms') }}</RouterLink>
+      &copy; {{ new Date().getFullYear() }} Mi Pueblo Cotati &middot; {{ t('footer.rights') }} &middot;
+      <RouterLink to="/legal/privacidad" class="underline hover:text-accent">{{ t('footer.privacy') }}</RouterLink> &middot;
+      <RouterLink to="/legal/terminos" class="underline hover:text-accent">{{ t('footer.terms') }}</RouterLink> &middot;
+      <RouterLink to="/legal/cookies" class="underline hover:text-accent">{{ t('footer.cookies') }}</RouterLink>
     </div>
   </footer>
 </template>
