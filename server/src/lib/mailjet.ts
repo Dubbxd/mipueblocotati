@@ -366,6 +366,39 @@ export async function notifyAdminContact(contact: {
 }
 
 // ─────────────────────────────────────────────────────────────────
+// SURVEY NOTIFICATION  →  admin
+// ─────────────────────────────────────────────────────────────────
+const STARS = ['', '★☆☆☆☆', '★★☆☆☆', '★★★☆☆', '★★★★☆', '★★★★★']
+
+/** Admin notification when a new survey is submitted */
+export async function notifyAdminSurvey(s: {
+  rating: number
+  comment?: string | null
+  name?: string | null
+  email?: string | null
+  locale?: string | null
+}) {
+  const html = baseTemplate('New Survey Response · Admin', `
+    <div class="badge">Admin &middot; Survey</div>
+    <h2>New survey response</h2>
+    <div class="detail-box">
+      <div class="detail-row"><span class="detail-label">Rating:</span><span class="detail-value">${STARS[s.rating] ?? s.rating} (${s.rating}/5)</span></div>
+      ${s.name  ? `<div class="detail-row"><span class="detail-label">Name:</span><span class="detail-value">${s.name}</span></div>` : ''}
+      ${s.email ? `<div class="detail-row"><span class="detail-label">Email:</span><span class="detail-value">${s.email}</span></div>` : ''}
+      ${s.locale ? `<div class="detail-row"><span class="detail-label">Locale:</span><span class="detail-value">${s.locale}</span></div>` : ''}
+      ${s.comment ? `<div class="detail-row"><span class="detail-label">Comment:</span><span class="detail-value">${s.comment}</span></div>` : ''}
+    </div>
+    ${s.email ? `<div class="cta-wrap"><a href="mailto:${s.email}" class="btn">Reply to Guest</a></div>` : ''}
+  `)
+  return sendEmail({
+    to: [{ email: ADMIN_EMAIL, name: 'Admin Mi Pueblo' }],
+    subject: `New survey: ${STARS[s.rating] ?? s.rating + '/5'}${s.name ? ` — ${s.name}` : ''}`,
+    html,
+    replyTo: s.email ?? undefined,
+  })
+}
+
+// ─────────────────────────────────────────────────────────────────
 // NEWSLETTER BULK SEND
 // ─────────────────────────────────────────────────────────────────
 export interface Subscriber {

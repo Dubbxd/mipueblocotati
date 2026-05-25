@@ -25,6 +25,7 @@ import {
   sendContactAutoReply,
   notifyAdminContact,
   sendCampaign,
+  notifyAdminSurvey,
 } from '../lib/mailjet'
 
 /* ─── PUBLIC ROUTES (sin auth, leen solo activos) ─────────────── */
@@ -236,6 +237,8 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
         return { ok: false, error: 'Rating must be between 1 and 5' }
       }
       const [r] = await db.insert(surveys).values(body).returning()
+      // fire-and-forget — don't block the response
+      notifyAdminSurvey(body).catch(e => console.error('[survey notify]', e))
       return { ok: true, id: r!.id }
     },
     {
