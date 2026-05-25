@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { useRoute, RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { menuItems } from '@/data/menu'
+import { useMenuStore } from '@/stores'
 import { computed } from 'vue'
 const route = useRoute()
 const { locale } = useI18n()
-const item = computed(() => menuItems.find(m => m.slug === route.params.slug))
+const menu = useMenuStore()
+const item = computed(() => menu.all.find(m => m.slug === route.params.slug))
 </script>
 
 <template>

@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { useRoute, RouterLink } from 'vue-router'
 import { computed } from 'vue'
-import { restaurants } from '@/data/restaurants'
+import { useSiteStore } from '@/stores'
 import MapLeaflet from '@/components/sections/MapLeaflet.vue'
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
 const route = useRoute()
-const r = computed(() => restaurants.find(x => x.id === route.params.slug))
+const site = useSiteStore()
+const r = computed(() => site.restaurants.find(x => x.id === route.params.slug))
 </script>
 
 <template>

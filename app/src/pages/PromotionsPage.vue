@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { promotions } from '@/data/marketing'
+import { useSiteStore } from '@/stores'
 import Icon from '@/components/ui/Icon.vue'
 
 const { t, locale } = useI18n()
+const site = useSiteStore()
 
 // Día actual (0=dom, 1=lun … 6=sab)
 const today = new Date().getDay()
@@ -21,7 +22,7 @@ function dayFull(d: number) {
   return locale.value === 'es' ? DAYS_FULL_ES[d] : DAYS_FULL_EN[d]
 }
 
-const isActiveToday = (p: typeof promotions[0]) =>
+const isActiveToday = (p: typeof site.promotions[0]) =>
   p.active && (p.recurrence === 'one_time' || p.dayOfWeek === today)
 
 // Paleta por promo
@@ -60,8 +61,8 @@ function colors(id: string) {
 
 const txt = (o: { es: string; en: string }) => locale.value === 'es' ? o.es : o.en
 
-const activeToday = computed(() => promotions.filter(p => isActiveToday(p)))
-const others = computed(() => promotions.filter(p => !isActiveToday(p) && p.active))
+const activeToday = computed(() => site.promotions.filter(p => isActiveToday(p)))
+const others = computed(() => site.promotions.filter(p => !isActiveToday(p) && p.active))
 </script>
 
 <template>

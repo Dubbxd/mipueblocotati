@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { restaurants } from '@/data/restaurants'
+import { useSiteStore } from '@/stores'
 import MapLeaflet from '@/components/sections/MapLeaflet.vue'
 import Icon from '@/components/ui/Icon.vue'
 import { api } from '@/lib/api'
 
 const { t } = useI18n()
-const main = restaurants[0]
+const site = useSiteStore()
+const main = computed(() => site.mainRestaurant)
 
 const form = ref({ name: '', email: '', phone: '', message: '' })
 const status = ref<'idle' | 'loading' | 'success' | 'error'>('idle')
@@ -51,7 +52,7 @@ async function submit() {
     </section>
 
     <!-- Chips de acción rápida -->
-    <div class="bg-sand-50 border-b border-sand-200">
+    <div v-if="main" class="bg-sand-50 border-b border-sand-200">
       <div class="container-page py-5 flex flex-wrap justify-center gap-3">
         <a :href="`tel:${main.phone}`"
            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-brand text-white text-sm font-bold shadow-soft hover:bg-brand-dark transition-colors">
@@ -72,7 +73,7 @@ async function submit() {
     </div>
 
     <!-- Contenido principal -->
-    <div class="container-page py-12">
+    <div v-if="main" class="container-page py-12">
       <div class="grid lg:grid-cols-2 gap-10 items-start">
 
         <!-- Columna izquierda: info + mapa -->

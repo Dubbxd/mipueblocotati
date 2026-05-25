@@ -1,20 +1,15 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { promotions } from '@/data/marketing'
-import { useMenuStore } from '@/stores'
-import { restaurants } from '@/data/restaurants'
+import { useMenuStore, useSiteStore } from '@/stores'
 import Icon from '@/components/ui/Icon.vue'
 
 const { t, locale } = useI18n()
 const menu = useMenuStore()
-const main = restaurants[0]
+const site = useSiteStore()
+const main = computed(() => site.mainRestaurant)
 
-const todayDow = new Date().getDay()
-const todayPromo = computed(() =>
-  promotions.find(p => p.recurrence === 'weekly' && p.dayOfWeek === todayDow && p.active)
-  ?? promotions.find(p => p.active)!
-)
+const todayPromo = computed(() => site.promotions.find(p => p.active) ?? null)
 
 // Plato estrella: el primer popular con foto
 const star = computed(() => menu.popular.find(m => m.photo) ?? menu.popular[0])
@@ -38,12 +33,15 @@ const tt = (txt: { es: string; en: string }) => locale.value === 'es' ? txt.es :
               <Icon name="Gift" :size="14" />
               <span>{{ t('home.today.promoLabel') }}</span>
             </span>
-            <h3 class="display-serif text-2xl md:text-3xl mb-3 leading-tight text-white">{{ tt(todayPromo.title) }}</h3>
-            <p class="text-white/90 text-sm mb-6 flex-1">{{ tt(todayPromo.description) }}</p>
-            <RouterLink v-if="todayPromo.cta" :to="todayPromo.cta.href" class="btn-light !py-2.5 self-start inline-flex items-center gap-2">
-              <span>{{ tt(todayPromo.cta.label) }}</span>
-              <Icon name="ArrowRight" :size="16" />
-            </RouterLink>
+            <template v-if="todayPromo">
+              <h3 class="display-serif text-2xl md:text-3xl mb-3 leading-tight text-white">{{ tt(todayPromo.title) }}</h3>
+              <p class="text-white/90 text-sm mb-6 flex-1">{{ tt(todayPromo.description) }}</p>
+              <RouterLink v-if="todayPromo.cta" :to="todayPromo.cta.href" class="btn-light !py-2.5 self-start inline-flex items-center gap-2">
+                <span>{{ tt(todayPromo.cta.label) }}</span>
+                <Icon name="ArrowRight" :size="16" />
+              </RouterLink>
+            </template>
+            <p v-else class="text-white/70 text-sm">{{ t('home.today.promoLabel') }}…</p>
           </div>
         </article>
 

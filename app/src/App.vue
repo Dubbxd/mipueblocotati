@@ -5,14 +5,15 @@ import AppNavbar from '@/components/layout/AppNavbar.vue'
 import AppFooter from '@/components/layout/AppFooter.vue'
 import PromoBar from '@/components/marketing/PromoBar.vue'
 import CookieBanner from '@/components/system/CookieBanner.vue'
-import { useMenuStore } from '@/stores'
+import { useMenuStore, useSiteStore } from '@/stores'
 const PwaUpdatePrompt = defineAsyncComponent(() => import('@/components/system/PwaUpdatePrompt.vue'))
 
 const route = useRoute()
 const isAdmin = computed(() => (route.meta?.layout === 'admin') || (route.meta?.layout === 'blank') || route.path.startsWith('/admin'))
 
 const menu = useMenuStore()
-onMounted(() => menu.init())
+const site = useSiteStore()
+onMounted(() => { menu.init(); site.init() })
 </script>
 
 <template>

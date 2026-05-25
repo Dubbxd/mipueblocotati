@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { restaurants } from '@/data/restaurants'
+import { useSiteStore } from '@/stores'
 import Icon from '@/components/ui/Icon.vue'
 
 const { t, locale } = useI18n()
-const main = restaurants[0]
+const site = useSiteStore()
+const main = computed(() => site.mainRestaurant)
 
 const isOpen = computed(() => {
   const h = new Date().getHours()
@@ -47,7 +48,7 @@ const headline = computed(() =>
         </span>
         <span class="pill !bg-night-soft !text-sand-100 !border-night-light inline-flex items-center gap-1.5">
           <Icon name="Location" :size="14" />
-          <span>{{ main.city }}, CA</span>
+          <span>{{ main?.city ?? 'Cotati' }}, CA</span>
         </span>
       </div>
 
@@ -63,7 +64,7 @@ const headline = computed(() =>
       </p>
 
       <div class="flex flex-wrap items-center gap-3 animate-fadeIn">
-        <a :href="main.links.pickup" target="_blank" rel="noopener" class="btn-accent !px-8 !py-4 !text-base shadow-elev inline-flex items-center gap-2">
+        <a :href="main?.links.pickup ?? '#'" target="_blank" rel="noopener" class="btn-accent !px-8 !py-4 !text-base shadow-elev inline-flex items-center gap-2">
           <Icon name="Truck" :size="22" />
           <span>{{ t('cta.orderOnline') }}</span>
         </a>
