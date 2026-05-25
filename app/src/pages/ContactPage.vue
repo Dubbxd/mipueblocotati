@@ -6,26 +6,27 @@ import MapLeaflet from '@/components/sections/MapLeaflet.vue'
 import Icon from '@/components/ui/Icon.vue'
 import ConsentCheckboxes from '@/components/ui/ConsentCheckboxes.vue'
 import { api } from '@/lib/api'
+import { useToast } from '@/composables/useToast'
 
 const { t } = useI18n()
 const site = useSiteStore()
+const toast = useToast()
 const main = computed(() => site.mainRestaurant)
 
 const form = ref({ name: '', email: '', phone: '', message: '' })
 const consentTerms = ref(false)
 const consentData = ref(false)
-const status = ref<'idle' | 'loading' | 'success' | 'error'>('idle')
+const status = ref<'idle' | 'loading' | 'success'>('idle')
 
 async function submit() {
   if (status.value === 'loading') return
   status.value = 'loading'
   try {
-    // Enviamos como catering request con mensaje libre
     await api('/api/public/contact', {
       method: 'POST', auth: false,
       body: {
         name: form.value.name,
-        phone: form.value.phone || 'N/A',
+        phone: form.value.phone || undefined,
         email: form.value.email,
         message: form.value.message,
         consentTerms: consentTerms.value,
@@ -33,8 +34,9 @@ async function submit() {
       },
     })
     status.value = 'success'
-  } catch {
-    status.value = 'error'
+  } catch (e: any) {
+    status.value = 'idle'
+    toast.error(t('contact.errorMsg'), e?.message && !e.message.startsWith('HTTP') ? e.message : undefined)
   }
 }
 </script>

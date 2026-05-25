@@ -4,8 +4,10 @@ import { useI18n } from 'vue-i18n'
 import Icon from '@/components/ui/Icon.vue'
 import ConsentCheckboxes from '@/components/ui/ConsentCheckboxes.vue'
 import { api } from '@/lib/api'
+import { useToast } from '@/composables/useToast'
 
 const { t, locale } = useI18n()
+const toast = useToast()
 
 // ── Form state ────────────────────────────────────────────────────
 const form = reactive({
@@ -100,7 +102,11 @@ async function submit() {
     })
     status.value = 'success'
   } catch (e: any) {
-    status.value = 'error'
+    status.value = 'idle'
+    toast.error(
+      locale.value === 'es' ? 'No pudimos enviar tu solicitud' : 'Could not send your request',
+      e?.message && !e.message.startsWith('HTTP') ? e.message : (t('catering.errorMsg') || undefined)
+    )
     errorMsg.value = e?.message ?? 'Error al enviar'
   }
 }

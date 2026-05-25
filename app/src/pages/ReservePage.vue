@@ -6,13 +6,14 @@ import { useSiteStore } from '@/stores'
 import { api } from '@/lib/api'
 import type { ReservationDraft } from '@/types/domain'
 import ConsentCheckboxes from '@/components/ui/ConsentCheckboxes.vue'
+import { useToast } from '@/composables/useToast'
 
 const { t } = useI18n()
 const route = useRoute()
 const site = useSiteStore()
+const toast = useToast()
 const submitted = ref(false)
 const submitting = ref(false)
-const submitError = ref<string | null>(null)
 const consentTerms = ref(false)
 const consentData = ref(false)
 const form = ref<ReservationDraft>({
@@ -24,9 +25,7 @@ const todayISO = computed(() => new Date().toISOString().slice(0, 10))
 
 const submit = async () => {
   submitting.value = true
-  submitError.value = null
   try {
-    const loc = site.restaurants.find(r => r.id === form.value.restaurantId)
     await api('/api/public/reservations', {
       method: 'POST',
       auth: false,
@@ -43,8 +42,12 @@ const submit = async () => {
       },
     })
     submitted.value = true
+    toast.success(t('reserve.successTitle'), t('reserve.successBody'))
   } catch (e: any) {
-    submitError.value = e?.message ?? 'Error al enviar. Intenta de nuevo.'
+    toast.error(
+      'No pudimos enviar tu reserva',
+      e?.message && !e.message.startsWith('HTTP') ? e.message : 'Revisa los datos e inténtalo de nuevo.'
+    )
   } finally {
     submitting.value = false
   }
@@ -102,7 +105,6 @@ const submit = async () => {
           v-model:data="consentData"
         />
       </div>
-      <p v-if="submitError" class="text-sm text-red-600 md:col-span-2">{{ submitError }}</p>
       <button :disabled="submitting || !consentTerms || !consentData" class="btn-primary md:col-span-2 disabled:opacity-60 disabled:cursor-not-allowed">{{ submitting ? '…' : t('reserve.form.submit') }}</button>
     </form>
   </main>

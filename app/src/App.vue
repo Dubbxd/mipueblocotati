@@ -5,6 +5,7 @@ import AppNavbar from '@/components/layout/AppNavbar.vue'
 import AppFooter from '@/components/layout/AppFooter.vue'
 import PromoBar from '@/components/marketing/PromoBar.vue'
 import CookieBanner from '@/components/system/CookieBanner.vue'
+import ToastContainer from '@/components/ui/ToastContainer.vue'
 import { useMenuStore, useSiteStore } from '@/stores'
 const PwaUpdatePrompt = defineAsyncComponent(() => import('@/components/system/PwaUpdatePrompt.vue'))
 
@@ -39,6 +40,9 @@ onMounted(() => { menu.init(); site.init() })
     <PwaUpdatePrompt />
     <CookieBanner />
   </template>
+
+  <!-- Toast notifications — global, visible en todas las vistas -->
+  <ToastContainer />
 </template>
 
 <style scoped>

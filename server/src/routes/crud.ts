@@ -125,8 +125,7 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
         locationId: t.Optional(t.Number()),
         name: t.String({ minLength: 2 }),
         phone: t.String({ minLength: 7 }),
-        email: t.Optional(t.String({ format: 'email' })),
-        partySize: t.Number({ minimum: 1, maximum: 50 }),
+        email: t.Optional(t.String()), t.Number({ minimum: 1, maximum: 50 }),
         date: t.String(),
         time: t.String(),
         notes: t.Optional(t.String()),
@@ -183,7 +182,7 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
       body: t.Object({
         name: t.String({ minLength: 2 }),
         phone: t.String({ minLength: 7 }),
-        email: t.String({ format: 'email' }),
+        email: t.String(),
         eventType: t.Optional(t.String()),
         eventDate: t.Optional(t.String()),
         guests: t.Optional(t.Number()),
@@ -244,7 +243,7 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
     {
       body: t.Object({
         name: t.String({ minLength: 2 }),
-        email: t.String({ format: 'email' }),
+        email: t.String(),
         phone: t.Optional(t.String()),
         subject: t.Optional(t.String()),
         message: t.String({ minLength: 10 }),
@@ -287,7 +286,7 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
     },
     {
       body: t.Object({
-        email: t.String({ format: 'email' }),
+        email: t.String(),
         name: t.Optional(t.String()),
         locale: t.Optional(t.String()),
         source: t.Optional(t.String()),
@@ -329,7 +328,7 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
     },
     {
       query: t.Object({
-        email: t.String({ format: 'email' }),
+        email: t.String(),
         token: t.String({ minLength: 32, maxLength: 32 }),
       }),
     }
@@ -367,7 +366,7 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
         rating: t.Number({ minimum: 1, maximum: 5 }),
         comment: t.Optional(t.String({ maxLength: 2000 })),
         name: t.Optional(t.String({ maxLength: 120 })),
-        email: t.Optional(t.String({ format: 'email' })),
+        email: t.Optional(t.String()),
         locale: t.Optional(t.String({ maxLength: 10 })),
         consentTerms: t.Optional(t.Boolean()),
         consentData: t.Optional(t.Boolean()),
@@ -567,7 +566,7 @@ const cateringBody = t.Object({
 })
 
 const newsletterBody = t.Object({
-  email: t.String({ format: 'email' }),
+  email: t.String(),
   name: t.Optional(t.String()),
   locale: t.Optional(t.String()),
   source: t.Optional(t.String()),

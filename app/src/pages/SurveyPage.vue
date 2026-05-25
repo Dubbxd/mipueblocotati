@@ -4,8 +4,10 @@ import { useI18n } from 'vue-i18n'
 import { api } from '@/lib/api'
 import Icon from '@/components/ui/Icon.vue'
 import ConsentCheckboxes from '@/components/ui/ConsentCheckboxes.vue'
+import { useToast } from '@/composables/useToast'
 
 const { locale } = useI18n()
+const toast = useToast()
 
 const submitted = ref(false)
 const loading = ref(false)
@@ -36,10 +38,19 @@ async function submit() {
       },
     })
     submitted.value = true
+    toast.success(
+      locale.value === 'es' ? '¡Gracias por tu opinión!' : 'Thank you for your feedback!',
+      locale.value === 'es' ? 'Recibimos tu encuesta correctamente.' : 'We received your survey.'
+    )
   } catch {
-    error.value = locale.value === 'es'
+    const msg = locale.value === 'es'
       ? 'Ocurrió un error. Por favor intenta de nuevo.'
       : 'Something went wrong. Please try again.'
+    error.value = msg
+    toast.error(
+      locale.value === 'es' ? 'No pudimos enviar la encuesta' : 'Could not submit survey',
+      msg
+    )
   } finally {
     loading.value = false
   }
