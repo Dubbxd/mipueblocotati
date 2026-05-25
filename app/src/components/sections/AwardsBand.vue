@@ -8,9 +8,9 @@ const { t, locale } = useI18n()
 const meta: Record<string, { year: string; source: string }> = {
   a1: { year: '2023', source: 'Press Democrat' },
   a2: { year: '2022', source: 'Press Democrat' },
-  a3: { year: '2023', source: 'Press Democrat' },
+  a3: { year: '2023', source: 'Restaurant Guru' },
   a4: { year: '2023', source: 'Restaurant Guru' },
-  a5: { year: '1997', source: 'Familia García' }
+  a5: { year: '2023', source: 'RestaurantJi' }
 }
 
 const trust = [
@@ -65,9 +65,9 @@ const trust = [
             {{ meta[a.id]?.year }}
           </span>
 
-          <div class="h-44 md:h-48 w-full grid place-items-center mb-4 px-2">
+          <div class="h-44 md:h-48 w-full grid place-items-center mb-4 px-2 rounded-xl bg-sand-50/60">
             <img :src="a.badge" :alt="locale === 'es' ? a.title.es : a.title.en"
-                 class="max-h-full max-w-full w-auto object-contain group-hover:scale-105 transition-transform duration-500"
+                 class="max-h-full max-w-full w-auto object-contain group-hover:scale-105 transition-transform duration-500 drop-shadow-[0_2px_10px_rgba(0,0,0,0.12)]"
                  loading="lazy" />
           </div>
 

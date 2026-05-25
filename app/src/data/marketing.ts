@@ -3,7 +3,7 @@ import type { Award, Promotion } from '@/types/domain'
 export const awards: Award[] = [
   { id: 'a1', title: { es: 'Mejor Burrito en Sonoma',           en: 'Best Burrito in Sonoma' },           badge: '/assets/awards/award-best-burrito-restaurant.png' },
   { id: 'a2', title: { es: 'Mejor Restaurante Mexicano Sonoma', en: 'Best Mexican Restaurant Sonoma' },   badge: '/assets/awards/award-best-mexican-sonoma.png' },
-  { id: 'a3', title: { es: 'Mejores Steaks en Sonoma',          en: 'Best Steaks in Sonoma' },            badge: '/assets/awards/award-best-steaks-sonoma.png' },
+  { id: 'a3', title: { es: 'Mejores Steaks en Cotati',          en: 'Best Steaks in Cotati' },            badge: '/assets/awards/award-best-steaks-sonoma.png' },
   { id: 'a4', title: { es: 'Restaurant Guru Recommended',       en: 'Restaurant Guru Recommended' },      badge: '/assets/awards/award-restaurant-guru-certificate.png' },
   { id: 'a5', title: { es: 'Mi Pueblo · Familia desde 1997',    en: 'Mi Pueblo · Family since 1997' },    badge: '/assets/awards/award-mi-pueblo-badge.png' }
 ]
