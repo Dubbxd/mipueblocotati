@@ -13,6 +13,7 @@ import {
   newsletterSubscribers,
   blogPosts,
   emailCampaigns,
+  surveys,
 } from '../db/schema'
 import { authPlugin, requireAuth, requireRole } from '../lib/auth'
 import { verifyUnsubToken } from '../lib/hmac'
@@ -227,8 +228,27 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
       }),
     }
   )
+  .post(
+    '/surveys',
+    async ({ body, set }) => {
+      if (body.rating < 1 || body.rating > 5) {
+        set.status = 400
+        return { ok: false, error: 'Rating must be between 1 and 5' }
+      }
+      const [r] = await db.insert(surveys).values(body).returning()
+      return { ok: true, id: r!.id }
+    },
+    {
+      body: t.Object({
+        rating: t.Number({ minimum: 1, maximum: 5 }),
+        comment: t.Optional(t.String({ maxLength: 2000 })),
+        name: t.Optional(t.String({ maxLength: 120 })),
+        email: t.Optional(t.String({ format: 'email' })),
+        locale: t.Optional(t.String({ maxLength: 10 })),
+      }),
+    }
+  )
   .get('/blog', async () => {
-    return db.select().from(blogPosts)
       .where(eq(blogPosts.status, 'published'))
       .orderBy(desc(blogPosts.publishedAt))
   })
@@ -473,6 +493,11 @@ export const adminRoutes = new Elysia({ prefix: '/admin' })
   .use(adminCrud({ prefix: '/newsletter', table: newsletterSubscribers, schema: newsletterBody, orderBy: desc(newsletterSubscribers.createdAt) }))
   .use(adminCrud({ prefix: '/blog', table: blogPosts, schema: blogPostBody, orderBy: desc(blogPosts.createdAt) }))
   .use(adminCrud({ prefix: '/campaigns', table: emailCampaigns, schema: campaignBody, orderBy: desc(emailCampaigns.createdAt) }))
+  // Surveys — solo lectura para admin (el POST es público)
+  .use(authPlugin)
+  .get('/surveys', async () => db.select().from(surveys).orderBy(desc(surveys.createdAt)), {
+    beforeHandle: requireAuth,
+  })
   // ── AI generation endpoint ──────────────────────────────────────
   .use(authPlugin)
   .post(

@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import { applySeo, type SeoMeta } from '@/lib/seo'
 
 const routes: RouteRecordRaw[] = [
   // ── ADMIN ─────────────────────────────────────────────────────
@@ -24,23 +25,93 @@ const routes: RouteRecordRaw[] = [
     ]
   },
   // ── PÚBLICO ───────────────────────────────────────────────────
-  { path: '/', name: 'home', component: () => import('@/pages/HomePage.vue'), meta: { title: 'Mi Pueblo Cotati · Auténtica comida mexicana' } },
-  { path: '/menu', name: 'menu', component: () => import('@/pages/MenuPage.vue'), meta: { title: 'Menú · Mi Pueblo Cotati' } },
+  {
+    path: '/', name: 'home',
+    component: () => import('@/pages/HomePage.vue'),
+    meta: {
+      title: 'Mi Pueblo Cotati · Auténtica comida mexicana desde 1997',
+      seo: { description: 'Auténtica comida mexicana en Sonoma County desde 1997. Más de 170 platillos, 6 sucursales, catering y food truck.', image: '/og-image.jpg' }
+    }
+  },
+  {
+    path: '/menu', name: 'menu',
+    component: () => import('@/pages/MenuPage.vue'),
+    meta: {
+      title: 'Menú · Mi Pueblo Cotati',
+      seo: { description: 'Explora nuestro menú de más de 170 platillos auténticos mexicanos: tacos, burritos, fajitas, mariscos y mucho más.', image: '/assets/hero/hero-menu.jpg' }
+    }
+  },
   { path: '/menu/:slug', name: 'menu-item', component: () => import('@/pages/MenuItemPage.vue') },
-  { path: '/sucursales', name: 'locations', component: () => import('@/pages/LocationsPage.vue'), meta: { title: 'Sucursales · Mi Pueblo' } },
+  {
+    path: '/sucursales', name: 'locations',
+    component: () => import('@/pages/LocationsPage.vue'),
+    meta: {
+      title: 'Sucursales · Mi Pueblo Cotati',
+      seo: { description: 'Encuentra nuestra sucursal más cercana en Cotati, Petaluma, Rohnert Park y más ciudades del condado de Sonoma.' }
+    }
+  },
   { path: '/sucursales/:slug', name: 'location-detail', component: () => import('@/pages/LocationDetailPage.vue') },
-  { path: '/reservar', name: 'reserve', component: () => import('@/pages/ReservePage.vue'), meta: { title: 'Reservar mesa · Mi Pueblo Cotati' } },
-  { path: '/promociones', name: 'promotions', component: () => import('@/pages/PromotionsPage.vue'), meta: { title: 'Promociones · Mi Pueblo' } },
-  { path: '/catering', name: 'catering', component: () => import('@/pages/CateringPage.vue') },
-  { path: '/food-truck', name: 'food-truck', component: () => import('@/pages/FoodTruckPage.vue') },
-  { path: '/resenas', name: 'reviews', component: () => import('@/pages/ReviewsPage.vue') },
-  { path: '/encuesta', name: 'survey', component: () => import('@/pages/SurveyPage.vue') },
-  { path: '/contacto', name: 'contact', component: () => import('@/pages/ContactPage.vue') },
-  { path: '/blog', name: 'blog', component: () => import('@/pages/BlogPage.vue'), meta: { title: 'Blog · Mi Pueblo Cotati' } },
+  {
+    path: '/reservar', name: 'reserve',
+    component: () => import('@/pages/ReservePage.vue'),
+    meta: {
+      title: 'Reservar mesa · Mi Pueblo Cotati',
+      seo: { description: 'Reserva tu mesa en Mi Pueblo Cotati en menos de 30 segundos. Sin espera, sin complicaciones.' }
+    }
+  },
+  {
+    path: '/promociones', name: 'promotions',
+    component: () => import('@/pages/PromotionsPage.vue'),
+    meta: {
+      title: 'Promociones · Mi Pueblo Cotati',
+      seo: { description: 'Aprovecha nuestras promociones: Taco Tuesday, Burrito Thursday, descuentos para suscriptores y más.' }
+    }
+  },
+  {
+    path: '/catering', name: 'catering',
+    component: () => import('@/pages/CateringPage.vue'),
+    meta: {
+      title: 'Catering · Mi Pueblo Cotati',
+      seo: { description: 'Servicio de catering para bodas, eventos corporativos y fiestas. Cocina auténtica mexicana para grupos grandes.' }
+    }
+  },
+  {
+    path: '/food-truck', name: 'food-truck',
+    component: () => import('@/pages/FoodTruckPage.vue'),
+    meta: {
+      title: 'Food Truck · Mi Pueblo Cotati',
+      seo: { description: 'Nuestro food truck lleva la auténtica comida mexicana directo a tu evento. Disponible en Sonoma County.' }
+    }
+  },
+  {
+    path: '/resenas', name: 'reviews',
+    component: () => import('@/pages/ReviewsPage.vue'),
+    meta: {
+      title: 'Reseñas · Mi Pueblo Cotati',
+      seo: { description: 'Lo que dicen nuestros clientes. Reseñas reales de personas que han disfrutado nuestra comida.' }
+    }
+  },
+  { path: '/encuesta', name: 'survey', component: () => import('@/pages/SurveyPage.vue'), meta: { title: 'Encuesta · Mi Pueblo Cotati' } },
+  {
+    path: '/contacto', name: 'contact',
+    component: () => import('@/pages/ContactPage.vue'),
+    meta: {
+      title: 'Contacto · Mi Pueblo Cotati',
+      seo: { description: 'Contáctanos por teléfono, correo o redes sociales. También puedes visitarnos en cualquiera de nuestras sucursales.' }
+    }
+  },
+  {
+    path: '/blog', name: 'blog',
+    component: () => import('@/pages/BlogPage.vue'),
+    meta: {
+      title: 'Blog · Mi Pueblo Cotati',
+      seo: { description: 'Recetas, historias y novedades de Mi Pueblo Cotati. Cultura mexicana y gastronomía desde Sonoma County.' }
+    }
+  },
   { path: '/blog/:slug', name: 'blog-post', component: () => import('@/pages/BlogPostPage.vue') },
-  { path: '/legal/privacidad', name: 'privacy', component: () => import('@/pages/legal/PrivacyPage.vue') },
-  { path: '/legal/terminos', name: 'terms', component: () => import('@/pages/legal/TermsPage.vue') },
-  { path: '/legal/cookies', name: 'cookies', component: () => import('@/pages/legal/CookiesPage.vue') },
+  { path: '/legal/privacidad', name: 'privacy', component: () => import('@/pages/legal/PrivacyPage.vue'), meta: { title: 'Privacidad · Mi Pueblo Cotati' } },
+  { path: '/legal/terminos', name: 'terms', component: () => import('@/pages/legal/TermsPage.vue'), meta: { title: 'Términos · Mi Pueblo Cotati' } },
+  { path: '/legal/cookies', name: 'cookies', component: () => import('@/pages/legal/CookiesPage.vue'), meta: { title: 'Cookies · Mi Pueblo Cotati' } },
   { path: '/:pathMatch(.*)*', name: 'not-found', component: () => import('@/pages/NotFoundPage.vue') }
 ]
 
@@ -67,8 +138,10 @@ router.beforeEach(async (to) => {
 })
 
 router.afterEach((to) => {
-  const t = (to.meta?.title as string) || 'Mi Pueblo Cotati'
-  document.title = t
+  const title = (to.meta?.title as string) || 'Mi Pueblo Cotati'
+  const routeSeo = (to.meta?.seo as SeoMeta | undefined) ?? {}
+  const url = `https://mipueblocotati.easypage.mx${to.path}`
+  applySeo({ title, url, ...routeSeo })
 })
 
 export default router

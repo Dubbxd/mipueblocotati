@@ -338,6 +338,19 @@ export const emailCampaigns = pgTable('email_campaigns', {
 })
 
 // ─────────────────────────────────────────────────────────────────
+// ENCUESTAS DE SATISFACCIÓN
+// ─────────────────────────────────────────────────────────────────
+export const surveys = pgTable('surveys', {
+  id: serial('id').primaryKey(),
+  rating: integer('rating').notNull(), // 1-5
+  comment: text('comment'),
+  name: varchar('name', { length: 120 }),
+  email: varchar('email', { length: 200 }),
+  locale: varchar('locale', { length: 10 }).default('es'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+})
+
+// ─────────────────────────────────────────────────────────────────
 // RELATIONS
 // ─────────────────────────────────────────────────────────────────
 export const menuCategoriesRelations = relations(menuCategories, ({ many }) => ({
@@ -375,3 +388,4 @@ export type NewsletterSubscriber = typeof newsletterSubscribers.$inferSelect
 export type Media = typeof media.$inferSelect
 export type BlogPost = typeof blogPosts.$inferSelect
 export type EmailCampaign = typeof emailCampaigns.$inferSelect
+export type Survey = typeof surveys.$inferSelect
