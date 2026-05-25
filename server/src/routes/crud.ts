@@ -249,6 +249,7 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
     }
   )
   .get('/blog', async () => {
+    return db.select().from(blogPosts)
       .where(eq(blogPosts.status, 'published'))
       .orderBy(desc(blogPosts.publishedAt))
   })
