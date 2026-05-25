@@ -231,7 +231,7 @@ onMounted(load)
     </div>
 
     <!-- Detail panel modal -->
-    <AdminModal v-model="detailOpen" title="Perfil de contacto" size="lg">
+    <AdminModal :open="detailOpen" @close="detailOpen = false" title="Perfil de contacto" size="lg">
       <div v-if="detailLoading" class="py-12 text-center text-white/50">Cargando…</div>
       <div v-else-if="detail" class="space-y-6">
 
@@ -315,7 +315,7 @@ onMounted(load)
     </AdminModal>
 
     <!-- Edit modal -->
-    <AdminModal v-model="editOpen" title="Editar contacto">
+    <AdminModal :open="editOpen" @close="editOpen = false" title="Editar contacto">
       <div class="space-y-4">
         <div>
           <label class="text-xs text-white/50 uppercase tracking-wide block mb-1.5">Nombre</label>

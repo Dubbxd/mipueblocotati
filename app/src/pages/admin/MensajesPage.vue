@@ -152,7 +152,7 @@ onMounted(load)
     </div>
 
     <!-- Detail modal -->
-    <AdminModal v-model="open" title="Mensaje de contacto" size="lg">
+    <AdminModal :open="open" @close="open = false" title="Mensaje de contacto" size="lg">
       <div v-if="current" class="space-y-5">
 
         <!-- Header info -->
