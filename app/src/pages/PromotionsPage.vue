@@ -212,13 +212,13 @@ const others = computed(() => site.promotions.filter(p => !isActiveToday(p) && p
           >
             <span class="text-[10px] font-bold uppercase tracking-wider"
               :class="i === today ? 'text-accent' : 'text-sand-400'">{{ d }}</span>
-            <template v-for="p in promotions.filter(pr => pr.dayOfWeek === i)" :key="p.id">
+            <template v-for="p in site.promotions.filter((pr) => pr.dayOfWeek === i)" :key="p.id">
               <div class="w-8 h-8 rounded-xl flex items-center justify-center"
                 :class="colors(p.id).badge">
                 <Icon :name="colors(p.id).iconName" :size="15" type="Bold" />
               </div>
             </template>
-            <span v-if="!promotions.find(pr => pr.dayOfWeek === i)" class="text-sand-700 text-lg leading-none">·</span>
+            <span v-if="!site.promotions.find((pr) => pr.dayOfWeek === i)" class="text-sand-700 text-lg leading-none">·</span>
           </div>
         </div>
       </section>
