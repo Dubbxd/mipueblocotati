@@ -204,10 +204,6 @@ async function submit() {
                   class="form-input resize-none"></textarea>
               </div>
 
-              <p v-if="status === 'error'" class="text-red-600 text-sm bg-red-50 border border-red-200 rounded-xl p-3">
-                {{ t('contact.errorMsg') }}
-              </p>
-
               <ConsentCheckboxes
                 v-model:terms="consentTerms"
                 v-model:data="consentData"
