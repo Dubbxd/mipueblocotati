@@ -11,6 +11,7 @@ const router = useRouter()
 const open = ref(false)
 const pendingReservations = ref(0)
 const pendingCatering = ref(0)
+const newMessages = ref(0)
 
 const sections = [
   { group: 'Principal', items: [
@@ -25,6 +26,10 @@ const sections = [
     { to: '/admin/reservations', label: 'Reservas', icon: 'CalendarTick', badgeKey: 'res' as const },
     { to: '/admin/catering', label: 'Catering', icon: 'Box1', badgeKey: 'cat' as const },
     { to: '/admin/locations', label: 'Sucursales', icon: 'Location' }
+  ]},
+  { group: 'CRM', items: [
+    { to: '/admin/mensajes', label: 'Mensajes', icon: 'Sms', badgeKey: 'msg' as const },
+    { to: '/admin/contactos', label: 'Contactos', icon: 'People' }
   ]},
   { group: 'Marketing', items: [
     { to: '/admin/reviews', label: 'Reseñas', icon: 'Star1' },
@@ -44,18 +49,21 @@ const initials = computed(() => {
 
 async function loadBadges() {
   try {
-    const [r, c] = await Promise.all([
+    const [r, c, msgs] = await Promise.all([
       api<any[]>('/api/admin/reservations'),
-      api<any[]>('/api/admin/catering')
+      api<any[]>('/api/admin/catering'),
+      api<any[]>('/api/admin/contact-messages'),
     ])
     pendingReservations.value = Array.isArray(r) ? r.filter((x: any) => x.status === 'pending').length : 0
     pendingCatering.value = Array.isArray(c) ? c.filter((x: any) => x.status === 'new').length : 0
+    newMessages.value = Array.isArray(msgs) ? msgs.filter((x: any) => x.status === 'new').length : 0
   } catch { /* ignore */ }
 }
 
-function badge(key: 'res' | 'cat' | undefined) {
+function badge(key: 'res' | 'cat' | 'msg' | undefined) {
   if (key === 'res') return pendingReservations.value
   if (key === 'cat') return pendingCatering.value
+  if (key === 'msg') return newMessages.value
   return 0
 }
 
