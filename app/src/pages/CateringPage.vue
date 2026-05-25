@@ -2,6 +2,7 @@
 import { ref, reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Icon from '@/components/ui/Icon.vue'
+import ConsentCheckboxes from '@/components/ui/ConsentCheckboxes.vue'
 import { api } from '@/lib/api'
 
 const { t, locale } = useI18n()
@@ -19,6 +20,9 @@ const form = reactive({
   dietary: [] as string[],
   message: '',
 })
+const consentTerms = ref(false)
+const consentData = ref(false)
+const consentMarketing = ref(false)
 
 const status = ref<'idle' | 'loading' | 'success' | 'error'>('idle')
 const errorMsg = ref('')
@@ -89,6 +93,9 @@ async function submit() {
         guests: form.guests ? Number(form.guests) : undefined,
         budget: form.budget || undefined,
         message: notes || undefined,
+        consentTerms: consentTerms.value,
+        consentData: consentData.value,
+        consentMarketing: consentMarketing.value,
       },
     })
     status.value = 'success'
@@ -295,8 +302,16 @@ async function submit() {
             {{ errorMsg || t('catering.errorMsg') }}
           </p>
 
+          <!-- Consent -->
+          <ConsentCheckboxes
+            v-model:terms="consentTerms"
+            v-model:data="consentData"
+            v-model:marketing="consentMarketing"
+            :showMarketing="true"
+          />
+
           <!-- Submit -->
-          <button type="submit" :disabled="status === 'loading'"
+          <button type="submit" :disabled="status === 'loading' || !consentTerms || !consentData"
             class="w-full btn-primary py-4 text-base font-bold inline-flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed">
             <Icon v-if="status !== 'loading'" name="Send2" :size="18" type="Bold" />
             <svg v-else class="w-5 h-5 animate-spin" viewBox="0 0 24 24" fill="none">

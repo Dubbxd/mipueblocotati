@@ -242,6 +242,15 @@
     "next": "Next",
     "review": "Review"
   },
+  "consent": {
+    "terms": "I have read and agree to the",
+    "termsLink": "Terms & Conditions",
+    "and": "and",
+    "privacyLink": "Privacy Policy",
+    "data": "I authorize the collection and use of my data to process my request and improve the service.",
+    "marketing": "I would like to receive offers, promotions and news from Mi Pueblo by email. I can unsubscribe at any time.",
+    "required": "* Required fields"
+  },
   "catering": {
     "kicker": "Mi Pueblo Catering",
     "heroTitle": "Authentic Mexican food for your event",

@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { api } from '@/lib/api'
 import Icon from '@/components/ui/Icon.vue'
+import ConsentCheckboxes from '@/components/ui/ConsentCheckboxes.vue'
 
 const { locale } = useI18n()
 
@@ -14,6 +15,8 @@ const rating = ref(5)
 const comment = ref('')
 const name = ref('')
 const email = ref('')
+const consentTerms = ref(false)
+const consentData = ref(false)
 
 async function submit() {
   error.value = ''
@@ -28,6 +31,8 @@ async function submit() {
         name: name.value || undefined,
         email: email.value || undefined,
         locale: locale.value,
+        consentTerms: consentTerms.value,
+        consentData: consentData.value,
       },
     })
     submitted.value = true
@@ -144,9 +149,14 @@ const txt = (o: { es: string; en: string }) => locale.value === 'es' ? o.es : o.
       <!-- Error -->
       <p v-if="error" class="text-sm text-red-600 bg-red-50 rounded-lg px-3 py-2">{{ error }}</p>
 
+      <ConsentCheckboxes
+        v-model:terms="consentTerms"
+        v-model:data="consentData"
+      />
+
       <button
         type="submit"
-        :disabled="loading"
+        :disabled="loading || !consentTerms || !consentData"
         class="btn-primary w-full disabled:opacity-60 disabled:cursor-not-allowed"
       >
         <span v-if="loading" class="inline-block w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin mr-2"></span>

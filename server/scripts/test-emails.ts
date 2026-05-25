@@ -11,9 +11,10 @@ import {
   notifyAdminCatering,
   sendContactAutoReply,
   notifyAdminContact,
+  notifyAdminSurvey,
 } from '../src/lib/mailjet'
 
-const TEST_EMAIL = '1308728@gmail.com'
+const TEST_EMAIL = 'angel@devchefs.mx'
 
 const tests: Array<{ name: string; fn: () => Promise<any> }> = [
   {
@@ -86,6 +87,17 @@ const tests: Array<{ name: string; fn: () => Promise<any> }> = [
         phone: '(510) 555-0303',
         subject: 'Opciones sin gluten',
         message: '¿Tienen opciones sin gluten en el menú? Soy celíaco y quiero saber antes de reservar.',
+      }),
+  },
+  {
+    name: '7. Notificación admin — nueva encuesta',
+    fn: () =>
+      notifyAdminSurvey({
+        rating: 5,
+        comment: 'Excelente servicio y comida increíble. Los burritos son los mejores que he probado en Sonoma.',
+        name: 'Ana Torres',
+        email: TEST_EMAIL,
+        locale: 'es',
       }),
   },
 ]

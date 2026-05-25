@@ -14,9 +14,13 @@ import {
   blogPosts,
   emailCampaigns,
   surveys,
+  contacts,
+  contactInteractions,
+  contactMessages,
 } from '../db/schema'
 import { authPlugin, requireAuth, requireRole } from '../lib/auth'
 import { verifyUnsubToken } from '../lib/hmac'
+import { upsertContact } from '../lib/crm'
 import {
   sendReservationConfirmation,
   notifyAdminReservation,
@@ -75,9 +79,26 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
   .post(
     '/reservations',
     async ({ body }) => {
-      const rows = await db.insert(reservations).values(body).returning()
+      const { consentTerms, consentData, consentMarketing, ...values } = body
+      const rows = await db.insert(reservations).values(values).returning()
       const r = rows[0]!
-      // Send emails in background — don't block response
+      // CRM — fire-and-forget
+      upsertContact({
+        email: body.email,
+        phone: body.phone,
+        name: body.name,
+        consentTerms,
+        consentData,
+        consentMarketing,
+        interaction: {
+          type: 'reservation',
+          refTable: 'reservations',
+          refId: r.id,
+          summary: `Reservación · ${body.date} ${body.time} · ${body.partySize} personas`,
+          metadata: { date: body.date, time: body.time, partySize: body.partySize },
+        },
+      }).catch(e => console.error('[crm] reservation:', e))
+      // Send emails in background
       if (body.email) {
         sendReservationConfirmation({
           name: body.name,
@@ -109,14 +130,34 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
         date: t.String(),
         time: t.String(),
         notes: t.Optional(t.String()),
+        consentTerms: t.Boolean(),
+        consentData: t.Boolean(),
+        consentMarketing: t.Optional(t.Boolean()),
       }),
     }
   )
   .post(
     '/catering',
     async ({ body }) => {
-      const rows2 = await db.insert(cateringRequests).values(body).returning()
+      const { consentTerms, consentData, consentMarketing, ...values } = body
+      const rows2 = await db.insert(cateringRequests).values(values).returning()
       const r = rows2[0]!
+      // CRM
+      upsertContact({
+        email: body.email,
+        phone: body.phone,
+        name: body.name,
+        consentTerms,
+        consentData,
+        consentMarketing,
+        interaction: {
+          type: 'catering',
+          refTable: 'catering_requests',
+          refId: r.id,
+          summary: `Catering · ${body.eventType ?? 'evento'} · ${body.guests ?? '?'} invitados`,
+          metadata: { eventType: body.eventType, eventDate: body.eventDate, guests: body.guests },
+        },
+      }).catch(e => console.error('[crm] catering:', e))
       // Send emails in background
       sendCateringConfirmation({
         name: body.name,
@@ -148,12 +189,43 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
         guests: t.Optional(t.Number()),
         budget: t.Optional(t.String()),
         message: t.Optional(t.String()),
+        consentTerms: t.Boolean(),
+        consentData: t.Boolean(),
+        consentMarketing: t.Optional(t.Boolean()),
       }),
     }
   )
   .post(
     '/contact',
     async ({ body }) => {
+      const { consentTerms, consentData, ...rest } = body
+      // Save message to DB
+      const [msg] = await db.insert(contactMessages).values({
+        name: body.name,
+        email: body.email,
+        phone: body.phone ?? undefined,
+        subject: body.subject ?? undefined,
+        message: body.message,
+        consentTerms,
+        consentData,
+      }).returning({ id: contactMessages.id })
+      // CRM
+      upsertContact({
+        email: body.email,
+        phone: body.phone,
+        name: body.name,
+        consentTerms,
+        consentData,
+        interaction: {
+          type: 'contact_msg',
+          refTable: 'contact_messages',
+          refId: msg?.id,
+          summary: body.subject
+            ? `Mensaje · ${body.subject}`
+            : `Mensaje · ${body.message.slice(0, 60)}${body.message.length > 60 ? '…' : ''}`,
+          metadata: { subject: body.subject },
+        },
+      }).catch(e => console.error('[crm] contact:', e))
       // Send emails in background
       sendContactAutoReply({
         name: body.name,
@@ -176,18 +248,37 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
         phone: t.Optional(t.String()),
         subject: t.Optional(t.String()),
         message: t.String({ minLength: 10 }),
+        consentTerms: t.Boolean(),
+        consentData: t.Boolean(),
       }),
     }
   )
   .post(
     '/newsletter',
     async ({ body, set }) => {
+      const { consentTerms, consentData, consentMarketing, ...subValues } = body
       try {
         const [r] = await db
           .insert(newsletterSubscribers)
-          .values(body)
+          .values(subValues)
           .onConflictDoNothing({ target: newsletterSubscribers.email })
           .returning()
+        // CRM
+        upsertContact({
+          email: body.email,
+          name: body.name,
+          locale: body.locale,
+          consentTerms: consentTerms ?? false,
+          consentData: consentData ?? false,
+          consentMarketing: consentMarketing ?? true,
+          interaction: {
+            type: 'newsletter_sub',
+            refTable: 'newsletter_subscribers',
+            refId: r?.id,
+            summary: 'Newsletter · suscripción',
+            metadata: { source: body.source },
+          },
+        }).catch(e => console.error('[crm] newsletter:', e))
         return { ok: true, id: r?.id }
       } catch (e) {
         set.status = 500
@@ -200,6 +291,9 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
         name: t.Optional(t.String()),
         locale: t.Optional(t.String()),
         source: t.Optional(t.String()),
+        consentTerms: t.Optional(t.Boolean()),
+        consentData: t.Optional(t.Boolean()),
+        consentMarketing: t.Optional(t.Boolean()),
       }),
     }
   )
@@ -217,6 +311,17 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
       await db.update(newsletterSubscribers)
         .set({ isActive: false, unsubscribedAt: new Date() })
         .where(eq(newsletterSubscribers.email, email))
+      // Sync CRM contact subscriber status
+      upsertContact({
+        email,
+        consentTerms: false,
+        consentData: false,
+        interaction: {
+          type: 'newsletter_unsub',
+          refTable: 'newsletter_subscribers',
+          summary: 'Newsletter · baja',
+        },
+      }).catch(e => console.error('[crm] unsub:', e))
       // Return simple HTML confirmation page
       set.headers['Content-Type'] = 'text/html; charset=utf-8'
       const pubUrl = process.env.PUBLIC_URL ?? 'https://mipueblocotati.com'
@@ -236,7 +341,23 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
         set.status = 400
         return { ok: false, error: 'Rating must be between 1 and 5' }
       }
-      const [r] = await db.insert(surveys).values(body).returning()
+      const { consentTerms, consentData, ...surveyValues } = body
+      const [r] = await db.insert(surveys).values({ ...surveyValues, consentTerms, consentData }).returning()
+      // CRM
+      upsertContact({
+        email: body.email,
+        name: body.name,
+        locale: body.locale,
+        consentTerms: consentTerms ?? false,
+        consentData: consentData ?? false,
+        interaction: {
+          type: 'survey',
+          refTable: 'surveys',
+          refId: r!.id,
+          summary: `Encuesta · ${body.rating}★${body.comment ? ' · ' + body.comment.slice(0, 60) : ''}`,
+          metadata: { rating: body.rating },
+        },
+      }).catch(e => console.error('[crm] survey:', e))
       // fire-and-forget — don't block the response
       notifyAdminSurvey(body).catch(e => console.error('[survey notify]', e))
       return { ok: true, id: r!.id }
@@ -248,6 +369,8 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
         name: t.Optional(t.String({ maxLength: 120 })),
         email: t.Optional(t.String({ format: 'email' })),
         locale: t.Optional(t.String({ maxLength: 10 })),
+        consentTerms: t.Optional(t.Boolean()),
+        consentData: t.Optional(t.Boolean()),
       }),
     }
   )
@@ -501,6 +624,46 @@ export const adminRoutes = new Elysia({ prefix: '/admin' })
   .use(authPlugin)
   .get('/surveys', async () => db.select().from(surveys).orderBy(desc(surveys.createdAt)), {
     beforeHandle: requireAuth,
+  })
+  // Contact messages — guardados desde POST /public/contact
+  .use(authPlugin)
+  .get('/contact-messages', async () =>
+    db.select().from(contactMessages).orderBy(desc(contactMessages.createdAt)), {
+    beforeHandle: requireAuth,
+  })
+  .patch('/contact-messages/:id', async ({ params, body }) => {
+    await db.update(contactMessages)
+      .set({ status: body.status, adminNotes: body.adminNotes, updatedAt: new Date() })
+      .where(eq(contactMessages.id, Number(params.id)))
+    return { ok: true }
+  }, { beforeHandle: requireAuth, body: t.Object({ status: t.Optional(t.String()), adminNotes: t.Optional(t.String()) }) })
+  // CRM Contacts
+  .use(authPlugin)
+  .get('/contacts', async ({ query }) => {
+    const rows = await db.select().from(contacts).orderBy(desc(contacts.lastSeen))
+    return rows
+  }, { beforeHandle: requireAuth })
+  .get('/contacts/:id', async ({ params, set }) => {
+    const [contact] = await db.select().from(contacts).where(eq(contacts.id, Number(params.id))).limit(1)
+    if (!contact) { set.status = 404; return { error: 'Not found' } }
+    const interactions = await db.select().from(contactInteractions)
+      .where(eq(contactInteractions.contactId, Number(params.id)))
+      .orderBy(desc(contactInteractions.createdAt))
+    return { ...contact, interactions }
+  }, { beforeHandle: requireAuth })
+  .patch('/contacts/:id', async ({ params, body }) => {
+    await db.update(contacts)
+      .set({ ...body, updatedAt: new Date() })
+      .where(eq(contacts.id, Number(params.id)))
+    return { ok: true }
+  }, {
+    beforeHandle: requireAuth,
+    body: t.Object({
+      name: t.Optional(t.String()),
+      phone: t.Optional(t.String()),
+      notes: t.Optional(t.String()),
+      tags: t.Optional(t.Array(t.String())),
+    }),
   })
   // ── AI generation endpoint ──────────────────────────────────────
   .use(authPlugin)

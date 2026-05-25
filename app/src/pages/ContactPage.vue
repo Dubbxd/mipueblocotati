@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { useSiteStore } from '@/stores'
 import MapLeaflet from '@/components/sections/MapLeaflet.vue'
 import Icon from '@/components/ui/Icon.vue'
+import ConsentCheckboxes from '@/components/ui/ConsentCheckboxes.vue'
 import { api } from '@/lib/api'
 
 const { t } = useI18n()
@@ -11,6 +12,8 @@ const site = useSiteStore()
 const main = computed(() => site.mainRestaurant)
 
 const form = ref({ name: '', email: '', phone: '', message: '' })
+const consentTerms = ref(false)
+const consentData = ref(false)
 const status = ref<'idle' | 'loading' | 'success' | 'error'>('idle')
 
 async function submit() {
@@ -25,6 +28,8 @@ async function submit() {
         phone: form.value.phone || 'N/A',
         email: form.value.email,
         message: form.value.message,
+        consentTerms: consentTerms.value,
+        consentData: consentData.value,
       },
     })
     status.value = 'success'
@@ -201,7 +206,12 @@ async function submit() {
                 {{ t('contact.errorMsg') }}
               </p>
 
-              <button type="submit" :disabled="status === 'loading'"
+              <ConsentCheckboxes
+                v-model:terms="consentTerms"
+                v-model:data="consentData"
+              />
+
+              <button type="submit" :disabled="status === 'loading' || !consentTerms || !consentData"
                 class="w-full btn-primary py-3.5 text-base font-bold inline-flex items-center justify-center gap-2 disabled:opacity-60">
                 <Icon v-if="status !== 'loading'" name="Send2" :size="17" type="Bold" />
                 <svg v-else class="w-5 h-5 animate-spin" viewBox="0 0 24 24" fill="none">

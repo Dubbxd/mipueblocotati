@@ -5,6 +5,7 @@ import { useRoute } from 'vue-router'
 import { useSiteStore } from '@/stores'
 import { api } from '@/lib/api'
 import type { ReservationDraft } from '@/types/domain'
+import ConsentCheckboxes from '@/components/ui/ConsentCheckboxes.vue'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -12,6 +13,8 @@ const site = useSiteStore()
 const submitted = ref(false)
 const submitting = ref(false)
 const submitError = ref<string | null>(null)
+const consentTerms = ref(false)
+const consentData = ref(false)
 const form = ref<ReservationDraft>({
   restaurantId: (route.query.branch as string) || 'cotati',
   date: '', time: '19:00', partySize: 2,
@@ -35,6 +38,8 @@ const submit = async () => {
         date: form.value.date,
         time: form.value.time,
         notes: form.value.customer.notes || undefined,
+        consentTerms: consentTerms.value,
+        consentData: consentData.value,
       },
     })
     submitted.value = true
@@ -91,9 +96,14 @@ const submit = async () => {
         <span class="text-sm font-semibold text-secondary">{{ t('reserve.form.notes') }}</span>
         <textarea v-model="form.customer.notes" rows="3" autocomplete="off" class="w-full mt-1 px-3 py-3 rounded-md border border-sand-300 bg-white"></textarea>
       </label>
-      <p class="text-xs text-ink-muted md:col-span-2">{{ t('reserve.policy') }}</p>
+      <div class="md:col-span-2">
+        <ConsentCheckboxes
+          v-model:terms="consentTerms"
+          v-model:data="consentData"
+        />
+      </div>
       <p v-if="submitError" class="text-sm text-red-600 md:col-span-2">{{ submitError }}</p>
-      <button :disabled="submitting" class="btn-primary md:col-span-2 disabled:opacity-60 disabled:cursor-not-allowed">{{ submitting ? '…' : t('reserve.form.submit') }}</button>
+      <button :disabled="submitting || !consentTerms || !consentData" class="btn-primary md:col-span-2 disabled:opacity-60 disabled:cursor-not-allowed">{{ submitting ? '…' : t('reserve.form.submit') }}</button>
     </form>
   </main>
 </template>

@@ -347,7 +347,100 @@ export const surveys = pgTable('surveys', {
   name: varchar('name', { length: 120 }),
   email: varchar('email', { length: 200 }),
   locale: varchar('locale', { length: 10 }).default('es'),
+  consentTerms: boolean('consent_terms').notNull().default(false),
+  consentData: boolean('consent_data').notNull().default(false),
   createdAt: timestamp('created_at').notNull().defaultNow(),
+})
+
+// ─────────────────────────────────────────────────────────────────
+// CRM — CONTACTOS UNIFICADOS
+// Identificador primario: email O teléfono (ambos opcionales pero
+// al menos uno debe estar presente). PostgreSQL UNIQUE permite
+// múltiples NULL, por lo que ambas columnas pueden ser opcionales.
+// ─────────────────────────────────────────────────────────────────
+export const contacts = pgTable(
+  'contacts',
+  {
+    id: serial('id').primaryKey(),
+    /** Identificador A — email normalizado a minúsculas */
+    email: varchar('email', { length: 200 }),
+    /** Identificador B — teléfono normalizado (solo dígitos + leading +) */
+    phone: varchar('phone', { length: 40 }),
+    name: varchar('name', { length: 160 }),
+    locale: varchar('locale', { length: 5 }).notNull().default('es'),
+    /** ['vip','frecuente','catering','newsletter'] */
+    tags: jsonb('tags').$type<string[]>().notNull().default([]),
+    /** Notas internas del admin */
+    notes: text('notes'),
+    /** Consintió términos y condiciones */
+    consentTerms: boolean('consent_terms').notNull().default(false),
+    /** Consintió recopilación de datos */
+    consentData: boolean('consent_data').notNull().default(false),
+    /** Consintió recibir marketing */
+    consentMarketing: boolean('consent_marketing').notNull().default(false),
+    consentedAt: timestamp('consented_at'),
+    /** Está activo en newsletter */
+    isSubscriber: boolean('is_subscriber').notNull().default(false),
+    firstSeen: timestamp('first_seen').notNull().defaultNow(),
+    lastSeen: timestamp('last_seen').notNull().defaultNow(),
+    visitCount: integer('visit_count').notNull().default(1),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+    updatedAt: timestamp('updated_at').notNull().defaultNow(),
+  },
+  (t) => ({
+    emailIdx: uniqueIndex('contacts_email_idx').on(t.email),
+    phoneIdx: uniqueIndex('contacts_phone_idx').on(t.phone),
+  })
+)
+
+// ─────────────────────────────────────────────────────────────────
+// CRM — HISTORIAL DE INTERACCIONES
+// Cada vez que un contacto interactúa (reserva, encuesta, mensaje,
+// newsletter, catering) se registra una fila aquí.
+// ─────────────────────────────────────────────────────────────────
+export const contactInteractions = pgTable(
+  'contact_interactions',
+  {
+    id: serial('id').primaryKey(),
+    contactId: integer('contact_id')
+      .notNull()
+      .references(() => contacts.id, { onDelete: 'cascade' }),
+    /** reservation | catering | survey | contact_msg | newsletter_sub | newsletter_unsub */
+    type: varchar('type', { length: 40 }).notNull(),
+    /** Nombre de la tabla origen (reservations, surveys, etc.) */
+    refTable: varchar('ref_table', { length: 60 }),
+    /** ID del registro en la tabla origen */
+    refId: integer('ref_id'),
+    /** Texto corto para mostrar en la línea de tiempo */
+    summary: text('summary'),
+    /** Datos extra (rating, status, partySize, etc.) */
+    metadata: jsonb('metadata').$type<Record<string, unknown>>().default({}),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+  },
+  (t) => ({
+    contactIdx: index('contact_interactions_contact_idx').on(t.contactId),
+    typeIdx: index('contact_interactions_type_idx').on(t.type),
+  })
+)
+
+// ─────────────────────────────────────────────────────────────────
+// CRM — MENSAJES DE CONTACTO (antes solo se mandaban por email)
+// ─────────────────────────────────────────────────────────────────
+export const contactMessages = pgTable('contact_messages', {
+  id: serial('id').primaryKey(),
+  contactId: integer('contact_id').references(() => contacts.id, { onDelete: 'set null' }),
+  name: varchar('name', { length: 160 }).notNull(),
+  email: varchar('email', { length: 200 }),
+  phone: varchar('phone', { length: 40 }),
+  subject: varchar('subject', { length: 200 }),
+  message: text('message').notNull(),
+  consentTerms: boolean('consent_terms').notNull().default(false),
+  consentData: boolean('consent_data').notNull().default(false),
+  /** new | read | replied | archived */
+  status: varchar('status', { length: 40 }).notNull().default('new'),
+  adminNotes: text('admin_notes'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
 })
 
 // ─────────────────────────────────────────────────────────────────
@@ -389,3 +482,6 @@ export type Media = typeof media.$inferSelect
 export type BlogPost = typeof blogPosts.$inferSelect
 export type EmailCampaign = typeof emailCampaigns.$inferSelect
 export type Survey = typeof surveys.$inferSelect
+export type Contact = typeof contacts.$inferSelect
+export type ContactInteraction = typeof contactInteractions.$inferSelect
+export type ContactMessage = typeof contactMessages.$inferSelect

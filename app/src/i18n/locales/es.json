@@ -242,6 +242,15 @@
     "next": "Siguiente",
     "review": "Reseña"
   },
+  "consent": {
+    "terms": "He leído y acepto los",
+    "termsLink": "Términos y Condiciones",
+    "and": "y la",
+    "privacyLink": "Política de Privacidad",
+    "data": "Autorizo la recopilación y uso de mis datos para atender mi solicitud y mejorar el servicio.",
+    "marketing": "Deseo recibir ofertas, promociones y novedades de Mi Pueblo por correo electrónico. Puedo darme de baja en cualquier momento.",
+    "required": "* Campos obligatorios"
+  },
   "catering": {
     "kicker": "Catering Mi Pueblo",
     "heroTitle": "Auténtica comida mexicana para tu evento",
