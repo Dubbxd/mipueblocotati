@@ -9,7 +9,9 @@ const { t } = useI18n()
 
 const isOpen = computed(() => {
   const h = new Date().getHours()
-  return h >= 11 && h < 21
+  if (props.r.openHour != null && props.r.closeHour != null)
+    return h >= props.r.openHour && h < props.r.closeHour
+  return h >= 11 && h < 21 // fallback
 })
 
 const mapsUrl = computed(() =>

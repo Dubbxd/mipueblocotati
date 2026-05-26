@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { useSiteStore } from '@/stores'
 import Icon from '@/components/ui/Icon.vue'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const site = useSiteStore()
 const main = computed(() => site.mainRestaurant)
 
@@ -13,6 +13,34 @@ const isOpen = computed(() => {
   if (main.value?.openHour != null && main.value?.closeHour != null)
     return h >= main.value.openHour && h < main.value.closeHour
   return h >= 11 && h < 21 // fallback
+})
+
+function fmtHour(h: number) {
+  if (h === 0)  return '12 AM'
+  if (h < 12)   return `${h} AM`
+  if (h === 12) return '12 PM'
+  return `${h - 12} PM`
+}
+
+const openClosedPill = computed(() => {
+  const r = main.value
+  const es = locale.value === 'es'
+  if (isOpen.value && r?.closeHour != null)
+    return es ? `Abierto · cierra ${fmtHour(r.closeHour)}` : `Open · closes ${fmtHour(r.closeHour)}`
+  if (!isOpen.value && r?.openHour != null)
+    return es ? `Cerrado · abre ${fmtHour(r.openHour)}` : `Closed · opens ${fmtHour(r.openHour)}`
+  return isOpen.value ? t('home.hero.open') : t('home.hero.closed')
+})
+
+const reviewPill = computed(() => {
+  const r = main.value
+  if (r?.googleRating && r?.googleReviewCount) {
+    const count = r.googleReviewCount >= 1000
+      ? `${(r.googleReviewCount / 1000).toFixed(1)}k`
+      : String(r.googleReviewCount)
+    return `${r.googleRating.toFixed(1)} · ${count} ${locale.value === 'es' ? 'reseñas' : 'reviews'}`
+  }
+  return t('home.hero.reviews')
 })
 </script>
 
@@ -35,11 +63,11 @@ const isOpen = computed(() => {
       <div class="flex flex-wrap items-center gap-2 mb-8 animate-fadeIn">
         <span class="pill !bg-night-soft !text-sand-100 !border-night-light">
           <span class="pill-dot" :class="{ '!bg-rose-500': !isOpen }"></span>
-          {{ isOpen ? t('home.hero.open') : t('home.hero.closed') }}
+          {{ openClosedPill }}
         </span>
         <span class="pill !bg-night-soft !text-sand-100 !border-night-light inline-flex items-center gap-1.5">
           <Icon name="Star1" type="Bold" :size="14" class="text-amber-300" />
-          {{ t('home.hero.reviews') }}
+          {{ reviewPill }}
         </span>
         <span class="pill !bg-night-soft !text-sand-100 !border-night-light inline-flex items-center gap-1.5">
           <Icon name="Location" :size="14" />

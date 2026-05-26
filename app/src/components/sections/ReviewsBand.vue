@@ -9,11 +9,12 @@ const { t, locale } = useI18n()
 const site = useSiteStore()
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Google Maps · Mi Pueblo Cotati
-// CID = decimal de 0x4bdd1dd8d717e714 = 5466729018176324884
+// Google Maps · Mi Pueblo Cotati — URL desde el store si está disponible
+// Fallback: CID estático = 5466729018176324884
 // ─────────────────────────────────────────────────────────────────────────────
-const GOOGLE_MAPS_URL   = 'https://www.google.com/maps?cid=5466729018176324884'
-const WRITE_REVIEW_URL  = 'https://www.google.com/maps?cid=5466729018176324884&hl=es'
+const FALLBACK_MAPS_URL = 'https://www.google.com/maps?cid=5466729018176324884'
+const GOOGLE_MAPS_URL  = computed(() => site.mainRestaurant?.links?.googleMaps ?? FALLBACK_MAPS_URL)
+const WRITE_REVIEW_URL = computed(() => `${GOOGLE_MAPS_URL.value}&hl=${locale.value === 'es' ? 'es' : 'en'}`)
 
 // Rating y conteo: del store si ya se sincronizó desde Google; fallback estático
 const googleRating = computed(() => site.mainRestaurant?.googleRating      ?? 4.4)

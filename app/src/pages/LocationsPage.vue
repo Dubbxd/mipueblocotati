@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useSiteStore } from '@/stores'
 import LocationCard from '@/components/sections/LocationCard.vue'
@@ -6,6 +7,7 @@ import MapGoogle from '@/components/sections/MapGoogle.vue'
 import Icon from '@/components/ui/Icon.vue'
 const { t } = useI18n()
 const site = useSiteStore()
+const yearsInBusiness = computed(() => new Date().getFullYear() - 1997)
 </script>
 
 <template>
@@ -33,7 +35,7 @@ const site = useSiteStore()
         <!-- Stats rápidos -->
         <div class="flex gap-6 shrink-0">
           <div class="text-center">
-            <p class="font-impact text-5xl text-accent leading-none">6</p>
+            <p class="font-impact text-5xl text-accent leading-none">{{ site.restaurants.length }}</p>
             <p class="text-sand-300 text-xs mt-1 uppercase tracking-widest">{{ t('locations.statsLocations') }}</p>
           </div>
           <div class="text-center">
@@ -41,7 +43,7 @@ const site = useSiteStore()
             <p class="text-sand-300 text-xs mt-1 uppercase tracking-widest">{{ t('locations.statsCities') }}</p>
           </div>
           <div class="text-center">
-            <p class="font-impact text-5xl text-accent leading-none">28<span class="text-2xl">+</span></p>
+            <p class="font-impact text-5xl text-accent leading-none">{{ yearsInBusiness }}<span class="text-2xl">+</span></p>
             <p class="text-sand-300 text-xs mt-1 uppercase tracking-widest">{{ t('locations.statsYears') }}</p>
           </div>
         </div>

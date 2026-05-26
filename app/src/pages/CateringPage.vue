@@ -5,9 +5,11 @@ import Icon from '@/components/ui/Icon.vue'
 import ConsentCheckboxes from '@/components/ui/ConsentCheckboxes.vue'
 import { api } from '@/lib/api'
 import { useToast } from '@/composables/useToast'
+import { useSiteStore } from '@/stores'
 
 const { t, locale } = useI18n()
 const toast = useToast()
+const site = useSiteStore()
 
 // ── Wizard step ───────────────────────────────────────────────────
 const step = ref<1 | 2 | 3 | 4>(1)
@@ -152,10 +154,10 @@ async function submit() {
             <Icon name="Send2" :size="16" type="Bold" />
             {{ t('catering.ctaForm') }}
           </a>
-          <a href="tel:+17077924380"
+          <a :href="site.mainRestaurant?.phone ? `tel:${site.mainRestaurant.phone}` : 'tel:+17077924380'"
              class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full border-2 border-white/30 text-white hover:bg-white/10 transition-colors text-base font-semibold w-full sm:w-auto">
             <Icon name="Call" :size="16" />
-            +1 (707) 792-4380
+            {{ site.mainRestaurant?.phone ?? '+1 (707) 792-4380' }}
           </a>
         </div>
       </div>
