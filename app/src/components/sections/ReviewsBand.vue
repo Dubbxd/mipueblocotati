@@ -146,8 +146,7 @@ const countFmt = computed(() =>
       <div class="hidden md:grid gap-6 md:grid-cols-3">
         <article v-for="r in reviews" :key="r.id"
                  class="relative bg-sand-50 text-night p-7 pt-9 rounded-tl-[3rem] rounded-br-[3rem] rounded-tr-2xl rounded-bl-2xl shadow-elev text-left flex flex-col">
-          <span class="absolute -top-5 left-7 bg-accent text-white w-12 h-12 rounded-full grid place-items-center font-display font-black text-lg shadow-lg ring-2 ring-white">
-          </div>
+          <span class="absolute -top-5 left-7 bg-accent text-white w-12 h-12 rounded-full grid place-items-center font-display font-black text-lg shadow-lg ring-2 ring-white">{{ r.initial }}</span>
           <p class="font-body text-base leading-relaxed mb-6 text-ink flex-1">{{ r.text[locale as 'es'|'en'] }}</p>
           <div class="border-t border-sand-200 pt-4 flex items-center justify-between">
             <div>
