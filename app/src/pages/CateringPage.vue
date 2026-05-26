@@ -48,7 +48,7 @@ const BUDGET_OPTIONS = [
 ]
 
 const SERVICE_STYLES = [
-  { value: 'buffet',   icon: 'TableBar',   es: 'Buffet',          en: 'Buffet' },
+  { value: 'buffet',   icon: 'Coffee',     es: 'Buffet',          en: 'Buffet' },
   { value: 'plated',   icon: 'Cup',        es: 'Platos servidos', en: 'Plated service' },
   { value: 'stations', icon: 'MenuBoard',  es: 'Estaciones',      en: 'Stations' },
   { value: 'taco-bar', icon: 'Bag2',       es: 'Taco bar',        en: 'Taco bar' },
@@ -56,7 +56,7 @@ const SERVICE_STYLES = [
 
 const DIETARY = [
   { value: 'vegetarian',  icon: 'Heart',      es: 'Vegetariano', en: 'Vegetarian' },
-  { value: 'vegan',       icon: 'Leaf',       es: 'Vegano',      en: 'Vegan' },
+  { value: 'vegan',       icon: 'Tree',       es: 'Vegano',      en: 'Vegan' },
   { value: 'gluten-free', icon: 'TickCircle', es: 'Sin gluten',  en: 'Gluten-free' },
   { value: 'halal',       icon: 'Star1',      es: 'Halal',       en: 'Halal' },
   { value: 'kids',        icon: 'Gift',       es: 'Menú niños',  en: 'Kids menu' },
