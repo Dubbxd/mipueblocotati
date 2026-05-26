@@ -37,6 +37,15 @@
   "home": {
     "heroTitle": "Authentic Mexican Flavors",
     "heroSubtitle": "Mi Pueblo Family · Serving Sonoma County since 1997",
+    "hero": {
+      "line1": "Discover",
+      "line2": "the taste",
+      "line3": "of México",
+      "open": "Open · closes 9 PM",
+      "closed": "Closed · opens 11 AM",
+      "reviews": "4.7 · 2.1k reviews",
+      "location": "Cotati, CA"
+    },
     "today": {
       "kicker": "Today at Mi Pueblo",
       "title": "Today's highlights",

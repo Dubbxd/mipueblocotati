@@ -37,6 +37,15 @@
   "home": {
     "heroTitle": "Auténticos sabores mexicanos",
     "heroSubtitle": "Familia Mi Pueblo · Sirviendo a Sonoma County desde 1997",
+    "hero": {
+      "line1": "Descubre",
+      "line2": "el sabor",
+      "line3": "de México",
+      "open": "Abierto · cierra 9 PM",
+      "closed": "Cerrado · abre 11 AM",
+      "reviews": "4.7 · 2,1k reseñas",
+      "location": "Cotati, CA"
+    },
     "today": {
       "kicker": "Hoy en Mi Pueblo",
       "title": "Lo bueno de hoy",
