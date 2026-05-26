@@ -24,6 +24,7 @@ const sections = [
   ]},
   { group: 'Operación', items: [
     { to: '/admin/reservations', label: 'Reservas', icon: 'CalendarTick', badgeKey: 'res' as const },
+    { to: '/admin/reservas-config', label: 'Config. Reservas', icon: 'Setting2' },
     { to: '/admin/catering', label: 'Catering', icon: 'Box1', badgeKey: 'cat' as const },
     { to: '/admin/locations', label: 'Sucursales', icon: 'Location' }
   ]},

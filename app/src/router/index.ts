@@ -23,7 +23,8 @@ const routes: RouteRecordRaw[] = [
       { path: 'blog', name: 'admin-blog', component: () => import('@/pages/admin/BlogPage.vue'), meta: { title: 'Blog' } },
       { path: 'campaigns', name: 'admin-campaigns', component: () => import('@/pages/admin/CampaignsPage.vue'), meta: { title: 'Campañas' } },
       { path: 'mensajes', name: 'admin-mensajes', component: () => import('@/pages/admin/MensajesPage.vue'), meta: { title: 'Mensajes' } },
-      { path: 'contactos', name: 'admin-contactos', component: () => import('@/pages/admin/ContactosPage.vue'), meta: { title: 'Contactos CRM' } }
+      { path: 'contactos', name: 'admin-contactos', component: () => import('@/pages/admin/ContactosPage.vue'), meta: { title: 'Contactos CRM' } },
+      { path: 'reservas-config', name: 'admin-reservas-config', component: () => import('@/pages/admin/ReservaConfigPage.vue'), meta: { title: 'Config. Reservas' } }
     ]
   },
   // ── PÚBLICO ───────────────────────────────────────────────────

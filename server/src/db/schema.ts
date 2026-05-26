@@ -485,3 +485,45 @@ export type Survey = typeof surveys.$inferSelect
 export type Contact = typeof contacts.$inferSelect
 export type ContactInteraction = typeof contactInteractions.$inferSelect
 export type ContactMessage = typeof contactMessages.$inferSelect
+
+// ─────────────────────────────────────────────────────────────────
+// CONFIGURACIÓN DE RESERVAS
+// Tabla de una sola fila (id=1). Controla horarios, capacidad y
+// disponibilidad del formulario público de reservaciones.
+// ─────────────────────────────────────────────────────────────────
+export const reservationSettings = pgTable('reservation_settings', {
+  id: serial('id').primaryKey(),
+  /** Si false, el formulario público muestra un mensaje de "no hay disponibilidad" */
+  isActive: boolean('is_active').notNull().default(true),
+  /** Días disponibles: 0=Dom, 1=Lun, ..., 6=Sáb */
+  availableDays: jsonb('available_days').$type<number[]>().notNull().default([1, 2, 3, 4, 5, 6]),
+  /** Horarios disponibles en formato HH:mm, ej. ["12:00","13:00","18:00","19:00","20:00","21:00"] */
+  timeSlots: jsonb('time_slots').$type<string[]>().notNull().default(['12:00', '13:00', '14:00', '18:00', '19:00', '20:00', '21:00']),
+  minPartySize: integer('min_party_size').notNull().default(1),
+  maxPartySize: integer('max_party_size').notNull().default(8),
+  /** Máximo de personas que se pueden reservar en el mismo horario (todas las reservas combinadas) */
+  slotCapacity: integer('slot_capacity').notNull().default(30),
+  /** Mínimas horas de anticipación para hacer una reserva */
+  minAdvanceHours: integer('min_advance_hours').notNull().default(2),
+  /** Máximos días en el futuro para hacer una reserva */
+  maxAdvanceDays: integer('max_advance_days').notNull().default(60),
+  /** Mensaje personalizado cuando las reservas están cerradas (i18n JSON) */
+  closedMessage: jsonb('closed_message').$type<{ es: string; en: string }>(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+})
+
+// ─────────────────────────────────────────────────────────────────
+// FECHAS BLOQUEADAS
+// Fechas específicas en las que no se aceptan reservaciones.
+// ─────────────────────────────────────────────────────────────────
+export const blockedDates = pgTable('blocked_dates', {
+  id: serial('id').primaryKey(),
+  /** YYYY-MM-DD */
+  date: varchar('date', { length: 10 }).notNull().unique(),
+  /** Razón interna visible solo para el admin */
+  reason: text('reason'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+})
+
+export type ReservationSettings = typeof reservationSettings.$inferSelect
+export type BlockedDate = typeof blockedDates.$inferSelect

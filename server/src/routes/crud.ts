@@ -17,6 +17,8 @@ import {
   contacts,
   contactInteractions,
   contactMessages,
+  reservationSettings,
+  blockedDates,
 } from '../db/schema'
 import { authPlugin, requireAuth, requireRole } from '../lib/auth'
 import { verifyUnsubToken } from '../lib/hmac'
@@ -374,6 +376,25 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
       }),
     }
   )
+  // Config pública de reservaciones (horarios, capacidad, días bloqueados)
+  .get('/reservation-config', async () => {
+    const [settings] = await db.select().from(reservationSettings).where(eq(reservationSettings.id, 1)).limit(1)
+    const blocked = await db.select({ date: blockedDates.date }).from(blockedDates)
+    return {
+      settings: settings ?? {
+        isActive: true,
+        availableDays: [1, 2, 3, 4, 5, 6],
+        timeSlots: ['12:00', '13:00', '14:00', '18:00', '19:00', '20:00', '21:00'],
+        minPartySize: 1,
+        maxPartySize: 8,
+        slotCapacity: 30,
+        minAdvanceHours: 2,
+        maxAdvanceDays: 60,
+        closedMessage: null,
+      },
+      blockedDates: blocked.map(r => r.date),
+    }
+  })
   .get('/blog', async () => {
     return db.select().from(blogPosts)
       .where(eq(blogPosts.status, 'published'))
@@ -744,3 +765,54 @@ export const adminRoutes = new Elysia({ prefix: '/admin' })
     },
     { beforeHandle: requireRole('superadmin', 'admin') }
   )
+  // ── Reservation Settings ───────────────────────────────────────
+  .use(authPlugin)
+  .get('/reservation-settings', async () => {
+    const [row] = await db.select().from(reservationSettings).where(eq(reservationSettings.id, 1)).limit(1)
+    return row ?? null
+  }, { beforeHandle: requireAuth })
+  .patch('/reservation-settings', async ({ body }) => {
+    await db.update(reservationSettings)
+      .set({ ...body, updatedAt: new Date() })
+      .where(eq(reservationSettings.id, 1))
+    const [row] = await db.select().from(reservationSettings).where(eq(reservationSettings.id, 1)).limit(1)
+    return row
+  }, {
+    beforeHandle: requireRole('superadmin', 'admin'),
+    body: t.Object({
+      isActive: t.Optional(t.Boolean()),
+      availableDays: t.Optional(t.Array(t.Number())),
+      timeSlots: t.Optional(t.Array(t.String())),
+      minPartySize: t.Optional(t.Number()),
+      maxPartySize: t.Optional(t.Number()),
+      slotCapacity: t.Optional(t.Number()),
+      minAdvanceHours: t.Optional(t.Number()),
+      maxAdvanceDays: t.Optional(t.Number()),
+      closedMessage: t.Optional(t.Any()),
+    }),
+  })
+  // ── Blocked Dates ──────────────────────────────────────────────
+  .use(authPlugin)
+  .get('/blocked-dates', async () => {
+    return db.select().from(blockedDates).orderBy(asc(blockedDates.date))
+  }, { beforeHandle: requireAuth })
+  .post('/blocked-dates', async ({ body, set }) => {
+    try {
+      const [row] = await db.insert(blockedDates).values(body).returning()
+      return row
+    } catch {
+      set.status = 409
+      return { error: 'Esa fecha ya está bloqueada' }
+    }
+  }, {
+    beforeHandle: requireRole('superadmin', 'admin'),
+    body: t.Object({
+      date: t.String({ minLength: 10, maxLength: 10 }),
+      reason: t.Optional(t.String()),
+    }),
+  })
+  .delete('/blocked-dates/:id', async ({ params, set }) => {
+    const [row] = await db.delete(blockedDates).where(eq(blockedDates.id, Number(params.id))).returning()
+    if (!row) { set.status = 404; return { error: 'Not found' } }
+    return { ok: true }
+  }, { beforeHandle: requireRole('superadmin', 'admin') })
