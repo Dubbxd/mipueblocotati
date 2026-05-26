@@ -1,5 +1,5 @@
 import { Elysia, t } from 'elysia'
-import { eq, desc, asc, and } from 'drizzle-orm'
+import { eq, desc, asc, and, inArray, lt } from 'drizzle-orm'
 import { db } from '../db/client'
 import {
   menuCategories,
@@ -415,13 +415,17 @@ function adminCrud<T extends { id: any }>(opts: {
   schema: any
   orderBy?: any
   requireRoles?: Array<'superadmin' | 'admin' | 'editor'>
+  beforeList?: () => Promise<void>
 }) {
-  const { prefix, table, schema, orderBy } = opts
+  const { prefix, table, schema, orderBy, beforeList } = opts
   const guardWrite = requireRole(...(opts.requireRoles ?? ['superadmin', 'admin', 'editor']))
 
   return new Elysia({ prefix })
     .use(authPlugin)
-    .get('/', async () => db.select().from(table).orderBy(orderBy ?? desc(table.id)), {
+    .get('/', async () => {
+      if (beforeList) await beforeList()
+      return db.select().from(table).orderBy(orderBy ?? desc(table.id))
+    }, {
       beforeHandle: requireAuth,
     })
     .get(
@@ -636,7 +640,21 @@ export const adminRoutes = new Elysia({ prefix: '/admin' })
   .use(adminCrud({ prefix: '/locations', table: locations, schema: locationBody, orderBy: asc(locations.sortOrder) }))
   .use(adminCrud({ prefix: '/reviews', table: reviews, schema: reviewBody, orderBy: asc(reviews.sortOrder) }))
   .use(adminCrud({ prefix: '/gallery', table: gallery, schema: galleryBody, orderBy: asc(gallery.sortOrder) }))
-  .use(adminCrud({ prefix: '/reservations', table: reservations, schema: reservationBody, orderBy: desc(reservations.createdAt) }))
+  .use(adminCrud({
+    prefix: '/reservations',
+    table: reservations,
+    schema: reservationBody,
+    orderBy: desc(reservations.createdAt),
+    beforeList: async () => {
+      const today = new Date().toISOString().slice(0, 10)
+      await db.update(reservations)
+        .set({ status: 'completed', updatedAt: new Date() })
+        .where(and(
+          inArray(reservations.status, ['confirmed', 'pending']),
+          lt(reservations.date, today)
+        ))
+    },
+  }))
   .use(adminCrud({ prefix: '/catering', table: cateringRequests, schema: cateringBody, orderBy: desc(cateringRequests.createdAt) }))
   .use(adminCrud({ prefix: '/newsletter', table: newsletterSubscribers, schema: newsletterBody, orderBy: desc(newsletterSubscribers.createdAt) }))
   .use(adminCrud({ prefix: '/blog', table: blogPosts, schema: blogPostBody, orderBy: desc(blogPosts.createdAt) }))
