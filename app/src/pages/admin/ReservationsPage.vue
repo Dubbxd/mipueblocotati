@@ -85,7 +85,7 @@ const columns = [
   { key: 'name', label: 'Cliente', render: (r: Reservation) => `<div>${r.name}</div><div class="text-xs text-white/50">${r.phone}${r.email ? ' · ' + r.email : ''}</div>` },
   { key: 'partySize', label: 'Personas', width: '90px', render: (r: Reservation) => `<span class="text-base font-semibold">${r.partySize}</span>` },
   { key: 'notes', label: 'Notas', render: (r: Reservation) => r.notes ? `<span class="text-xs text-white/60">${r.notes}</span>` : '—' },
-  { key: 'status', label: 'Estado', render: statusBadge }
+  { key: 'status', label: 'Estado', render: (r: Reservation) => statusBadge(r.status) }
 ]
 
 onMounted(load)
