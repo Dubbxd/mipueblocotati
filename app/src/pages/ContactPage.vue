@@ -2,7 +2,6 @@
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useSiteStore } from '@/stores'
-import MapLeaflet from '@/components/sections/MapLeaflet.vue'
 import Icon from '@/components/ui/Icon.vue'
 import ConsentCheckboxes from '@/components/ui/ConsentCheckboxes.vue'
 import { api } from '@/lib/api'
@@ -156,7 +155,13 @@ async function submit() {
 
           <!-- Mapa -->
           <div class="rounded-3xl overflow-hidden shadow-elev border border-sand-200 h-64">
-            <MapLeaflet only="cotati" height="100%" />
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3312.9824918648524!2d-122.7148391884781!3d38.334928879578506!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80844a7a1cfec9d5%3A0x4bdd1dd8d717e714!2sMi%20Pueblo!5e1!3m2!1ses!2smx!4v1779756490645!5m2!1ses!2smx"
+              class="w-full h-full border-0"
+              allowfullscreen
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+            />
           </div>
 
         </div>
