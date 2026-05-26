@@ -101,7 +101,7 @@ async function submit() {
             </div>
             <!-- Datos -->
             <div class="p-6 space-y-4">
-              <a :href="`https://maps.google.com/?q=${encodeURIComponent(main.address + ', ' + main.city)}`"
+              <a :href="main.links?.googleMaps || `https://maps.google.com/?q=${encodeURIComponent(main.address + ', ' + main.city)}`"
                  target="_blank" rel="noopener"
                  class="flex items-start gap-3 group">
                 <div class="w-9 h-9 rounded-xl bg-brand/10 flex items-center justify-center shrink-0 mt-0.5">

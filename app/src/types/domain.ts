@@ -22,6 +22,7 @@ export interface Restaurant {
     reservations?: string
     facebook?: string
     instagram?: string
+    googleMaps?: string
   }
 }
 

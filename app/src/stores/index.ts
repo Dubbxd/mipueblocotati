@@ -52,6 +52,7 @@ function mapLocation(loc: DbLocation): Restaurant {
       reservations: loc.links?.reservations ?? undefined,
       facebook: loc.links?.facebook ?? undefined,
       instagram: loc.links?.instagram ?? undefined,
+      googleMaps: loc.links?.googleMaps ?? undefined,
     },
   }
 }

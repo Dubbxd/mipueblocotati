@@ -68,7 +68,7 @@ async function seedLocation() {
         clover: 'https://mi-pueblo-real-mex-cotati.cloveronline.com/menu/all',
         facebook: 'https://www.facebook.com/MiPuebloCotati',
         instagram: 'https://www.instagram.com/mipueblocotati/',
-        googleMaps: 'https://maps.google.com/?q=7384+Commerce+Blvd+Cotati+CA',
+        googleMaps: 'https://maps.app.goo.gl/29F9BLfoajdY1AhZ9',
       },
       sortOrder: 1,
     })
