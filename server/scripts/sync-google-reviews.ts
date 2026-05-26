@@ -1,17 +1,15 @@
 /**
- * Sincroniza reseñas de Google Business Profile a la BD local.
+ * Sincroniza reseñas de Google Places API a la BD local.
  *
  * Prerequisito: tener en .env:
- *   GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REFRESH_TOKEN
- * (generados con setup-google-oauth.ts)
+ *   GOOGLE_PLACES_API_KEY  (API key con Places API habilitada)
  *
  * Uso:
  *   bun scripts/sync-google-reviews.ts
  *
  * ¿Qué hace?
- *   - Obtiene un access_token fresco usando el refresh_token
- *   - Lista las cuentas y localiza Mi Pueblo Cotati
- *   - Descarga hasta 50 reseñas recientes (4+ estrellas)
+ *   - Busca Mi Pueblo Cotati via Places Text Search
+ *   - Obtiene rating, total de reseñas y hasta 5 reseñas recientes
  *   - Inserta reseñas nuevas en la tabla `reviews` (source='google', status='approved')
  *   - Marca como isFeatured las reseñas de 5 estrellas con texto ≥ 80 chars
  *   - Guarda el rating promedio y total de reseñas en locations.links
@@ -21,89 +19,74 @@ import { db } from '../src/db/client'
 import { reviews, locations } from '../src/db/schema'
 import { eq, and } from 'drizzle-orm'
 
-const CLIENT_ID     = process.env.GOOGLE_CLIENT_ID
-const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET
-const REFRESH_TOKEN = process.env.GOOGLE_REFRESH_TOKEN
+const API_KEY = process.env.GOOGLE_PLACES_API_KEY
 
-if (!CLIENT_ID || !CLIENT_SECRET || !REFRESH_TOKEN) {
-  console.error('❌ Faltan variables de entorno:')
-  console.error('   GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REFRESH_TOKEN')
-  console.error('   → Ejecuta primero: bun scripts/setup-google-oauth.ts')
+if (!API_KEY) {
+  console.error('❌ Falta GOOGLE_PLACES_API_KEY en el .env')
   process.exit(1)
 }
 
+const BASE = 'https://places.googleapis.com/v1'
+
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
-async function getAccessToken(): Promise<string> {
-  const res = await fetch('https://oauth2.googleapis.com/token', {
+async function findPlaceId(query: string): Promise<string | null> {
+  const res  = await fetch(`${BASE}/places:searchText`, {
     method:  'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body:    new URLSearchParams({
-      client_id:     CLIENT_ID!,
-      client_secret: CLIENT_SECRET!,
-      refresh_token: REFRESH_TOKEN!,
-      grant_type:    'refresh_token',
-    }),
+    headers: {
+      'Content-Type':    'application/json',
+      'X-Goog-Api-Key':  API_KEY!,
+      'X-Goog-FieldMask': 'places.id,places.displayName,places.formattedAddress',
+    },
+    body: JSON.stringify({ textQuery: query }),
   })
   const data = await res.json() as any
-  if (data.error) throw new Error(`❌ Token error: ${data.error_description}`)
-  return data.access_token
+  if (data.error) throw new Error(`Places search error: ${JSON.stringify(data.error)}`)
+  return data?.places?.[0]?.id ?? null
 }
 
-async function gmbGet(token: string, path: string) {
-  const res = await fetch(`https://mybusiness.googleapis.com/v4/${path}`, {
-    headers: { Authorization: `Bearer ${token}` },
+async function getPlaceDetails(placeId: string) {
+  const res  = await fetch(`${BASE}/places/${placeId}`, {
+    headers: {
+      'X-Goog-Api-Key':  API_KEY!,
+      'X-Goog-FieldMask': 'id,displayName,rating,userRatingCount,reviews',
+    },
   })
-  const json = await res.json() as any
-  if (json.error) throw new Error(`API error: ${JSON.stringify(json.error)}`)
-  return json
-}
-
-const STAR_MAP: Record<string, number> = {
-  ONE: 1, TWO: 2, THREE: 3, FOUR: 4, FIVE: 5,
+  const data = await res.json() as any
+  if (data.error) throw new Error(`Places details error: ${JSON.stringify(data.error)}`)
+  return data as {
+    rating?: number
+    userRatingCount?: number
+    reviews?: Array<{
+      name: string
+      rating: number
+      text?: { text: string; languageCode: string }
+      authorAttribution?: { displayName: string }
+      relativePublishTimeDescription: string
+    }>
+  }
 }
 
 // ── Main ─────────────────────────────────────────────────────────────────────
 
 async function main() {
-  console.log('🔄 Sincronizando reseñas de Google Business Profile...\n')
+  console.log('🔄 Sincronizando reseñas via Google Places API...\n')
 
-  const token = await getAccessToken()
-  console.log('✅ Access token obtenido')
+  // 1. Encontrar place_id
+  const placeId = await findPlaceId('Mi Pueblo Cotati CA')
+  if (!placeId) throw new Error('No se encontró el lugar en Google Places')
+  console.log(`📍 Place ID: ${placeId}`)
 
-  // 1. Listar cuentas
-  const accountsData = await gmbGet(token, 'accounts')
-  const accounts: any[] = accountsData.accounts ?? []
-  if (!accounts.length) throw new Error('No se encontraron cuentas de Google Business Profile.')
-
-  // Buscar la cuenta que contenga el negocio
-  const account = accounts[0]
-  console.log(`📁 Cuenta: ${account.accountName} (${account.name})`)
-
-  // 2. Listar locations de la cuenta
-  const locData = await gmbGet(token, `${account.name}/locations?readMask=name,title,storeCode`)
-  const gLocations: any[] = locData.locations ?? []
-  if (!gLocations.length) throw new Error('No se encontraron sucursales en esta cuenta.')
-
-  console.log('\n📍 Sucursales encontradas:')
-  gLocations.forEach((l: any) => console.log(`   • ${l.title ?? l.name}`))
-
-  // Buscar Cotati (o la primera si solo hay una)
-  const gLoc = gLocations.find((l: any) =>
-    (l.title ?? '').toLowerCase().includes('cotati')
-  ) ?? gLocations[0]
-  console.log(`\n🏠 Sincronizando: ${gLoc.title ?? gLoc.name}`)
-
-  // 3. Obtener reseñas (hasta 50 por llamada)
-  const reviewsData = await gmbGet(token, `${gLoc.name}/reviews?pageSize=50`)
-  const gReviews: any[] = reviewsData.reviews ?? []
-  const avgRating: number = reviewsData.averageRating ?? 0
-  const totalCount: number = reviewsData.totalReviewCount ?? 0
+  // 2. Obtener detalles
+  const place = await getPlaceDetails(placeId)
+  const avgRating  = place.rating ?? 0
+  const totalCount = place.userRatingCount ?? 0
+  const gReviews   = place.reviews ?? []
 
   console.log(`⭐ Rating: ${avgRating} · ${totalCount} reseñas totales en Google`)
   console.log(`📝 ${gReviews.length} reseñas descargadas\n`)
 
-  // 4. Guardar rating en la BD (en locations.links)
+  // 3. Guardar rating en la BD (en locations.links)
   const [cotatiLoc] = await db.select().from(locations).where(eq(locations.slug, 'cotati'))
   if (cotatiLoc) {
     await db.update(locations)
@@ -118,20 +101,20 @@ async function main() {
     console.log(`✅ Rating guardado en BD: ${avgRating} (${totalCount} reseñas)`)
   }
 
-  // 5. Insertar reseñas nuevas
+  // 4. Insertar reseñas nuevas
   let inserted = 0
   let skipped  = 0
 
   for (const r of gReviews) {
-    const body      = (r.comment ?? '').trim()
-    const starRating = STAR_MAP[r.starRating] ?? 0
+    const body   = (r.text?.text ?? '').trim()
+    const rating = r.rating ?? 0
 
     // Solo reseñas de 4+ estrellas con texto útil
-    if (starRating < 4 || body.length < 20) { skipped++; continue }
+    if (rating < 4 || body.length < 20) { skipped++; continue }
 
-    const authorName = r.reviewer?.displayName ?? 'Google User'
+    const authorName = r.authorAttribution?.displayName ?? 'Google User'
 
-    // Evitar duplicados (mismo autor + texto)
+    // Evitar duplicados (mismo autor)
     const existing = await db.select()
       .from(reviews)
       .where(and(
@@ -145,12 +128,12 @@ async function main() {
     await db.insert(reviews).values({
       authorName,
       authorCity:  'Sonoma County',
-      rating:      starRating,
+      rating,
       bodyEs:      body,
       bodyEn:      body,
       source:      'google',
       status:      'approved',
-      isFeatured:  starRating === 5 && body.length >= 80,
+      isFeatured:  rating === 5 && body.length >= 80,
       sortOrder:   0,
     })
     inserted++

@@ -16,8 +16,8 @@ const GOOGLE_MAPS_URL   = 'https://www.google.com/maps?cid=5466729018176324884'
 const WRITE_REVIEW_URL  = 'https://www.google.com/maps?cid=5466729018176324884&hl=es'
 
 // Rating y conteo: del store si ya se sincronizó desde Google; fallback estático
-const googleRating = computed(() => site.mainRestaurant?.googleRating      ?? 4.7)
-const googleCount  = computed(() => site.mainRestaurant?.googleReviewCount ?? 2156)
+const googleRating = computed(() => site.mainRestaurant?.googleRating      ?? 4.4)
+const googleCount  = computed(() => site.mainRestaurant?.googleReviewCount ?? 969)
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Reseñas: cargadas desde la API (isFeatured=true, status=approved)
