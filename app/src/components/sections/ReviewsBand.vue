@@ -1,31 +1,30 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useSiteStore } from '@/stores'
+import { api } from '@/lib/api'
 import Icon from '@/components/ui/Icon.vue'
 
 const { t, locale } = useI18n()
+const site = useSiteStore()
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Google Maps · Mi Pueblo Cotati
-// Source URL del dueño:
-//   https://www.google.com.mx/maps/place/Mi+Pueblo/@38.3349247,-122.7148338,17z/
-//   data=!4m6!3m5!1s0x80844a7a1cfec9d5:0x4bdd1dd8d717e714
-// CID = decimal del 0x4bdd1dd8d717e714 = 5466729018176324884
-// `?cid=` abre la ficha del negocio directamente en Google Maps,
-// donde el usuario puede leer reseñas y/o tocar "Escribir reseña".
+// CID = decimal de 0x4bdd1dd8d717e714 = 5466729018176324884
 // ─────────────────────────────────────────────────────────────────────────────
-const GOOGLE = {
-  mapsUrl: 'https://www.google.com/maps?cid=5466729018176324884',
-  // Para que funcione "Escribir reseña" sin Place ID convertido,
-  // mandamos al usuario a la ficha en Maps; allí el botón "Escribir reseña"
-  // ya funciona en sesión iniciada.
-  writeReviewUrl: 'https://www.google.com/maps?cid=5466729018176324884&hl=es',
-  rating: 4.7,
-  count: 2156
-} as const
+const GOOGLE_MAPS_URL   = 'https://www.google.com/maps?cid=5466729018176324884'
+const WRITE_REVIEW_URL  = 'https://www.google.com/maps?cid=5466729018176324884&hl=es'
 
+// Rating y conteo: del store si ya se sincronizó desde Google; fallback estático
+const googleRating = computed(() => site.mainRestaurant?.googleRating      ?? 4.7)
+const googleCount  = computed(() => site.mainRestaurant?.googleReviewCount ?? 2156)
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Reseñas: cargadas desde la API (isFeatured=true, status=approved)
+// Fallback a las 3 curadas si la API falla o no hay datos aún.
+// ─────────────────────────────────────────────────────────────────────────────
 interface Review {
-  id: string
+  id: string | number
   author: string
   source: string
   initial: string
@@ -33,36 +32,23 @@ interface Review {
   text: { es: string; en: string }
 }
 
-// Reseñas curadas (en `spirit` de las reales). Reemplazables vía /api/public/reviews.
-const reviews: Review[] = [
+const FALLBACK_REVIEWS: Review[] = [
   {
-    id: 'r1',
-    author: 'María G.',
-    source: 'Google · Cotati',
-    initial: 'M',
-    rating: 5,
+    id: 'r1', author: 'María G.', source: 'Google · Cotati', initial: 'M', rating: 5,
     text: {
       es: 'El mejor mole que he probado fuera de México. La carne asada es jugosa y las margaritas — ¡increíbles! Vinimos en familia y nos atendieron como en casa.',
       en: 'Best mole I have ever had outside of Mexico. The carne asada is juicy and the margaritas — amazing! We came as a family and were treated like home.'
     }
   },
   {
-    id: 'r2',
-    author: 'Jonathan R.',
-    source: 'Google · Sonoma County',
-    initial: 'J',
-    rating: 5,
+    id: 'r2', author: 'Jonathan R.', source: 'Google · Sonoma County', initial: 'J', rating: 5,
     text: {
       es: 'Vengo cada jueves por el burrito de $10 y nunca me decepciona. Porciones enormes, precios honestos y staff súper amable. Es mi spot favorito de toda la zona.',
       en: 'I come every Thursday for the $10 burrito and it never disappoints. Huge portions, honest prices and super friendly staff. My favorite spot in the area.'
     }
   },
   {
-    id: 'r3',
-    author: 'Daniela P.',
-    source: 'Google · Catering',
-    initial: 'D',
-    rating: 5,
+    id: 'r3', author: 'Daniela P.', source: 'Google · Catering', initial: 'D', rating: 5,
     text: {
       es: 'Pedimos el catering para la boda de mi hermana y todos los invitados nos preguntaron de dónde era la comida. Los tacos al pastor — para llorar de felicidad.',
       en: 'We hired their catering for my sister\'s wedding and every guest asked where the food was from. The al pastor tacos — cry-of-joy good.'
@@ -70,18 +56,37 @@ const reviews: Review[] = [
   }
 ]
 
-const idx = ref(0)
-const next = () => (idx.value = (idx.value + 1) % reviews.length)
-const prev = () => (idx.value = (idx.value - 1 + reviews.length) % reviews.length)
+const reviews = ref<Review[]>(FALLBACK_REVIEWS)
+
+onMounted(async () => {
+  try {
+    const data = await api('/public/reviews') as any[]
+    if (data?.length) {
+      reviews.value = data.map(r => ({
+        id: r.id,
+        author: r.authorName,
+        source: `Google · ${r.authorCity ?? 'Sonoma County'}`,
+        initial: (r.authorName?.[0] ?? 'G').toUpperCase(),
+        rating: r.rating,
+        text: { es: r.bodyEs, en: r.bodyEn ?? r.bodyEs },
+      }))
+    }
+  } catch {
+    // mantiene el fallback
+  }
+})
+
+const idx  = ref(0)
+const next = () => (idx.value = (idx.value + 1) % reviews.value.length)
+const prev = () => (idx.value = (idx.value - 1 + reviews.value.length) % reviews.value.length)
 
 const ratingFmt = computed(() =>
-  GOOGLE.rating.toLocaleString(locale.value === 'es' ? 'es-MX' : 'en-US', {
-    minimumFractionDigits: 1,
-    maximumFractionDigits: 1
+  googleRating.value.toLocaleString(locale.value === 'es' ? 'es-MX' : 'en-US', {
+    minimumFractionDigits: 1, maximumFractionDigits: 1,
   })
 )
 const countFmt = computed(() =>
-  GOOGLE.count.toLocaleString(locale.value === 'es' ? 'es-MX' : 'en-US')
+  googleCount.value.toLocaleString(locale.value === 'es' ? 'es-MX' : 'en-US')
 )
 </script>
 
@@ -109,7 +114,7 @@ const countFmt = computed(() =>
       </h2>
 
       <!-- Aggregate badge Google -->
-      <a :href="GOOGLE.mapsUrl" target="_blank" rel="noopener"
+      <a :href="GOOGLE_MAPS_URL" target="_blank" rel="noopener"
          class="inline-flex flex-col sm:flex-row items-center gap-4 sm:gap-6 bg-white text-night px-6 sm:px-8 py-5 rounded-2xl shadow-elev hover:scale-[1.02] transition-transform mb-12 group">
         <!-- Google G logo (oficial multicolor) -->
         <svg viewBox="0 0 24 24" class="w-10 h-10 shrink-0" aria-hidden="true">
@@ -142,10 +147,6 @@ const countFmt = computed(() =>
         <article v-for="r in reviews" :key="r.id"
                  class="relative bg-sand-50 text-night p-7 pt-9 rounded-tl-[3rem] rounded-br-[3rem] rounded-tr-2xl rounded-bl-2xl shadow-elev text-left flex flex-col">
           <span class="absolute -top-5 left-7 bg-accent text-white w-12 h-12 rounded-full grid place-items-center font-display font-black text-lg shadow-lg ring-2 ring-white">
-            {{ r.initial }}
-          </span>
-          <div class="flex items-center gap-1 text-accent mb-3" :aria-label="`${r.rating} ${t('home.reviews.stars')}`">
-            <Icon v-for="i in r.rating" :key="i" name="Star1" type="Bold" :size="16" />
           </div>
           <p class="font-body text-base leading-relaxed mb-6 text-ink flex-1">{{ r.text[locale as 'es'|'en'] }}</p>
           <div class="border-t border-sand-200 pt-4 flex items-center justify-between">
@@ -196,12 +197,12 @@ const countFmt = computed(() =>
 
       <!-- CTAs -->
       <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
-        <a :href="GOOGLE.mapsUrl" target="_blank" rel="noopener"
+        <a :href="GOOGLE_MAPS_URL" target="_blank" rel="noopener"
            class="btn-light !py-3 !px-6 inline-flex items-center gap-2">
           <Icon name="Map1" :size="18" />
           <span>{{ t('home.reviews.viewAll') }}</span>
         </a>
-        <a :href="GOOGLE.writeReviewUrl" target="_blank" rel="noopener"
+        <a :href="WRITE_REVIEW_URL" target="_blank" rel="noopener"
            class="btn-accent !py-3 !px-6 inline-flex items-center gap-2">
           <Icon name="Edit2" :size="18" />
           <span>{{ t('home.reviews.writeReview') }}</span>

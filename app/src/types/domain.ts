@@ -24,6 +24,8 @@ export interface Restaurant {
     instagram?: string
     googleMaps?: string
   }
+  googleRating?: number
+  googleReviewCount?: number
 }
 
 export interface MenuCategory {

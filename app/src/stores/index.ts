@@ -54,6 +54,8 @@ function mapLocation(loc: DbLocation): Restaurant {
       instagram: loc.links?.instagram ?? undefined,
       googleMaps: loc.links?.googleMaps ?? undefined,
     },
+    googleRating:      loc.links?.googleRating      ? Number(loc.links.googleRating)      : undefined,
+    googleReviewCount: loc.links?.googleReviewCount ? Number(loc.links.googleReviewCount) : undefined,
   }
 }
 function mapPromotion(p: DbPromotion): Promotion {
