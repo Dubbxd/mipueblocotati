@@ -28,30 +28,13 @@ const weekDates = computed(() => {
   })
 })
 
-// Intenta extraer el día de la semana de un promo (fallback desde el ID)
-const ID_DAY: Record<string, number> = {
-  'taco-tuesday': 2,
-  'burrito-thursday': 4,
-}
+// Día de la semana de un promo (usa el campo real del DB)
 function promoDay(p: typeof site.promotions[0]): number | null {
-  if (p.dayOfWeek != null) return p.dayOfWeek
-  for (const [key, val] of Object.entries(ID_DAY)) {
-    if (p.id === key || p.id.includes(key)) return val
-  }
-  return null
+  return p.dayOfWeek ?? null
 }
 
-const isActiveToday = (p: typeof site.promotions[0]) => {
-  if (!p.active) return false
-  const day = promoDay(p)
-  return p.recurrence === 'one_time' || day === today
-}
-
-// Extrae el precio de la descripción: "$10", "$9", etc.
-function extractPrice(desc: string): string | null {
-  const m = desc.match(/\$\d+(\.\d+)?/)
-  return m ? m[0] : null
-}
+const isActiveToday = (p: typeof site.promotions[0]) =>
+  p.active && (p.recurrence === 'one_time' || p.dayOfWeek === today)
 
 const txt = (o: { es: string; en: string }) => locale.value === 'es' ? o.es : o.en
 
@@ -205,9 +188,9 @@ function colors(id: string) {
               </div>
 
               <!-- Floating price badge -->
-              <div v-if="extractPrice(txt(p.description))"
+              <div v-if="p.price"
                 class="absolute top-3.5 right-3.5 bg-white text-night font-display font-black text-2xl leading-none px-3.5 py-2.5 rounded-2xl shadow-xl ring-1 ring-black/5">
-                {{ extractPrice(txt(p.description)) }}
+                {{ p.price }}
               </div>
             </div>
 
@@ -269,9 +252,9 @@ function colors(id: string) {
                   {{ promoDay(p) != null ? dayFull(promoDay(p)!) : (locale === 'es' ? 'Especial' : 'Special') }}
                 </span>
               </div>
-              <div v-if="extractPrice(txt(p.description))"
+              <div v-if="p.price"
                 class="absolute top-3 right-3 bg-white text-night font-display font-black text-xl leading-none px-3 py-2 rounded-xl shadow-lg">
-                {{ extractPrice(txt(p.description)) }}
+                {{ p.price }}
               </div>
             </div>
             <div class="p-5 flex flex-col gap-3 flex-1">

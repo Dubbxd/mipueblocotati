@@ -148,6 +148,10 @@ export const promotions = pgTable('promotions', {
   ctaLabelEs: varchar('cta_label_es', { length: 80 }),
   ctaLabelEn: varchar('cta_label_en', { length: 80 }),
   /** Si está marcada como 'topBar', se muestra en el PromoBar (solo una activa a la vez recomendado) */
+  /** Precio de la promo, ej: "$10", "$9.99" — se muestra como badge en la tarjeta */
+  price: varchar('price', { length: 20 }),
+  /** Día de la semana: 0=dom, 1=lun … 6=sab. Null = sin día fijo */
+  dayOfWeek: integer('day_of_week'),
   showInBar: boolean('show_in_bar').notNull().default(false),
   startsAt: timestamp('starts_at'),
   endsAt: timestamp('ends_at'),

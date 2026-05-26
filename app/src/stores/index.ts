@@ -15,6 +15,7 @@ interface DbLocation {
 interface DbPromotion {
   id: number; slug: string; titleEs: string; titleEn: string
   bodyEs: string | null; bodyEn: string | null; photo: string | null
+  price: string | null; dayOfWeek: number | null
   ctaUrl: string | null; ctaLabelEs: string | null; ctaLabelEn: string | null
   isActive: boolean
 }
@@ -63,7 +64,10 @@ function mapPromotion(p: DbPromotion): Promotion {
     id: p.slug,
     title: { es: p.titleEs, en: p.titleEn },
     description: { es: p.bodyEs ?? p.titleEs, en: p.bodyEn ?? p.titleEn },
-    recurrence: 'one_time', active: p.isActive,
+    recurrence: p.dayOfWeek != null ? 'weekly' : 'one_time',
+    dayOfWeek: p.dayOfWeek ?? undefined,
+    price: p.price ?? undefined,
+    active: p.isActive,
     photo: p.photo ?? undefined,
     ...(p.ctaUrl ? { cta: { label: { es: p.ctaLabelEs ?? 'Ver más', en: p.ctaLabelEn ?? 'See more' }, href: p.ctaUrl } } : {}),
   }

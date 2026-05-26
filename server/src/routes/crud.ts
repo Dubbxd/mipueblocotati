@@ -517,6 +517,10 @@ const promoBody = t.Object({
   barTextEn: t.Optional(t.String()),
   emoji: t.Optional(t.String()),
   photo: t.Optional(t.String()),
+  /** Precio mostrado como badge: "$10", "$9.99", etc. */
+  price: t.Optional(t.String()),
+  /** Día de la semana: 0=dom … 6=sab. Null = sin día fijo. */
+  dayOfWeek: t.Optional(t.Union([t.Number(), t.Null()])),
   ctaUrl: t.Optional(t.String()),
   ctaLabelEs: t.Optional(t.String()),
   ctaLabelEn: t.Optional(t.String()),

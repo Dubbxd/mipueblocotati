@@ -15,6 +15,10 @@ type Promo = {
   barTextEs?: string | null; barTextEn?: string | null
   emoji?: string | null
   photo?: string | null
+  /** Precio badge: "$10", "$9.99" — se muestra en la tarjeta pública */
+  price?: string | null
+  /** Día de la semana: 0=dom … 6=sab. Null = sin día fijo */
+  dayOfWeek?: number | null
   ctaUrl?: string | null
   ctaLabelEs?: string | null; ctaLabelEn?: string | null
   showInBar: boolean
@@ -29,7 +33,7 @@ const saving = ref(false)
 const error = ref<string | null>(null)
 const form = ref<Partial<Promo>>(empty())
 
-function empty(): Partial<Promo> { return { slug: '', titleEs: '', titleEn: '', emoji: '', photo: null, showInBar: false, isActive: true, sortOrder: 0 } }
+function empty(): Partial<Promo> { return { slug: '', titleEs: '', titleEn: '', emoji: '', photo: null, price: null, dayOfWeek: null, showInBar: false, isActive: true, sortOrder: 0 } }
 function slugify(s: string) { return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') }
 
 async function load() { loading.value = true; try { rows.value = await api('/api/admin/promotions') } finally { loading.value = false } }
@@ -50,6 +54,8 @@ async function save() {
       barTextEn: form.value.barTextEn || undefined,
       emoji: form.value.emoji || undefined,
       photo: form.value.photo || undefined,
+      price: form.value.price || undefined,
+      dayOfWeek: form.value.dayOfWeek != null ? Number(form.value.dayOfWeek) : null,
       ctaUrl: form.value.ctaUrl || undefined,
       ctaLabelEs: form.value.ctaLabelEs || undefined,
       ctaLabelEn: form.value.ctaLabelEn || undefined,
@@ -107,6 +113,19 @@ onMounted(load)
         <FormField label="Texto en barra superior (EN)"><input v-model="form.barTextEn" class="w-full bg-night border border-white/15 rounded-lg px-3 py-2 text-sm" /></FormField>
         <FormField label="URL del CTA"><input v-model="form.ctaUrl" placeholder="https://… o /menu" class="w-full bg-night border border-white/15 rounded-lg px-3 py-2 text-sm" /></FormField>
         <FormField label="Label CTA (ES)"><input v-model="form.ctaLabelEs" class="w-full bg-night border border-white/15 rounded-lg px-3 py-2 text-sm" /></FormField>
+        <FormField label="Precio" hint='Ej: "$10" — aparece como badge en la tarjeta. Dejar vacío si no aplica'><input v-model="form.price" placeholder="$10" class="w-full bg-night border border-white/15 rounded-lg px-3 py-2 text-sm" /></FormField>
+        <FormField label="Día de la semana" hint="Si la promo se repite un día fijo. Dejar vacío para sin día fijo">
+          <select v-model.number="form.dayOfWeek" class="w-full bg-night border border-white/15 rounded-lg px-3 py-2 text-sm">
+            <option :value="null">— Sin día fijo —</option>
+            <option :value="0">Domingo</option>
+            <option :value="1">Lunes</option>
+            <option :value="2">Martes</option>
+            <option :value="3">Miércoles</option>
+            <option :value="4">Jueves</option>
+            <option :value="5">Viernes</option>
+            <option :value="6">Sábado</option>
+          </select>
+        </FormField>
         <FormField label="Foto" class="sm:col-span-2"><ImageUploader v-model="form.photo" /></FormField>
         <FormField label="Orden"><input v-model.number="form.sortOrder" type="number" class="w-full bg-night border border-white/15 rounded-lg px-3 py-2 text-sm" /></FormField>
         <FormField class="sm:col-span-2">

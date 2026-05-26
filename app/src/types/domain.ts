@@ -71,7 +71,8 @@ export interface Promotion {
   title: LocaleText
   description: LocaleText
   recurrence: 'weekly' | 'one_time'
-  dayOfWeek?: number // 0..6 (sólo si weekly)
+  dayOfWeek?: number // 0..6
+  price?: string    // ej: "$10", "$9.99"
   validAt?: string[] // restaurant ids
   active: boolean
   photo?: string
