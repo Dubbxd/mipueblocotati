@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useMenuStore } from '@/stores'
 import Icon from '@/components/ui/Icon.vue'
 
 const { t, locale } = useI18n()
 const menu = useMenuStore()
-// Solo platillos con foto, hasta 10
-const featured = menu.popular.filter(m => m.photo).slice(0, 10)
+// Solo platillos con foto, hasta 10 — computed para reactividad cuando carga el store
+const featured = computed(() => menu.popular.filter(m => m.photo).slice(0, 10))
 const fmt = (p: number | null) => p == null ? '—' : `$${p.toFixed(2)}`
 
 const scroller = ref<HTMLElement | null>(null)
