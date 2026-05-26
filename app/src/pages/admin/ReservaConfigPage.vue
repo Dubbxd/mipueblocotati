@@ -280,7 +280,7 @@ function formatDate(iso: string) {
             <div class="flex items-center gap-2">
               <input v-model.number="settings.minAdvanceHours" type="range" min="0" max="72" step="1"
                 class="w-full accent-brand" />
-              <span class="w-16 text-center font-bold text-sm bg-gray-50 border border-gray-200 rounded-lg py-1.5">
+              <span class="w-16 text-center font-bold text-sm bg-gray-50 border border-gray-200 rounded-lg py-1.5 text-gray-800">
                 {{ settings.minAdvanceHours }}h
               </span>
             </div>
@@ -292,7 +292,7 @@ function formatDate(iso: string) {
             <div class="flex items-center gap-2">
               <input v-model.number="settings.maxAdvanceDays" type="range" min="7" max="365" step="1"
                 class="w-full accent-brand" />
-              <span class="w-16 text-center font-bold text-sm bg-gray-50 border border-gray-200 rounded-lg py-1.5">
+              <span class="w-16 text-center font-bold text-sm bg-gray-50 border border-gray-200 rounded-lg py-1.5 text-gray-800">
                 {{ settings.maxAdvanceDays }}d
               </span>
             </div>
@@ -310,7 +310,7 @@ function formatDate(iso: string) {
           <div>
             <label class="text-xs font-semibold text-gray-500 block mb-1">Fecha</label>
             <input v-model="newBlockDate" type="date"
-              class="rounded-lg border border-gray-200 px-3 py-2 text-sm focus:ring-2 focus:ring-brand/30 focus:border-brand outline-none" />
+              class="rounded-lg border border-gray-200 px-3 py-2 text-sm bg-white text-gray-900 focus:ring-2 focus:ring-brand/30 focus:border-brand outline-none" />
           </div>
           <div class="flex-1 min-w-40">
             <label class="text-xs font-semibold text-gray-500 block mb-1">Razón (opcional)</label>
