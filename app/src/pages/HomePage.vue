@@ -7,9 +7,16 @@ import MenuPreview from '@/components/sections/MenuPreview.vue'
 import CategoriesSection from '@/components/sections/CategoriesSection.vue'
 import ReviewsBand from '@/components/sections/ReviewsBand.vue'
 import AwardsBand from '@/components/sections/AwardsBand.vue'
-import MapLeaflet from '@/components/sections/MapLeaflet.vue'
+import MapGoogle from '@/components/sections/MapGoogle.vue'
 import { useI18n } from 'vue-i18n'
+import { computed } from 'vue'
+import { useSiteStore } from '@/stores'
 const { t } = useI18n()
+const site = useSiteStore()
+const mainAddress = computed(() => {
+  const r = site.mainRestaurant
+  return r ? `${r.address}, ${r.city}, ${r.state}` : 'Mi Pueblo Cotati, CA'
+})
 </script>
 
 <template>
@@ -83,9 +90,11 @@ const { t } = useI18n()
 
     <section class="section bg-sand-100">
       <div class="container-page">
-        <h2 class="section-header">¿Dónde encontrarnos?</h2>
-        <p class="section-sub">6 sucursales en Sonoma & Marin County</p>
-        <MapLeaflet height="500px" />
+        <h2 class="section-header">{{ t('home.map.title') }}</h2>
+        <p class="section-sub">{{ t('home.map.sub') }}</p>
+        <div class="rounded-2xl overflow-hidden shadow-soft border border-sand-200">
+          <MapGoogle :q="mainAddress" height="500px" :title="t('home.map.title')" />
+        </div>
       </div>
     </section>
   </main>

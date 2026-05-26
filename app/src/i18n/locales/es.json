@@ -99,6 +99,10 @@
         "musicValue": "Bajo pedido"
       }
     },
+    "map": {
+      "title": "¿Dónde encontrarnos?",
+      "sub": "6 sucursales en Sonoma & Marin County"
+    },
     "gallery": { "title": "Nuestra cocina", "sub": "Sabores que enamoran a la vista" },
     "menuPreview": { "title": "Platillos favoritos", "sub": "Lo más amado por nuestros clientes" },
     "awards": { "kicker": "Premios y reconocimientos", "title": "Reconocimientos" },

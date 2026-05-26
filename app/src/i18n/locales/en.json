@@ -99,6 +99,10 @@
         "musicValue": "On request"
       }
     },
+    "map": {
+      "title": "Where to find us",
+      "sub": "6 locations in Sonoma & Marin County"
+    },
     "gallery": { "title": "Our Kitchen", "sub": "Flavors that delight the eye" },
     "menuPreview": { "title": "Customer Favorites", "sub": "Most loved by our guests" },
     "awards": { "kicker": "Awards & recognition", "title": "Recognitions" },

@@ -2,7 +2,7 @@
 import { useI18n } from 'vue-i18n'
 import { useSiteStore } from '@/stores'
 import LocationCard from '@/components/sections/LocationCard.vue'
-import MapLeaflet from '@/components/sections/MapLeaflet.vue'
+import MapGoogle from '@/components/sections/MapGoogle.vue'
 import Icon from '@/components/ui/Icon.vue'
 const { t } = useI18n()
 const site = useSiteStore()
@@ -51,7 +51,7 @@ const site = useSiteStore()
     <!-- Mapa interactivo -->
     <section class="container-page py-8">
       <div class="rounded-3xl overflow-hidden shadow-elev border border-sand-200">
-        <MapLeaflet height="420px" />
+        <MapGoogle :q="site.mainRestaurant ? `${site.mainRestaurant.address}, ${site.mainRestaurant.city}, ${site.mainRestaurant.state}` : 'Mi Pueblo Cotati, CA'" height="420px" />
       </div>
     </section>
 

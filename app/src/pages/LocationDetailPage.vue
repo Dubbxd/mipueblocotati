@@ -2,7 +2,7 @@
 import { useRoute, RouterLink } from 'vue-router'
 import { computed } from 'vue'
 import { useSiteStore } from '@/stores'
-import MapLeaflet from '@/components/sections/MapLeaflet.vue'
+import MapGoogle from '@/components/sections/MapGoogle.vue'
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
 const route = useRoute()
@@ -28,7 +28,7 @@ const r = computed(() => site.restaurants.find(x => x.id === route.params.slug))
           <RouterLink :to="`/reservar?branch=${r.id}`" class="btn-outline text-sm">{{ t('cta.reserve') }}</RouterLink>
         </div>
       </div>
-      <MapLeaflet :only="r.id" height="420px" />
+      <MapGoogle :q="`${r.address}, ${r.city}, ${r.state}`" height="420px" />
     </div>
   </main>
 </template>
