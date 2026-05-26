@@ -354,11 +354,15 @@ function colors(id: string) {
           </h2>
         </div>
         <div class="flex items-center gap-3 shrink-0">
-          <a href="https://www.instagram.com/mipueblocotati/" target="_blank" rel="noopener"
+          <a v-if="site.mainRestaurant?.links?.instagram || true"
+            :href="site.mainRestaurant?.links?.instagram ?? 'https://www.instagram.com/mipueblocotati/'"
+            target="_blank" rel="noopener"
             class="inline-flex items-center gap-2 bg-white/15 hover:bg-white/25 border border-white/25 text-white text-sm font-semibold px-5 py-2.5 rounded-2xl transition-all">
             <Icon name="Instagram" :size="16" type="Bold" />Instagram
           </a>
-          <a href="https://www.facebook.com/mipueblocotati" target="_blank" rel="noopener"
+          <a v-if="site.mainRestaurant?.links?.facebook || true"
+            :href="site.mainRestaurant?.links?.facebook ?? 'https://www.facebook.com/mipueblocotati'"
+            target="_blank" rel="noopener"
             class="inline-flex items-center gap-2 bg-white/15 hover:bg-white/25 border border-white/25 text-white text-sm font-semibold px-5 py-2.5 rounded-2xl transition-all">
             <Icon name="Facebook" :size="16" type="Bold" />Facebook
           </a>
