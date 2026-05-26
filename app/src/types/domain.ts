@@ -14,6 +14,10 @@ export interface Restaurant {
   lat: number
   lng: number
   hours: { mon_fri: string; sat_sun: string }
+  /** Hora de apertura hoy (0-23), calculada desde DB */
+  openHour?: number
+  /** Hora de cierre hoy (0-23), calculada desde DB */
+  closeHour?: number
   isMain?: boolean
   photo?: string
   links: {

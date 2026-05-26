@@ -1,8 +1,11 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { awards } from '@/data/marketing'
+import { useSiteStore } from '@/stores'
 import Icon from '@/components/ui/Icon.vue'
 const { t, locale } = useI18n()
+const site = useSiteStore()
 
 // Metadatos de display (año + fuente) por id de award
 const meta: Record<string, { year: string; source: string }> = {
@@ -13,12 +16,12 @@ const meta: Record<string, { year: string; source: string }> = {
   a5: { year: '2023', source: 'RestaurantJi' }
 }
 
-const trust = [
-  { icon: 'Calendar',  value: '28+', label: { es: 'Años', en: 'Years' } },
-  { icon: 'Star1',     value: '4.7', label: { es: 'Google', en: 'Google' } },
-  { icon: 'Location',  value: '6',   label: { es: 'Sucursales', en: 'Locations' } },
-  { icon: 'Award',     value: '5',   label: { es: 'Premios', en: 'Awards' } }
-]
+const trust = computed(() => [
+  { icon: 'Calendar', value: '28+', label: { es: 'Años', en: 'Years' } },
+  { icon: 'Star1',    value: site.mainRestaurant?.googleRating?.toFixed(1) ?? '4.4', label: { es: 'Google', en: 'Google' } },
+  { icon: 'Location', value: String(site.restaurants.length || 1), label: { es: 'Sucursales', en: 'Locations' } },
+  { icon: 'Award',    value: String(awards.length), label: { es: 'Premios', en: 'Awards' } }
+])
 </script>
 
 <template>

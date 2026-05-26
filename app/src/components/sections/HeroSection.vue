@@ -10,7 +10,9 @@ const main = computed(() => site.mainRestaurant)
 
 const isOpen = computed(() => {
   const h = new Date().getHours()
-  return h >= 11 && h < 21
+  if (main.value?.openHour != null && main.value?.closeHour != null)
+    return h >= main.value.openHour && h < main.value.closeHour
+  return h >= 11 && h < 21 // fallback
 })
 </script>
 

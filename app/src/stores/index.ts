@@ -40,6 +40,10 @@ function mapHours(arr: DbLocation['hours']): Restaurant['hours'] {
   }
 }
 function mapLocation(loc: DbLocation): Restaurant {
+  const DAY_MAP = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat']
+  const todaySlot = loc.hours?.find(h => h.day === DAY_MAP[new Date().getDay()])
+  const openHour  = todaySlot ? parseInt(todaySlot.open.split(':')[0])  : undefined
+  const closeHour = todaySlot ? parseInt(todaySlot.close.split(':')[0]) : undefined
   return {
     id: loc.slug, slug: loc.slug, name: loc.name,
     address: loc.addressLine, city: loc.city, state: loc.state, zip: loc.postalCode ?? '',
@@ -47,6 +51,8 @@ function mapLocation(loc: DbLocation): Restaurant {
     lat: loc.lat ? parseFloat(loc.lat) : 0,
     lng: loc.lng ? parseFloat(loc.lng) : 0,
     hours: mapHours(loc.hours),
+    openHour,
+    closeHour,
     links: {
       pickup: loc.links?.clover ?? loc.links?.pickup ?? undefined,
       delivery: loc.links?.doordash ?? loc.links?.delivery ?? undefined,

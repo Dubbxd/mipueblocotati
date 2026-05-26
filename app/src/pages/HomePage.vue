@@ -17,6 +17,9 @@ const mainAddress = computed(() => {
   const r = site.mainRestaurant
   return r ? `${r.address}, ${r.city}, ${r.state}` : 'Mi Pueblo Cotati, CA'
 })
+const googleRatingStar = computed(() =>
+  site.mainRestaurant?.googleRating ? `${site.mainRestaurant.googleRating.toFixed(1)} ★` : '4.4 ★'
+)
 </script>
 
 <template>
@@ -40,7 +43,7 @@ const mainAddress = computed(() => {
       :stats="[
         { icon: 'Calendar', label: t('home.story.stats.sinceLabel'), value: '1997' },
         { icon: 'People',   label: t('home.story.stats.familyLabel'), value: t('home.story.stats.familyValue') },
-        { icon: 'Star1',    label: 'Google',  value: '4.7 ★' }
+        { icon: 'Star1',    label: 'Google',  value: googleRatingStar }
       ]"
       :badge="{ icon: 'Award', title: '25+', subtitle: t('home.story.badgeSubtitle') }"
     />
