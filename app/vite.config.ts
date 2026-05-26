@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [
     vue(),
     VitePWA({
-      registerType: 'prompt',
+      registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'favicon.svg', 'apple-touch-icon.png', 'logo.png', 'robots.txt'],
       manifest: {
         name: 'Mi Pueblo Cotati · Auténtica comida mexicana',
@@ -78,7 +78,11 @@ export default defineConfig({
           {
             urlPattern: /\/api\/public\/(menu|locations|gallery|promotions|awards|reviews)/,
             handler: 'StaleWhileRevalidate',
-            options: { cacheName: 'mipueblo-api-static' }
+            options: {
+              cacheName: 'mipueblo-api-static',
+              expiration: { maxEntries: 60, maxAgeSeconds: 60 * 60 * 12 },
+              cacheableResponse: { statuses: [0, 200] }
+            }
           },
           {
             urlPattern: /\/api\/(reservations|reviews|surveys|subscribers)/,
