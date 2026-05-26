@@ -26,27 +26,33 @@ const isActiveToday = (p: typeof site.promotions[0]) =>
   p.active && (p.recurrence === 'one_time' || p.dayOfWeek === today)
 
 // Paleta por promo
-const COLORS: Record<string, { bg: string; border: string; badge: string; icon: string; iconName: string }> = {
+const COLORS: Record<string, { bg: string; border: string; badge: string; icon: string; iconName: string; headerFrom: string; headerTo: string }> = {
   'burrito-thursday': {
     bg: 'from-brand/10 to-accent/5',
     border: 'border-brand/20',
     badge: 'bg-brand text-white',
-    icon: 'text-brand',
+    icon: 'text-white',
     iconName: 'Bag2',
+    headerFrom: '#C8501C',
+    headerTo: '#3D1A08',
   },
   'taco-tuesday': {
-    bg: 'from-accent/15 to-accent/5',
+    bg: 'from-amber-50 to-sand-50',
     border: 'border-accent/30',
     badge: 'bg-accent text-night',
-    icon: 'text-accent',
+    icon: 'text-white',
     iconName: 'MenuBoard',
+    headerFrom: '#F09828',
+    headerTo: '#8A5A38',
   },
   'newsletter-5off': {
     bg: 'from-secondary/10 to-secondary/5',
     border: 'border-secondary/20',
     badge: 'bg-secondary text-white',
-    icon: 'text-secondary',
+    icon: 'text-white',
     iconName: 'Sms',
+    headerFrom: '#8A5A38',
+    headerTo: '#3D1A08',
   },
 }
 function colors(id: string) {
@@ -54,9 +60,17 @@ function colors(id: string) {
     bg: 'from-sand-100 to-sand-50',
     border: 'border-sand-200',
     badge: 'bg-secondary text-white',
-    icon: 'text-secondary',
+    icon: 'text-white',
     iconName: 'Tag',
+    headerFrom: '#8A5A38',
+    headerTo: '#3D1A08',
   }
+}
+
+// Extrae el precio de la descripción: "$10", "$9", etc.
+function extractPrice(desc: string): string | null {
+  const m = desc.match(/\$\d+(\.\d+)?/)
+  return m ? m[0] : null
 }
 
 const txt = (o: { es: string; en: string }) => locale.value === 'es' ? o.es : o.en
@@ -91,61 +105,73 @@ const others = computed(() => site.promotions.filter(p => !isActiveToday(p) && p
           </span>
           <div class="h-px flex-1 bg-sand-200"></div>
         </div>
-        <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           <article
             v-for="p in activeToday" :key="p.id"
-            class="relative rounded-3xl border overflow-hidden flex flex-col shadow-soft hover:shadow-elev transition-shadow"
+            class="relative rounded-3xl border overflow-hidden flex flex-col shadow-soft hover:shadow-elev hover:-translate-y-1 transition-all duration-200"
             :class="colors(p.id).border"
           >
-            <!-- Foto de portada -->
-            <div class="relative h-44 bg-sand-200 shrink-0">
+            <!-- Header: foto o fondo rico en color -->
+            <div class="relative h-48 shrink-0 overflow-hidden">
               <img v-if="p.photo" :src="p.photo" :alt="txt(p.title)"
                 class="w-full h-full object-cover" loading="lazy" />
-              <div class="absolute inset-0 bg-gradient-to-t from-night/70 via-night/20 to-transparent"></div>
-              <!-- Badge encima de la foto -->
+              <!-- Placeholder visual cuando no hay foto -->
+              <div v-else class="w-full h-full flex items-center justify-center"
+                :style="{ background: `linear-gradient(135deg, ${colors(p.id).headerFrom}, ${colors(p.id).headerTo})` }">
+                <!-- Ícono decorativo de fondo -->
+                <Icon :name="colors(p.id).iconName" :size="120" type="Bold" class="absolute opacity-10 text-white" />
+                <!-- Ícono principal -->
+                <div class="relative z-10 flex flex-col items-center gap-2">
+                  <div class="w-20 h-20 rounded-3xl bg-white/15 backdrop-blur-sm flex items-center justify-center ring-2 ring-white/20 shadow-lg">
+                    <Icon :name="colors(p.id).iconName" :size="44" type="Bold" :class="colors(p.id).icon" />
+                  </div>
+                </div>
+              </div>
+              <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+              <!-- Badges sobre la imagen -->
               <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between">
                 <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide shadow"
                   :class="colors(p.id).badge">
                   <Icon name="Calendar" :size="11" type="Bold" />
                   {{ p.dayOfWeek != null ? dayFull(p.dayOfWeek) : t('promos.oneTime') }}
                 </span>
-                <span class="inline-flex items-center gap-1 text-[10px] font-semibold text-white bg-green-500 px-2 py-1 rounded-full shadow">
+                <span class="inline-flex items-center gap-1 text-[10px] font-semibold text-white bg-green-500 px-2.5 py-1 rounded-full shadow">
                   <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
                   {{ t('promos.today') }}
                 </span>
               </div>
+              <!-- Precio flotante -->
+              <div v-if="extractPrice(txt(p.description))"
+                class="absolute top-3 right-3 bg-white text-night font-display font-black text-2xl leading-none px-3 py-2 rounded-2xl shadow-lg ring-2 ring-white/50">
+                {{ extractPrice(txt(p.description)) }}
+              </div>
             </div>
 
             <!-- Cuerpo -->
-            <div class="p-5 flex flex-col gap-3 flex-1 bg-gradient-to-br" :class="colors(p.id).bg">
-
-            <!-- Icono + título -->
-            <div class="flex items-start gap-4">
-              <div class="w-14 h-14 rounded-2xl bg-white/60 flex items-center justify-center shrink-0 shadow-sm">
-                <Icon :name="colors(p.id).iconName" :size="28" type="Bold" :class="colors(p.id).icon" />
-              </div>
+            <div class="p-5 flex flex-col gap-4 flex-1 bg-gradient-to-br" :class="colors(p.id).bg">
               <div>
-                <h2 class="font-display text-xl font-bold text-secondary-dark leading-tight">{{ txt(p.title) }}</h2>
-                <p class="text-sm text-ink-muted mt-1 leading-relaxed">{{ txt(p.description) }}</p>
+                <h2 class="font-display text-xl font-bold text-night leading-tight">{{ txt(p.title) }}</h2>
+                <p class="text-sm text-ink-muted mt-1.5 leading-relaxed">{{ txt(p.description) }}</p>
               </div>
-            </div>
 
-            <!-- Sucursales -->
-            <div v-if="p.validAt?.length" class="flex flex-wrap gap-1.5">
-              <span v-for="loc in p.validAt" :key="loc"
-                class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-white/70 border border-sand-200 text-secondary capitalize">
-                {{ loc.replace('-', ' ') }}
-              </span>
-            </div>
-            <p v-else class="text-[11px] text-ink-muted">{{ t('promos.allLocations') }}</p>
+              <!-- Sucursales -->
+              <div v-if="p.validAt?.length" class="flex flex-wrap gap-1.5">
+                <span v-for="loc in p.validAt" :key="loc"
+                  class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-white/70 border border-sand-200 text-secondary capitalize">
+                  {{ loc.replace('-', ' ') }}
+                </span>
+              </div>
+              <p v-else class="text-[11px] text-ink-muted inline-flex items-center gap-1">
+                <Icon name="Location" :size="11" />{{ t('promos.allLocations') }}
+              </p>
 
-            <!-- CTA -->
-            <a v-if="p.cta" :href="p.cta.href"
-               class="mt-auto btn-primary text-sm py-2.5 inline-flex items-center justify-center gap-2 w-full">
-              <Icon name="ArrowRight2" :size="14" type="Bold" />
-              {{ txt(p.cta.label) }}
-            </a>
-            </div><!-- /cuerpo -->
+              <!-- CTA -->
+              <a v-if="p.cta" :href="p.cta.href"
+                class="mt-auto btn-primary text-sm py-3 inline-flex items-center justify-center gap-2 w-full">
+                <Icon name="ArrowRight2" :size="14" type="Bold" />
+                {{ txt(p.cta.label) }}
+              </a>
+            </div>
           </article>
         </div>
       </section>
@@ -156,47 +182,53 @@ const others = computed(() => site.promotions.filter(p => !isActiveToday(p) && p
           <h2 class="text-sm font-bold uppercase tracking-widest text-ink-muted">{{ t('promos.upcoming') }}</h2>
           <div class="h-px flex-1 bg-sand-200"></div>
         </div>
-        <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           <article
             v-for="p in others" :key="p.id"
-            class="relative rounded-3xl border bg-white overflow-hidden flex flex-col shadow-soft hover:shadow-elev transition-shadow opacity-80 hover:opacity-100"
+            class="relative rounded-3xl border bg-white overflow-hidden flex flex-col shadow-soft hover:shadow-elev hover:-translate-y-1 transition-all duration-200 opacity-80 hover:opacity-100"
           >
-            <!-- Foto -->
-            <div class="relative h-40 bg-sand-100 shrink-0">
+            <div class="relative h-40 shrink-0 overflow-hidden">
               <img v-if="p.photo" :src="p.photo" :alt="txt(p.title)"
                 class="w-full h-full object-cover grayscale-[30%]" loading="lazy" />
-              <div class="absolute inset-0 bg-gradient-to-t from-night/50 to-transparent"></div>
-              <div class="absolute bottom-3 left-3">
+              <div v-else class="w-full h-full flex items-center justify-center"
+                :style="{ background: `linear-gradient(135deg, ${colors(p.id).headerFrom}99, ${colors(p.id).headerTo})` }">
+                <Icon :name="colors(p.id).iconName" :size="90" type="Bold" class="absolute opacity-10 text-white" />
+                <div class="w-16 h-16 rounded-2xl bg-white/15 flex items-center justify-center ring-2 ring-white/20 relative z-10">
+                  <Icon :name="colors(p.id).iconName" :size="36" type="Bold" :class="colors(p.id).icon" />
+                </div>
+              </div>
+              <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+              <div class="absolute bottom-3 left-3 flex items-center gap-2">
                 <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide shadow"
                   :class="colors(p.id).badge">
                   <Icon name="Calendar" :size="11" type="Bold" />
                   {{ p.dayOfWeek != null ? dayFull(p.dayOfWeek) : t('promos.oneTime') }}
                 </span>
               </div>
+              <div v-if="extractPrice(txt(p.description))"
+                class="absolute top-3 right-3 bg-white text-night font-display font-black text-xl leading-none px-3 py-1.5 rounded-xl shadow-lg">
+                {{ extractPrice(txt(p.description)) }}
+              </div>
             </div>
             <div class="p-5 flex flex-col gap-3 flex-1">
-            <div class="flex items-start gap-4">
-              <div class="w-14 h-14 rounded-2xl bg-sand-100 flex items-center justify-center shrink-0">
-                <Icon :name="colors(p.id).iconName" :size="28" type="Bold" :class="colors(p.id).icon" />
-              </div>
               <div>
-                <h3 class="font-display text-xl font-bold text-secondary-dark leading-tight">{{ txt(p.title) }}</h3>
-                <p class="text-sm text-ink-muted mt-1 leading-relaxed">{{ txt(p.description) }}</p>
+                <h3 class="font-display text-xl font-bold text-night leading-tight">{{ txt(p.title) }}</h3>
+                <p class="text-sm text-ink-muted mt-1.5 leading-relaxed">{{ txt(p.description) }}</p>
               </div>
+              <div v-if="p.validAt?.length" class="flex flex-wrap gap-1.5">
+                <span v-for="loc in p.validAt" :key="loc"
+                  class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-sand-100 border border-sand-200 text-secondary capitalize">
+                  {{ loc.replace('-', ' ') }}
+                </span>
+              </div>
+              <p v-else class="text-[11px] text-ink-muted inline-flex items-center gap-1">
+                <Icon name="Location" :size="11" />{{ t('promos.allLocations') }}
+              </p>
+              <a v-if="p.cta" :href="p.cta.href"
+                class="mt-auto btn-outline text-sm py-2.5 inline-flex items-center justify-center gap-2 w-full">
+                <Icon name="ArrowRight2" :size="14" />{{ txt(p.cta.label) }}
+              </a>
             </div>
-            <div v-if="p.validAt?.length" class="flex flex-wrap gap-1.5">
-              <span v-for="loc in p.validAt" :key="loc"
-                class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-sand-100 border border-sand-200 text-secondary capitalize">
-                {{ loc.replace('-', ' ') }}
-              </span>
-            </div>
-            <p v-else class="text-[11px] text-ink-muted">{{ t('promos.allLocations') }}</p>
-            <a v-if="p.cta" :href="p.cta.href"
-               class="mt-auto btn-outline text-sm py-2.5 inline-flex items-center justify-center gap-2 w-full">
-              <Icon name="ArrowRight2" :size="14" />
-              {{ txt(p.cta.label) }}
-            </a>
-            </div><!-- /p-5 -->
           </article>
         </div>
       </section>
