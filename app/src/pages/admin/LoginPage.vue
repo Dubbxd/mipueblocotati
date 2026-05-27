@@ -40,7 +40,7 @@ async function submit() {
 
       <!-- Branding sobre la foto -->
       <div class="relative z-10 flex flex-col justify-end p-10 pb-12">
-        <div class="w-14 h-14 rounded-2xl bg-brand grid place-items-center font-display text-2xl shadow-elev mb-5">MP</div>
+        <img src="/logo.png" alt="Mi Pueblo Cotati" class="h-16 mb-5 brightness-0 invert drop-shadow-lg" />
         <h2 class="font-display text-4xl xl:text-5xl font-bold leading-tight text-white">
           Mi Pueblo<br/>Cotati
         </h2>
@@ -59,7 +59,7 @@ async function submit() {
 
       <!-- Logo mobile -->
       <div class="lg:hidden text-center mb-8">
-        <div class="w-14 h-14 mx-auto rounded-2xl bg-brand grid place-items-center font-display text-2xl shadow-elev">MP</div>
+        <img src="/logo.png" alt="Mi Pueblo Cotati" class="h-12 mx-auto brightness-0 invert" />
         <h1 class="font-display text-2xl mt-3">Mi Pueblo Cotati</h1>
       </div>
 
