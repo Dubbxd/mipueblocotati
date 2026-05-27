@@ -86,12 +86,9 @@ onMounted(() => {
       class="fixed md:static inset-y-0 left-0 z-40 w-64 bg-night-dark border-r border-white/10 transform transition-transform md:transform-none flex flex-col"
       :class="open ? 'translate-x-0' : '-translate-x-full md:translate-x-0'"
     >
-      <div class="p-5 border-b border-white/10 flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-brand text-white grid place-items-center font-display text-lg">MP</div>
-        <div>
-          <div class="font-display text-sm leading-tight">Mi Pueblo</div>
-          <div class="text-xs text-white/60">Panel admin</div>
-        </div>
+      <div class="p-5 border-b border-white/10 flex flex-col items-center gap-1">
+        <img src="/logo.png" alt="Mi Pueblo Cotati" class="h-12 brightness-0 invert" />
+        <div class="text-[11px] text-white/50 uppercase tracking-widest">Panel admin</div>
       </div>
       <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-6">
         <div v-for="section in sections" :key="section.group">
