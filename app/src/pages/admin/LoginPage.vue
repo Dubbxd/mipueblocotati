@@ -40,7 +40,9 @@ async function submit() {
 
       <!-- Branding sobre la foto -->
       <div class="relative z-10 flex flex-col justify-end p-10 pb-12">
-        <img src="/logo.png" alt="Mi Pueblo Cotati" class="h-16 mb-5 brightness-0 invert drop-shadow-lg" />
+        <div class="inline-block bg-night/60 backdrop-blur-sm rounded-xl px-4 py-2.5 mb-5 self-start">
+          <img src="/logo.png" alt="Mi Pueblo Cotati" class="h-10 brightness-0 invert" />
+        </div>
         <h2 class="font-display text-4xl xl:text-5xl font-bold leading-tight text-white">
           Mi Pueblo<br/>Cotati
         </h2>
