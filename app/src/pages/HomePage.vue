@@ -4,6 +4,7 @@ import TodaySection from '@/components/sections/TodaySection.vue'
 import AboutSection from '@/components/sections/AboutSection.vue'
 import GalleryMasonry from '@/components/sections/GalleryMasonry.vue'
 import MenuPreview from '@/components/sections/MenuPreview.vue'
+import DeliveryBand from '@/components/sections/DeliveryBand.vue'
 import CategoriesSection from '@/components/sections/CategoriesSection.vue'
 import ReviewsBand from '@/components/sections/ReviewsBand.vue'
 import AwardsBand from '@/components/sections/AwardsBand.vue'
@@ -31,6 +32,8 @@ const googleRatingStar = computed(() =>
     <CategoriesSection />
 
     <MenuPreview />
+
+    <DeliveryBand />
 
     <AboutSection
       :kicker="t('home.story.kicker')"

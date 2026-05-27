@@ -11,26 +11,6 @@ const main = computed(() => site.mainRestaurant)
 
 <template>
   <footer class="bg-night text-sand-100 mt-16 border-t-4 border-brand">
-    <!-- Banda de delivery / pickup -->
-    <div class="bg-night-soft border-b border-night-light">
-      <div class="container-page py-6 flex flex-col md:flex-row items-center justify-between gap-4">
-        <p class="font-impact uppercase text-sand-100 text-lg tracking-wider text-center md:text-left flex items-center gap-2 justify-center md:justify-start">
-          <Icon name="Truck" :size="24" class="text-accent" />
-          <span>{{ t('footer.deliveryWith') }}:</span>
-        </p>
-        <div class="flex flex-wrap items-center justify-center gap-3">
-          <a v-if="main?.links.delivery" :href="main!.links.delivery" target="_blank" rel="noopener"
-             class="px-4 py-2 rounded-lg bg-[#FF3008] text-white font-bold text-sm hover:scale-105 transition-transform shadow-md">DoorDash</a>
-          <a href="https://www.ubereats.com" target="_blank" rel="noopener"
-             class="px-4 py-2 rounded-lg bg-black text-white font-bold text-sm hover:scale-105 transition-transform shadow-md">Uber Eats</a>
-          <a href="https://www.grubhub.com" target="_blank" rel="noopener"
-             class="px-4 py-2 rounded-lg bg-[#F63440] text-white font-bold text-sm hover:scale-105 transition-transform shadow-md">Grubhub</a>
-          <a v-if="main?.links.pickup" :href="main!.links.pickup" target="_blank" rel="noopener"
-             class="px-4 py-2 rounded-lg bg-[#00B388] text-white font-bold text-sm hover:scale-105 transition-transform shadow-md">Clover · Pickup</a>
-        </div>
-      </div>
-    </div>
-
     <div class="container-page py-14 grid gap-10 md:grid-cols-4">
       <div>
         <img src="/logo.png" alt="Mi Pueblo Cotati" class="h-14 mb-3 brightness-0 invert" />
