@@ -186,6 +186,43 @@ async function submit() {
       </div>
     </section>
 
+    <!-- Salón para fiestas / Party Room -->
+    <section class="container-page py-14">
+      <div class="grid md:grid-cols-2 gap-10 items-center">
+        <div class="rounded-3xl overflow-hidden shadow-lg">
+          <img src="/assets/gallery/PartyRoom.jpeg" :alt="locale === 'es' ? 'Salón para fiestas Mi Pueblo' : 'Mi Pueblo Party Room'"
+            class="w-full h-72 md:h-full object-cover" loading="lazy" />
+        </div>
+        <div>
+          <p class="section-kicker mb-3">
+            <Icon name="Buildings" :size="13" class="mr-1" />{{ locale === 'es' ? 'Salón de eventos' : 'Event venue' }}
+          </p>
+          <h2 class="font-display text-3xl md:text-4xl font-bold text-secondary-dark leading-tight mb-4">
+            {{ locale === 'es' ? 'Celebra en nuestro Salón' : 'Celebrate in our Party Room' }}
+          </h2>
+          <p class="text-ink-muted leading-relaxed mb-6">
+            {{ locale === 'es'
+              ? 'Nuestro salón privado es perfecto para quinceañeras, cumpleaños, reuniones corporativas y más. Capacidad para hasta 80 personas con decoración personalizada y menú a elegir.'
+              : 'Our private party room is perfect for quinceañeras, birthdays, corporate gatherings and more. Capacity for up to 80 guests with custom décor and menu selection.' }}
+          </p>
+          <ul class="space-y-2 mb-8">
+            <li v-for="feat in (locale === 'es'
+              ? ['Espacio privado y climatizado', 'Decoración personalizable', 'Menú buffet o servido', 'Estacionamiento disponible']
+              : ['Private air-conditioned space', 'Customizable décor', 'Buffet or plated menu', 'Parking available'])"
+              :key="feat" class="flex items-center gap-2 text-sm text-ink-muted">
+              <Icon name="TickCircle" :size="16" type="Bold" class="text-brand shrink-0" />
+              {{ feat }}
+            </li>
+          </ul>
+          <a href="#quote-form"
+            class="btn-primary px-6 py-3 text-base inline-flex items-center gap-2">
+            <Icon name="Send2" :size="16" type="Bold" />
+            {{ locale === 'es' ? 'Reservar el salón' : 'Book the room' }}
+          </a>
+        </div>
+      </div>
+    </section>
+
     <!-- Formulario de cotización -->
     <section id="quote-form" class="container-page py-14 scroll-mt-32">
       <div class="max-w-2xl mx-auto">
