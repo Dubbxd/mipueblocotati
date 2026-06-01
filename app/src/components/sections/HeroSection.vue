@@ -47,8 +47,11 @@ const reviewPill = computed(() => {
 <template>
   <section class="relative overflow-hidden bg-night text-sand-100">
     <!-- Foto de fondo (cocina con flameado) — más visible -->
-    <img src="/assets/gallery/chef-flames.jpg" alt=""
-         class="absolute inset-0 w-full h-full object-cover opacity-70" loading="eager" />
+    <picture class="absolute inset-0 w-full h-full">
+      <source srcset="/assets/gallery/chef-flames.webp" type="image/webp" />
+      <img src="/assets/gallery/chef-flames.jpg" alt=""
+           class="w-full h-full object-cover opacity-70" loading="eager" fetchpriority="high" />
+    </picture>
     <!-- Gradiente lateral para que el texto resalte sobre la foto -->
     <div class="absolute inset-0 bg-gradient-to-r from-night/85 via-night/50 to-night/10 pointer-events-none"></div>
     <div class="absolute inset-0 bg-gradient-to-t from-night/60 via-night/10 to-transparent pointer-events-none"></div>

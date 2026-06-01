@@ -69,7 +69,10 @@ const tt = (txt: { es: string; en: string }) => locale.value === 'es' ? txt.es :
         <!-- Reserva express -->
         <article class="card overflow-hidden bg-secondary-dark text-white">
           <div class="aspect-[16/9] relative overflow-hidden">
-            <img src="/assets/hero/cotati-interior.jpg" alt="" class="w-full h-full object-cover opacity-60" loading="lazy" />
+            <picture class="w-full h-full">
+              <source srcset="/assets/hero/cotati-interior.webp" type="image/webp" />
+              <img src="/assets/hero/cotati-interior.jpg" alt="" class="w-full h-full object-cover opacity-60" loading="eager" fetchpriority="high" />
+            </picture>
             <div class="absolute inset-0 bg-gradient-to-t from-secondary-dark via-secondary-dark/40 to-transparent"></div>
           </div>
           <div class="p-6 -mt-12 relative">

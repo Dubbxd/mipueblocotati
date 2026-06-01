@@ -1,5 +1,6 @@
 <script setup lang="ts" generic="T extends Record<string, any>">
 import { computed } from 'vue'
+import DOMPurify from 'dompurify'
 import Icon from '@/components/ui/Icon.vue'
 
 defineProps<{
@@ -43,7 +44,7 @@ function get(row: any, path: string) {
           class="border-t border-white/5 hover:bg-white/[0.03] transition"
         >
           <td v-for="c in columns" :key="c.key" class="px-4 py-3 align-top" :class="c.class">
-            <span v-if="c.render" v-html="c.render(row)"></span>
+            <span v-if="c.render" v-html="DOMPurify.sanitize(c.render(row))"></span>
             <span v-else>{{ get(row, c.key) }}</span>
           </td>
           <td class="px-4 py-3 text-right whitespace-nowrap">

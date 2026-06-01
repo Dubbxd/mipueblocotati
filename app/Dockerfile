@@ -18,8 +18,8 @@ RUN pnpm install --frozen-lockfile --filter @mipueblo/web
 COPY app ./app
 RUN pnpm --filter @mipueblo/web build
 
-# ── Stage 2: serve with nginx ────────────────────────────────────
-FROM nginx:1.27-alpine
+# ── Stage 2: serve with nginx (brotli-capable) ────────────────────
+FROM fholzer/nginx-brotli:v1.27.0
 
 COPY --from=builder /app/app/dist /usr/share/nginx/html
 COPY app/nginx.conf /etc/nginx/conf.d/default.conf

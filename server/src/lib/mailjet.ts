@@ -36,6 +36,17 @@ const LOGO_BASE64 = getLogoBase64()
 // CID used in HTML — works across Gmail, Outlook, Apple Mail
 const LOGO_CID = 'logo@mipueblocotati'
 
+/** Escape HTML entities to prevent injection in email templates. */
+function esc(s: string | null | undefined): string {
+  if (!s) return ''
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;')
+}
+
 /** Returns null if Mailjet keys are not configured (dev without keys). */
 function getClient() {
   if (!MJ_API_KEY || MJ_API_KEY === 'your_mailjet_api_key_here') return null
@@ -202,14 +213,14 @@ export async function sendReservationConfirmation(r: {
 }) {
   const html = baseTemplate('Reservation Confirmed · Mi Pueblo', `
     <div class="badge">Reservation Confirmed</div>
-    <h2>Your reservation is set, ${r.name}!</h2>
+    <h2>Your reservation is set, ${esc(r.name)}!</h2>
     <p>Thank you for choosing Mi Pueblo. Here is a summary of your booking:</p>
     <div class="detail-box">
-      <div class="detail-row"><span class="detail-label">Date:</span><span class="detail-value">${r.date}</span></div>
-      <div class="detail-row"><span class="detail-label">Time:</span><span class="detail-value">${r.time}</span></div>
+      <div class="detail-row"><span class="detail-label">Date:</span><span class="detail-value">${esc(r.date)}</span></div>
+      <div class="detail-row"><span class="detail-label">Time:</span><span class="detail-value">${esc(r.time)}</span></div>
       <div class="detail-row"><span class="detail-label">Party size:</span><span class="detail-value">${r.partySize}</span></div>
-      ${r.locationName ? `<div class="detail-row"><span class="detail-label">Location:</span><span class="detail-value">${r.locationName}</span></div>` : ''}
-      ${r.notes ? `<div class="detail-row"><span class="detail-label">Notes:</span><span class="detail-value">${r.notes}</span></div>` : ''}
+      ${r.locationName ? `<div class="detail-row"><span class="detail-label">Location:</span><span class="detail-value">${esc(r.locationName)}</span></div>` : ''}
+      ${r.notes ? `<div class="detail-row"><span class="detail-label">Notes:</span><span class="detail-value">${esc(r.notes)}</span></div>` : ''}
     </div>
     <p>We will confirm your reservation shortly. To make changes or cancel, call us at <strong>(707) 823-1234</strong>.</p>
     <div class="cta-wrap"><a href="${PUBLIC_URL}/reservar" class="btn">Make Another Reservation</a></div>
@@ -217,7 +228,7 @@ export async function sendReservationConfirmation(r: {
   `)
   return sendEmail({
     to: [{ email: r.email, name: r.name }],
-    subject: `Reservation confirmed for ${r.date} · Mi Pueblo`,
+    subject: `Reservation confirmed for ${esc(r.date)} · Mi Pueblo`,
     html,
   })
 }
@@ -236,18 +247,18 @@ export async function notifyAdminReservation(r: {
     <div class="badge">Admin &middot; New Reservation</div>
     <h2>New reservation received</h2>
     <div class="detail-box">
-      <div class="detail-row"><span class="detail-label">Name:</span><span class="detail-value">${r.name}</span></div>
-      <div class="detail-row"><span class="detail-label">Phone:</span><span class="detail-value">${r.phone}</span></div>
-      <div class="detail-row"><span class="detail-label">Email:</span><span class="detail-value">${r.email}</span></div>
-      <div class="detail-row"><span class="detail-label">Date &amp; Time:</span><span class="detail-value">${r.date} &middot; ${r.time}</span></div>
+      <div class="detail-row"><span class="detail-label">Name:</span><span class="detail-value">${esc(r.name)}</span></div>
+      <div class="detail-row"><span class="detail-label">Phone:</span><span class="detail-value">${esc(r.phone)}</span></div>
+      <div class="detail-row"><span class="detail-label">Email:</span><span class="detail-value">${esc(r.email)}</span></div>
+      <div class="detail-row"><span class="detail-label">Date &amp; Time:</span><span class="detail-value">${esc(r.date)} &middot; ${esc(r.time)}</span></div>
       <div class="detail-row"><span class="detail-label">Party size:</span><span class="detail-value">${r.partySize}</span></div>
-      ${r.notes ? `<div class="detail-row"><span class="detail-label">Notes:</span><span class="detail-value">${r.notes}</span></div>` : ''}
+      ${r.notes ? `<div class="detail-row"><span class="detail-label">Notes:</span><span class="detail-value">${esc(r.notes)}</span></div>` : ''}
     </div>
     <div class="cta-wrap"><a href="${PUBLIC_URL}/admin/reservations" class="btn">View in Admin</a></div>
   `)
   return sendEmail({
     to: [{ email: ADMIN_EMAIL, name: 'Admin Mi Pueblo' }],
-    subject: `New reservation: ${r.name} · ${r.date} ${r.time}`,
+    subject: `New reservation: ${esc(r.name)} · ${esc(r.date)} ${esc(r.time)}`,
     html,
   })
 }
@@ -263,13 +274,13 @@ export async function sendCateringConfirmation(c: {
 }) {
   const html = baseTemplate('Catering Request Received · Mi Pueblo', `
     <div class="badge">Catering &middot; Request Received</div>
-    <h2>We got your request, ${c.name}!</h2>
+    <h2>We got your request, ${esc(c.name)}!</h2>
     <p>Thank you for considering Mi Pueblo for your event. Our catering team will review your request and reach out shortly with a personalized quote.</p>
     <div class="detail-box">
-      ${c.eventType ? `<div class="detail-row"><span class="detail-label">Event type:</span><span class="detail-value">${c.eventType}</span></div>` : ''}
-      ${c.eventDate ? `<div class="detail-row"><span class="detail-label">Event date:</span><span class="detail-value">${c.eventDate}</span></div>` : ''}
+      ${c.eventType ? `<div class="detail-row"><span class="detail-label">Event type:</span><span class="detail-value">${esc(c.eventType)}</span></div>` : ''}
+      ${c.eventDate ? `<div class="detail-row"><span class="detail-label">Event date:</span><span class="detail-value">${esc(c.eventDate)}</span></div>` : ''}
       ${c.guests ? `<div class="detail-row"><span class="detail-label">Guests:</span><span class="detail-value">${c.guests} people</span></div>` : ''}
-      ${c.budget ? `<div class="detail-row"><span class="detail-label">Budget:</span><span class="detail-value">$${c.budget}</span></div>` : ''}
+      ${c.budget ? `<div class="detail-row"><span class="detail-label">Budget:</span><span class="detail-value">$${esc(c.budget)}</span></div>` : ''}
     </div>
     <p>Have immediate questions? Call us at <strong>(707) 823-1234</strong> or email <a href="mailto:catering@mipueblocotati.com">catering@mipueblocotati.com</a>.</p>
     <div class="cta-wrap"><a href="${PUBLIC_URL}/catering" class="btn">Explore Catering Services</a></div>
@@ -296,20 +307,20 @@ export async function notifyAdminCatering(c: {
     <div class="badge">Admin &middot; Catering</div>
     <h2>New catering request</h2>
     <div class="detail-box">
-      <div class="detail-row"><span class="detail-label">Name:</span><span class="detail-value">${c.name}</span></div>
-      <div class="detail-row"><span class="detail-label">Phone:</span><span class="detail-value">${c.phone}</span></div>
-      <div class="detail-row"><span class="detail-label">Email:</span><span class="detail-value">${c.email}</span></div>
-      ${c.eventType ? `<div class="detail-row"><span class="detail-label">Event type:</span><span class="detail-value">${c.eventType}</span></div>` : ''}
-      ${c.eventDate ? `<div class="detail-row"><span class="detail-label">Event date:</span><span class="detail-value">${c.eventDate}</span></div>` : ''}
+      <div class="detail-row"><span class="detail-label">Name:</span><span class="detail-value">${esc(c.name)}</span></div>
+      <div class="detail-row"><span class="detail-label">Phone:</span><span class="detail-value">${esc(c.phone)}</span></div>
+      <div class="detail-row"><span class="detail-label">Email:</span><span class="detail-value">${esc(c.email)}</span></div>
+      ${c.eventType ? `<div class="detail-row"><span class="detail-label">Event type:</span><span class="detail-value">${esc(c.eventType)}</span></div>` : ''}
+      ${c.eventDate ? `<div class="detail-row"><span class="detail-label">Event date:</span><span class="detail-value">${esc(c.eventDate)}</span></div>` : ''}
       ${c.guests ? `<div class="detail-row"><span class="detail-label">Guests:</span><span class="detail-value">${c.guests}</span></div>` : ''}
-      ${c.budget ? `<div class="detail-row"><span class="detail-label">Budget:</span><span class="detail-value">$${c.budget}</span></div>` : ''}
-      ${c.message ? `<div class="detail-row"><span class="detail-label">Message:</span><span class="detail-value">${c.message}</span></div>` : ''}
+      ${c.budget ? `<div class="detail-row"><span class="detail-label">Budget:</span><span class="detail-value">$${esc(c.budget)}</span></div>` : ''}
+      ${c.message ? `<div class="detail-row"><span class="detail-label">Message:</span><span class="detail-value">${esc(c.message)}</span></div>` : ''}
     </div>
     <div class="cta-wrap"><a href="${PUBLIC_URL}/admin/catering" class="btn">Manage in Admin</a></div>
   `)
   return sendEmail({
     to: [{ email: ADMIN_EMAIL, name: 'Admin Mi Pueblo' }],
-    subject: `New catering: ${c.name} · ${c.guests ?? '?'} guests`,
+    subject: `New catering: ${esc(c.name)} · ${c.guests ?? '?'} guests`,
     html,
   })
 }
@@ -322,9 +333,9 @@ export async function sendContactAutoReply(contact: {
 }) {
   const html = baseTemplate('We received your message · Mi Pueblo', `
     <div class="badge">Message Received</div>
-    <h2>Hi, ${contact.name}!</h2>
+    <h2>Hi, ${esc(contact.name)}!</h2>
     <p>We received your message and will get back to you within 24 hours. Here is a copy of what you sent:</p>
-    <div class="quote-box">&ldquo;${contact.message}&rdquo;</div>
+    <div class="quote-box">&ldquo;${esc(contact.message)}&rdquo;</div>
     <p>In the meantime, you can:</p>
     <table style="margin:4px 0 18px; border-collapse:collapse;" cellpadding="0" cellspacing="0">
       <tr><td style="padding:5px 0; font-size:15px; line-height:1.6; color:#5A3820;">Call us at <strong>(707) 823-1234</strong></td></tr>
@@ -352,17 +363,17 @@ export async function notifyAdminContact(contact: {
     <div class="badge">Admin &middot; Contact</div>
     <h2>New contact message</h2>
     <div class="detail-box">
-      <div class="detail-row"><span class="detail-label">Name:</span><span class="detail-value">${contact.name}</span></div>
-      <div class="detail-row"><span class="detail-label">Email:</span><span class="detail-value">${contact.email}</span></div>
-      ${contact.phone ? `<div class="detail-row"><span class="detail-label">Phone:</span><span class="detail-value">${contact.phone}</span></div>` : ''}
-      ${contact.subject ? `<div class="detail-row"><span class="detail-label">Subject:</span><span class="detail-value">${contact.subject}</span></div>` : ''}
-      <div class="detail-row"><span class="detail-label">Message:</span><span class="detail-value">${contact.message}</span></div>
+      <div class="detail-row"><span class="detail-label">Name:</span><span class="detail-value">${esc(contact.name)}</span></div>
+      <div class="detail-row"><span class="detail-label">Email:</span><span class="detail-value">${esc(contact.email)}</span></div>
+      ${contact.phone ? `<div class="detail-row"><span class="detail-label">Phone:</span><span class="detail-value">${esc(contact.phone)}</span></div>` : ''}
+      ${contact.subject ? `<div class="detail-row"><span class="detail-label">Subject:</span><span class="detail-value">${esc(contact.subject)}</span></div>` : ''}
+      <div class="detail-row"><span class="detail-label">Message:</span><span class="detail-value">${esc(contact.message)}</span></div>
     </div>
-    <div class="cta-wrap"><a href="mailto:${contact.email}" class="btn">Reply Now</a></div>
+    <div class="cta-wrap"><a href="mailto:${esc(contact.email)}" class="btn">Reply Now</a></div>
   `)
   return sendEmail({
     to: [{ email: ADMIN_EMAIL, name: 'Admin Mi Pueblo' }],
-    subject: `New contact: ${contact.name} — ${contact.subject || contact.message.slice(0, 40)}`,
+    subject: `New contact: ${esc(contact.name)} — ${esc(contact.subject || contact.message.slice(0, 40))}`,
     html,
     replyTo: contact.email,
   })
@@ -386,12 +397,12 @@ export async function notifyAdminSurvey(s: {
     <h2>New survey response</h2>
     <div class="detail-box">
       <div class="detail-row"><span class="detail-label">Rating:</span><span class="detail-value">${STARS[s.rating] ?? s.rating} (${s.rating}/5)</span></div>
-      ${s.name  ? `<div class="detail-row"><span class="detail-label">Name:</span><span class="detail-value">${s.name}</span></div>` : ''}
-      ${s.email ? `<div class="detail-row"><span class="detail-label">Email:</span><span class="detail-value">${s.email}</span></div>` : ''}
-      ${s.locale ? `<div class="detail-row"><span class="detail-label">Locale:</span><span class="detail-value">${s.locale}</span></div>` : ''}
-      ${s.comment ? `<div class="detail-row"><span class="detail-label">Comment:</span><span class="detail-value">${s.comment}</span></div>` : ''}
+      ${s.name  ? `<div class="detail-row"><span class="detail-label">Name:</span><span class="detail-value">${esc(s.name)}</span></div>` : ''}
+      ${s.email ? `<div class="detail-row"><span class="detail-label">Email:</span><span class="detail-value">${esc(s.email)}</span></div>` : ''}
+      ${s.locale ? `<div class="detail-row"><span class="detail-label">Locale:</span><span class="detail-value">${esc(s.locale)}</span></div>` : ''}
+      ${s.comment ? `<div class="detail-row"><span class="detail-label">Comment:</span><span class="detail-value">${esc(s.comment)}</span></div>` : ''}
     </div>
-    ${s.email ? `<div class="cta-wrap"><a href="mailto:${s.email}" class="btn">Reply to Guest</a></div>` : ''}
+    ${s.email ? `<div class="cta-wrap"><a href="mailto:${esc(s.email)}" class="btn">Reply to Guest</a></div>` : ''}
   `)
   return sendEmail({
     to: [{ email: ADMIN_EMAIL, name: 'Admin Mi Pueblo' }],

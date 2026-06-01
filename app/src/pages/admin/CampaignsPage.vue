@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import DOMPurify from 'dompurify'
 import { api } from '@/lib/api'
 import DataTable from '@/components/admin/DataTable.vue'
 import AdminModal from '@/components/admin/AdminModal.vue'
@@ -200,7 +201,7 @@ onMounted(load)
         </tbody>
         <tbody v-else>
           <tr v-for="row in rows" :key="row.id" class="border-b border-white/5 hover:bg-white/5 transition-colors">
-            <td v-for="col in columns" :key="col.key" class="px-4 py-3" v-html="col.render(row)"></td>
+            <td v-for="col in columns" :key="col.key" class="px-4 py-3" v-html="DOMPurify.sanitize(col.render(row))"></td>
             <td class="px-4 py-3">
               <div class="flex items-center justify-end gap-2">
                 <button

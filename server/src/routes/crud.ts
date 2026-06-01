@@ -23,6 +23,34 @@ import {
 import { authPlugin, requireAuth, requireRole } from '../lib/auth'
 import { verifyUnsubToken } from '../lib/hmac'
 import { upsertContact } from '../lib/crm'
+
+// ─── Public-form rate limiter ──────────────────────────────────
+// Limits: 8 submissions per 15 min per IP per endpoint type.
+// In-memory; resets on server restart (sufficient for abuse deterrence).
+const PUBLIC_RATE_WINDOW_MS = 15 * 60 * 1000 // 15 min
+const PUBLIC_RATE_MAX = 8
+const publicRateMap = new Map<string, { count: number; resetAt: number }>()
+
+function checkPublicRate(ip: string, type: string): boolean {
+  const key = `${type}:${ip}`
+  const now = Date.now()
+  const entry = publicRateMap.get(key)
+  if (!entry || now > entry.resetAt) {
+    publicRateMap.set(key, { count: 1, resetAt: now + PUBLIC_RATE_WINDOW_MS })
+    return true
+  }
+  if (entry.count >= PUBLIC_RATE_MAX) return false
+  entry.count++
+  return true
+}
+
+function getClientIp(request: Request): string {
+  return (
+    request.headers.get('x-forwarded-for')?.split(',')[0].trim() ??
+    request.headers.get('x-real-ip') ??
+    'unknown'
+  )
+}
 import {
   sendReservationConfirmation,
   notifyAdminReservation,
@@ -80,7 +108,11 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
   // Formularios públicos (cualquier visitante puede crear)
   .post(
     '/reservations',
-    async ({ body }) => {
+    async ({ body, request, set }) => {
+      if (!checkPublicRate(getClientIp(request), 'reservations')) {
+        set.status = 429
+        return { error: 'Demasiadas solicitudes. Intenta de nuevo en 15 minutos.' }
+      }
       const { consentTerms, consentData, consentMarketing, ...values } = body
       const rows = await db.insert(reservations).values(values).returning()
       const r = rows[0]!
@@ -140,7 +172,11 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
   )
   .post(
     '/catering',
-    async ({ body }) => {
+    async ({ body, request, set }) => {
+      if (!checkPublicRate(getClientIp(request), 'catering')) {
+        set.status = 429
+        return { error: 'Demasiadas solicitudes. Intenta de nuevo en 15 minutos.' }
+      }
       const { consentTerms, consentData, consentMarketing, ...values } = body
       const rows2 = await db.insert(cateringRequests).values(values).returning()
       const r = rows2[0]!
@@ -201,7 +237,11 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
   )
   .post(
     '/contact',
-    async ({ body }) => {
+    async ({ body, request, set }) => {
+      if (!checkPublicRate(getClientIp(request), 'contact')) {
+        set.status = 429
+        return { error: 'Demasiadas solicitudes. Intenta de nuevo en 15 minutos.' }
+      }
       const { consentTerms, consentData, ...rest } = body
       // Save message to DB
       const [msg] = await db.insert(contactMessages).values({
@@ -259,7 +299,11 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
   )
   .post(
     '/newsletter',
-    async ({ body, set }) => {
+    async ({ body, set, request }) => {
+      if (!checkPublicRate(getClientIp(request), 'newsletter')) {
+        set.status = 429
+        return { error: 'Demasiadas solicitudes. Intenta de nuevo en 15 minutos.' }
+      }
       const { consentTerms, consentData, consentMarketing, ...subValues } = body
       try {
         const [r] = await db
@@ -737,7 +781,7 @@ export const adminRoutes = new Elysia({ prefix: '/admin' })
       }
     },
     {
-      beforeHandle: requireAuth,
+      beforeHandle: [requireAuth, requireRole('admin', 'superadmin')],
       body: t.Object({
         type: t.String(),
         topic: t.String(),
