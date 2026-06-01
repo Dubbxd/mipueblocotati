@@ -12,7 +12,7 @@ const site = useSiteStore()
 const toast = useToast()
 const main = computed(() => site.mainRestaurant)
 
-const form = ref({ name: '', email: '', phone: '', message: '' })
+const form = ref({ name: '', email: '', phone: '', subject: '', message: '' })
 const consentTerms = ref(false)
 const consentData = ref(false)
 const status = ref<'idle' | 'loading' | 'success'>('idle')
@@ -27,6 +27,7 @@ async function submit() {
         name: form.value.name,
         phone: form.value.phone || undefined,
         email: form.value.email,
+        subject: form.value.subject || undefined,
         message: form.value.message,
         consentTerms: consentTerms.value,
         consentData: consentData.value,
@@ -201,6 +202,11 @@ async function submit() {
                 <label class="form-label">{{ t('contact.fieldEmail') }} *</label>
                 <input v-model="form.email" type="email" required
                   placeholder="tu@correo.com" class="form-input" />
+              </div>
+              <div>
+                <label class="form-label">{{ t('contact.fieldSubject') }}</label>
+                <input v-model="form.subject" type="text"
+                  :placeholder="t('contact.subjectPlaceholder')" class="form-input" />
               </div>
               <div>
                 <label class="form-label">{{ t('contact.fieldMessage') }} *</label>

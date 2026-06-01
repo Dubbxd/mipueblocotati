@@ -208,6 +208,8 @@
     "namePlaceholder": "Tu nombre",
     "fieldPhone": "Teléfono",
     "fieldEmail": "Correo",
+    "fieldSubject": "Asunto (opcional)",
+    "subjectPlaceholder": "¿De qué se trata tu mensaje?",
     "fieldMessage": "Mensaje",
     "messagePlaceholder": "¿En qué te podemos ayudar?",
     "sendBtn": "Enviar mensaje",

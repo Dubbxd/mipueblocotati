@@ -45,8 +45,11 @@ function getClient() {
 // ─────────────────────────────────────────────────────────────────
 // BASE EMAIL TEMPLATE  —  multi-band design
 // ─────────────────────────────────────────────────────────────────
-function baseTemplate(title: string, content: string) {
+function baseTemplate(title: string, content: string, unsubEmail?: string) {
   const year = new Date().getFullYear()
+  const unsubSpan = unsubEmail
+    ? `<span class="unsub">&copy; ${year} Mi Pueblo Cotati &nbsp;&middot;&nbsp; <a href="${API_URL}/api/public/newsletter/unsubscribe?email=${encodeURIComponent(unsubEmail)}&token=${unsubToken(unsubEmail)}" style="color:rgba(200,160,122,.5);">Unsubscribe</a></span>`
+    : `<span class="unsub">&copy; ${year} Mi Pueblo Cotati</span>`
   return `<!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -137,7 +140,7 @@ function baseTemplate(title: string, content: string) {
     <p>7384 Commerce Blvd, Cotati, CA 94931</p>
     <p><a href="tel:+17078231234">(707) 823-1234</a> &nbsp;·&nbsp; <a href="${PUBLIC_URL}">mipueblocotati.com</a></p>
     <p><a href="${PUBLIC_URL}/legal/privacidad">Privacy Policy</a></p>
-    <span class="unsub">&copy; ${year} Mi Pueblo Cotati &nbsp;&middot;&nbsp; <a href="${API_URL}/api/public/newsletter/unsubscribe?email=" style="color:rgba(200,160,122,.5);">Unsubscribe</a></span>
+    ${unsubSpan}
   </div>
 
 </div>

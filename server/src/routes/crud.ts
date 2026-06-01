@@ -127,7 +127,7 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
         locationId: t.Optional(t.Number()),
         name: t.String({ minLength: 2 }),
         phone: t.String({ minLength: 7 }),
-        email: t.Optional(t.String()),
+        email: t.Optional(t.String({ pattern: '^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$' })),
         partySize: t.Number({ minimum: 1, maximum: 50 }),
         date: t.String(),
         time: t.String(),
@@ -161,17 +161,19 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
         },
       }).catch(e => console.error('[crm] catering:', e))
       // Send emails in background
-      sendCateringConfirmation({
-        name: body.name,
-        email: body.email,
-        eventType: body.eventType,
-        eventDate: body.eventDate,
-        guests: body.guests,
-        budget: body.budget,
-      }).catch(e => console.error('[mail] catering confirmation:', e))
+      if (body.email) {
+        sendCateringConfirmation({
+          name: body.name,
+          email: body.email,
+          eventType: body.eventType,
+          eventDate: body.eventDate,
+          guests: body.guests,
+          budget: body.budget,
+        }).catch(e => console.error('[mail] catering confirmation:', e))
+      }
       notifyAdminCatering({
         name: body.name,
-        email: body.email,
+        email: body.email ?? 'no-email',
         phone: body.phone,
         eventType: body.eventType,
         eventDate: body.eventDate,
@@ -185,7 +187,7 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
       body: t.Object({
         name: t.String({ minLength: 2 }),
         phone: t.String({ minLength: 7 }),
-        email: t.String(),
+        email: t.Optional(t.String({ pattern: '^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$' })),
         eventType: t.Optional(t.String()),
         eventDate: t.Optional(t.String()),
         guests: t.Optional(t.Number()),
@@ -246,7 +248,7 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
     {
       body: t.Object({
         name: t.String({ minLength: 2 }),
-        email: t.String(),
+        email: t.String({ pattern: '^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$' }),
         phone: t.Optional(t.String()),
         subject: t.Optional(t.String()),
         message: t.String({ minLength: 10 }),
