@@ -13,9 +13,13 @@
     "seed:check": "tsx scripts/seed-check.ts"
   },
   "dependencies": {
+    "@fontsource/outfit": "^5.2.8",
+    "@fontsource/plus-jakarta-sans": "^5.2.8",
     "@types/dompurify": "^3.2.0",
     "@vueuse/core": "^11.2.0",
+    "@vueuse/motion": "^3.0.3",
     "dompurify": "^3.4.2",
+    "gsap": "^3.15.0",
     "leaflet": "^1.9.4",
     "pinia": "^2.2.6",
     "swiper": "^11.1.14",

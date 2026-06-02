@@ -61,9 +61,14 @@ const reviewPill = computed(() => {
       Mi&nbsp;Pueblo
     </span>
 
-    <div class="relative z-10 container-page pt-8 pb-24 md:pt-12 md:pb-32 min-h-[92vh] flex flex-col justify-center">
+    <div class="relative z-10 container-page pt-8 pb-24 md:pt-12 md:pb-32 min-h-[100dvh] flex flex-col justify-center">
       <!-- Pills de confianza -->
-      <div class="flex flex-wrap items-center gap-2 mb-8 animate-fadeIn">
+      <div
+        v-motion
+        :initial="{ opacity: 0, y: 16 }"
+        :enter="{ opacity: 1, y: 0, transition: { duration: 500, delay: 100 } }"
+        class="flex flex-wrap items-center gap-2 mb-8"
+      >
         <span class="pill !bg-night-soft !text-sand-100 !border-night-light">
           <span class="pill-dot" :class="{ '!bg-rose-500': !isOpen }"></span>
           {{ openClosedPill }}
@@ -79,22 +84,37 @@ const reviewPill = computed(() => {
       </div>
 
       <!-- Headline impacto -->
-      <h1 class="headline-impact text-[15vw] sm:text-8xl md:text-[9rem] lg:text-[11rem] mb-6 max-w-5xl animate-fadeIn">
+      <h1
+        v-motion
+        :initial="{ opacity: 0, y: 24 }"
+        :enter="{ opacity: 1, y: 0, transition: { duration: 600, delay: 200 } }"
+        class="headline-impact text-[15vw] sm:text-8xl md:text-[9rem] lg:text-[11rem] mb-6 max-w-5xl"
+      >
         <span class="block text-sand-50">{{ t('home.hero.line1') }}</span>
         <span class="block text-sand-50">{{ t('home.hero.line2') }}</span>
         <span class="block text-accent">{{ t('home.hero.line3') }}</span>
       </h1>
 
-      <p class="font-body text-base md:text-xl text-sand-100/80 max-w-xl mb-8 leading-relaxed animate-fadeIn">
+      <p
+        v-motion
+        :initial="{ opacity: 0, y: 16 }"
+        :enter="{ opacity: 1, y: 0, transition: { duration: 500, delay: 350 } }"
+        class="font-body text-base md:text-xl text-sand-100/80 max-w-xl mb-8 leading-relaxed"
+      >
         {{ t('home.heroSubtitle') }}
       </p>
 
-      <div class="flex flex-wrap items-center gap-3 animate-fadeIn">
-        <a :href="main?.links.pickup ?? '#'" target="_blank" rel="noopener" class="btn-accent !px-8 !py-4 !text-base shadow-elev inline-flex items-center gap-2">
+      <div
+        v-motion
+        :initial="{ opacity: 0, y: 12 }"
+        :enter="{ opacity: 1, y: 0, transition: { duration: 500, delay: 480 } }"
+        class="flex flex-wrap items-center gap-3"
+      >
+        <a :href="main?.links.pickup ?? '#'" target="_blank" rel="noopener" class="btn-accent !px-8 !py-4 !text-base shadow-elev inline-flex items-center gap-2 active:scale-[0.98]">
           <Icon name="Truck" :size="22" />
           {{ t('cta.orderOnline') }}
         </a>
-        <RouterLink to="/menu" class="btn-light !text-base inline-flex items-center gap-2">
+        <RouterLink to="/menu" class="btn-light !text-base inline-flex items-center gap-2 active:scale-[0.98]">
           {{ t('cta.viewMenu') }}
           <Icon name="ArrowRight" :size="18" />
         </RouterLink>

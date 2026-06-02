@@ -14,9 +14,9 @@ export default {
       },
       fontFamily: {
         script:   ['"Pacifico"', '"Brush Script MT"', 'cursive'],
-        sans:     ['"Nunito"', '"Helvetica Neue"', 'Helvetica', 'Arial', 'sans-serif'],
-        body:     ['"Nunito"', '"Helvetica Neue"', 'Helvetica', 'Arial', 'sans-serif'],
-        display:  ['"Fraunces"', 'Georgia', '"Times New Roman"', 'serif'],
+        sans:     ['"Plus Jakarta Sans"', '"Nunito"', '"Helvetica Neue"', 'Helvetica', 'Arial', 'sans-serif'],
+        body:     ['"Plus Jakarta Sans"', '"Nunito"', '"Helvetica Neue"', 'Helvetica', 'Arial', 'sans-serif'],
+        display:  ['"Outfit"', '"Plus Jakarta Sans"', '"Nunito"', 'sans-serif'],
         impact:   ['"Anton"', '"Bebas Neue"', '"Arial Narrow"', 'sans-serif']
       },
       backgroundImage: {

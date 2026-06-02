@@ -1,3 +1,13 @@
+/* Self-hosted fonts via @fontsource — compliant with taste-skill (no production Google Fonts link) */
+@import '@fontsource/outfit/400.css';
+@import '@fontsource/outfit/600.css';
+@import '@fontsource/outfit/700.css';
+@import '@fontsource/outfit/800.css';
+@import '@fontsource/plus-jakarta-sans/400.css';
+@import '@fontsource/plus-jakarta-sans/600.css';
+@import '@fontsource/plus-jakarta-sans/700.css';
+@import '@fontsource/plus-jakarta-sans/800.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
