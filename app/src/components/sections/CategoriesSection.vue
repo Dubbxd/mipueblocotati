@@ -50,7 +50,12 @@ const label = (id: string) => labels.value[id]?.[locale.value as 'es'|'en'] ?? i
          class="hidden xl:block absolute -right-24 bottom-10 h-[85%] max-h-[640px] w-auto opacity-25 rotate-12 pointer-events-none select-none z-0" />
 
     <div class="relative container-page z-10">
-      <div class="text-center max-w-3xl mx-auto">
+      <div
+        class="text-center max-w-3xl mx-auto"
+        v-motion
+        :initial="{ opacity: 0, y: 24 }"
+        :visibleOnce="{ opacity: 1, y: 0, transition: { duration: 600 } }"
+      >
         <p class="section-kicker !text-accent inline-flex items-center justify-center gap-2">
           <Icon name="MenuBoard" :size="14" />
           <span>{{ t('home.categories.kicker') }}</span>

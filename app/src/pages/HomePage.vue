@@ -9,6 +9,7 @@ import CategoriesSection from '@/components/sections/CategoriesSection.vue'
 import ReviewsBand from '@/components/sections/ReviewsBand.vue'
 import AwardsBand from '@/components/sections/AwardsBand.vue'
 import MapGoogle from '@/components/sections/MapGoogle.vue'
+import Icon from '@/components/ui/Icon.vue'
 import { useI18n } from 'vue-i18n'
 import { computed } from 'vue'
 import { useSiteStore } from '@/stores'
@@ -36,6 +37,7 @@ const googleRatingStar = computed(() =>
     <DeliveryBand />
 
     <AboutSection
+      show-kicker
       :kicker="t('home.story.kicker')"
       :title="t('home.story.title')"
       :body="t('home.story.body')"
@@ -76,23 +78,51 @@ const googleRatingStar = computed(() =>
 
     <GalleryMasonry />
 
-    <AboutSection
-      :kicker="t('home.parties.kicker')"
-      :title="t('home.parties.title')"
-      :body="t('home.parties.body')"
-      :cta-label="t('home.parties.cta')"
-      cta-href="/reservar"
-      image="/assets/gallery/dining-room-tables-set.jpg"
-      image-alt="Salón privado Mi Pueblo"
-      bg="white"
-      kicker-icon="Music"
-      :stats="[
-        { icon: 'People',   label: t('home.parties.stats.capacityLabel'), value: '120' },
-        { icon: 'Calendar', label: t('home.parties.stats.daysLabel'),     value: '7/7' },
-        { icon: 'Music',    label: t('home.parties.stats.musicLabel'),    value: t('home.parties.stats.musicValue') }
-      ]"
-      :badge="{ icon: 'Cake', title: '100+', subtitle: t('home.parties.badgeSubtitle') }"
-    />
+    <!-- Salón para eventos: layout bento (diferente familia, rompe zigzag de 2× image+text) -->
+    <section class="section bg-white">
+      <div class="container-page">
+        <div class="grid md:grid-cols-2 gap-10 md:gap-16 items-center">
+          <!-- Texto + bento stats -->
+          <div>
+            <h2 class="font-display text-3xl md:text-5xl font-extrabold text-secondary-dark mb-5 leading-[1.05]">
+              {{ t('home.parties.title') }}
+            </h2>
+            <p class="text-secondary text-lg leading-relaxed mb-8 max-w-prose">{{ t('home.parties.body') }}</p>
+
+            <!-- Bento 2×2 stats -->
+            <div class="grid grid-cols-2 gap-3 mb-8">
+              <div class="bg-sand-50 rounded-2xl px-5 py-4 ring-1 ring-sand-200">
+                <span class="block font-display font-extrabold text-3xl text-brand">120</span>
+                <span class="block text-xs uppercase tracking-widest text-ink-muted mt-1">{{ t('home.parties.stats.capacityLabel') }}</span>
+              </div>
+              <div class="bg-sand-50 rounded-2xl px-5 py-4 ring-1 ring-sand-200">
+                <span class="block font-display font-extrabold text-3xl text-secondary-dark">7/7</span>
+                <span class="block text-xs uppercase tracking-widest text-ink-muted mt-1">{{ t('home.parties.stats.daysLabel') }}</span>
+              </div>
+              <div class="bg-brand/5 rounded-2xl px-5 py-4 ring-1 ring-brand/10 col-span-2">
+                <span class="block font-display font-extrabold text-2xl text-secondary-dark">100+</span>
+                <span class="block text-xs uppercase tracking-widest text-ink-muted mt-1">{{ t('home.parties.badgeSubtitle') }}</span>
+              </div>
+            </div>
+
+            <RouterLink to="/reservar" class="btn-primary inline-flex items-center gap-2 active:scale-[0.98]">
+              <span>{{ t('home.parties.cta') }}</span>
+              <Icon name="ArrowRight" :size="18" />
+            </RouterLink>
+          </div>
+
+          <!-- Imagen con proporción diferente a AboutSection (square vs tall) -->
+          <div class="relative">
+            <img
+              src="/assets/gallery/dining-room-tables-set.jpg"
+              :alt="t('home.parties.title')"
+              class="w-full aspect-square object-cover rounded-3xl shadow-elev"
+              loading="lazy"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
 
     <section class="section bg-sand-100">
       <div class="container-page">

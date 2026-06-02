@@ -33,7 +33,7 @@ onMounted(load)
 </script>
 
 <template>
-  <section class="min-h-screen bg-sand-50">
+  <section class="min-h-[100dvh] bg-sand-50">
     <!-- Header -->
     <div class="bg-night text-white py-20 text-center">
       <h1 class="font-display text-4xl md:text-5xl mb-3">Blog</h1>

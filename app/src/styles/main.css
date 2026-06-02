@@ -56,7 +56,7 @@
   .animate-fadeIn { animation: fadeIn 0.8s ease-out both; }
 
   /* Botones cálidos, redondeados, sin uppercase agresivo */
-  .btn            { @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-bold text-sm tracking-wide transition-all duration-200 whitespace-nowrap; }
+  .btn            { @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-bold text-sm tracking-wide transition-all duration-200 whitespace-nowrap active:scale-[0.98]; }
   .btn-primary    { @apply btn bg-brand text-white hover:bg-brand-dark shadow-soft hover:shadow-elev; }
   .btn-accent     { @apply btn bg-accent text-white hover:bg-accent-dark shadow-soft hover:shadow-elev; }
   .btn-outline    { @apply btn border-2 border-brand text-brand bg-white/80 hover:bg-brand hover:text-white; }

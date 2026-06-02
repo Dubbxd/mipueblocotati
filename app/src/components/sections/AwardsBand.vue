@@ -31,12 +31,13 @@ const trust = computed(() => [
     <div class="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-accent to-transparent opacity-60"></div>
 
     <div class="relative container-page">
-      <!-- HEADER -->
-      <div class="text-center max-w-3xl mx-auto mb-12">
-        <p class="section-kicker inline-flex items-center justify-center gap-2">
-          <Icon name="Award" :size="14" />
-          <span>{{ t('home.awards.kicker') }}</span>
-        </p>
+      <!-- HEADER — sin eyebrow, el headline solo es suficiente -->
+      <div
+        class="text-center max-w-3xl mx-auto mb-12"
+        v-motion
+        :initial="{ opacity: 0, y: 24 }"
+        :visibleOnce="{ opacity: 1, y: 0, transition: { duration: 600 } }"
+      >
         <h2 class="section-header !mb-4">{{ t('home.awards.title') }}</h2>
         <p class="section-sub mx-auto !mb-0">
           {{ locale === 'es'
@@ -45,15 +46,21 @@ const trust = computed(() => [
         </p>
       </div>
 
-      <!-- TRUST STRIP -->
-      <div class="max-w-4xl mx-auto mb-14 grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-        <div v-for="m in trust" :key="m.icon"
-             class="flex items-center gap-3 bg-white px-4 py-3 rounded-2xl shadow-sm ring-1 ring-sand-200">
-          <span class="grid place-items-center w-10 h-10 rounded-xl bg-accent/10 text-accent shrink-0">
-            <Icon :name="m.icon" type="Bold" :size="20" />
+      <!-- TRUST STRIP — layout flex con primer stat destacado -->
+      <div class="max-w-4xl mx-auto mb-14 flex flex-wrap justify-center gap-4">
+        <div v-for="(m, i) in trust" :key="m.icon"
+             :class="[
+               'flex items-center gap-3 bg-white rounded-2xl shadow-sm ring-1 ring-sand-200',
+               i === 0 ? 'px-6 py-4' : 'px-4 py-3'
+             ]">
+          <span :class="[
+            'grid place-items-center rounded-xl bg-accent/10 text-accent shrink-0',
+            i === 0 ? 'w-12 h-12' : 'w-10 h-10'
+          ]">
+            <Icon :name="m.icon" type="Bold" :size="i === 0 ? 24 : 20" />
           </span>
           <span class="leading-tight">
-            <span class="block font-display font-extrabold text-2xl text-secondary-dark">{{ m.value }}</span>
+            <span :class="['block font-display font-extrabold text-secondary-dark', i === 0 ? 'text-3xl' : 'text-2xl']">{{ m.value }}</span>
             <span class="block text-[10px] uppercase tracking-widest text-ink-muted">{{ m.label[locale as 'es'|'en'] }}</span>
           </span>
         </div>

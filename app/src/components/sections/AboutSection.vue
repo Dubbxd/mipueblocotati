@@ -13,7 +13,7 @@ interface Badge {
 }
 
 defineProps<{
-  kicker: string
+  kicker?: string
   title: string
   body: string
   image: string
@@ -25,6 +25,7 @@ defineProps<{
   stats?: Stat[]
   badge?: Badge
   kickerIcon?: string
+  showKicker?: boolean
 }>()
 </script>
 
@@ -40,10 +41,13 @@ defineProps<{
     <div
       class="container-page grid items-center gap-12 md:gap-20 md:grid-cols-2"
       :class="{ 'md:[&>*:first-child]:order-2': reverse }"
+      v-motion
+      :initial="{ opacity: 0, y: 24 }"
+      :visibleOnce="{ opacity: 1, y: 0, transition: { duration: 600 } }"
     >
       <!-- TEXT -->
       <div class="relative">
-        <p class="section-kicker !text-left !mb-4 inline-flex items-center gap-2">
+        <p v-if="showKicker && kicker" class="section-kicker !text-left !mb-4 inline-flex items-center gap-2">
           <Icon v-if="kickerIcon" :name="kickerIcon" :size="14" />
           <span class="h-px w-8 bg-accent inline-block"></span>
           <span>{{ kicker }}</span>
