@@ -25,7 +25,6 @@ defineProps<{
   stats?: Stat[]
   badge?: Badge
   kickerIcon?: string
-  showKicker?: boolean
 }>()
 </script>
 
@@ -47,7 +46,7 @@ defineProps<{
     >
       <!-- TEXT -->
       <div class="relative">
-        <p v-if="showKicker && kicker" class="section-kicker !text-left !mb-4 inline-flex items-center gap-2">
+        <p v-if="kicker" class="section-kicker !text-left !mb-4 inline-flex items-center gap-2">
           <Icon v-if="kickerIcon" :name="kickerIcon" :size="14" />
           <span class="h-px w-8 bg-accent inline-block"></span>
           <span>{{ kicker }}</span>

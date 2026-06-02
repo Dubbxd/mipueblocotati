@@ -109,6 +109,7 @@ const countFmt = computed(() =>
          class="absolute bottom-8 right-12 w-16 -rotate-12 opacity-50 pointer-events-none hidden md:block" />
 
     <div class="relative container-page text-center">
+      <p class="font-script text-accent-light text-3xl md:text-4xl mb-2">{{ t('home.reviews.kicker') }}</p>
       <h2
         class="headline-impact text-4xl md:text-6xl text-white mb-8 max-w-3xl mx-auto drop-shadow"
         v-motion
