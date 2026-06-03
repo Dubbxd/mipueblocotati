@@ -15,9 +15,6 @@ export const categories: MenuCategory[] = [
   { id: 'seafood-combos',slug: 'seafood-combos',order: 11, name: { es: 'Combos de mariscos',en: 'Seafood Combos' } },
   { id: 'meats',         slug: 'meats',         order: 12, name: { es: 'Carnes',            en: 'Steak & Meats' } },
   { id: 'seafood',       slug: 'seafood',       order: 13, name: { es: 'Mariscos',          en: 'Seafood' } },
-  { id: 'breakfast',     slug: 'breakfast',     order: 14, name: { es: 'Desayunos',         en: 'Breakfast' } },
-  { id: 'kids',          slug: 'kids',          order: 15, name: { es: 'Niños',             en: 'Kids' } },
-  { id: 'desserts',      slug: 'desserts',      order: 16, name: { es: 'Postres',           en: 'Desserts' } }
 ]
 
 // Helper para crear items con ergonomía
@@ -113,8 +110,8 @@ export const menuItems: MenuItem[] = [
   I('burrito-macho',     'burritos', 'Burrito Macho',         'Macho',                 19.67, 'Carne, frijoles refritos, arroz, queso, crema, guacamole, jitomate, cebolla y cilantro, salsa de burrito', 'Choice of Meat, Refried Beans, Rice, Cheese, Sour Cream, Guacamole, Tomatoes, Onion and Cilantro, topped with Burrito Sauce', ['popular']),
   I('burrito-padre',     'burritos', 'Burrito Padre Macho',   'Padre Macho',           26.39, 'Igual que el Macho en doble cantidad, salsa de burrito', 'Same as Macho with Double Amount, topped with Burrito Sauce'),
   I('burrito-gordo',     'burritos', 'Burrito Gordo Macho',   'Gordo Macho',           56.93, 'Igual que el Macho en triple cantidad, salsa de burrito', 'Same as Macho with Triple Amount, topped with Burrito Sauce'),
-  I('burrito-veg',       'burritos', 'Burrito Vegetariano',   'Vegetariano',           15.07, 'Arroz, frijoles, lechuga, queso, crema, guacamole, salsa de burrito', 'Rice, Whole Beans, Lettuce, Cheese, Sour Cream, Guacamole, topped with Burrito Sauce'),
-  I('burrito-veg-mas',   'burritos', 'Burrito Vegetariano Más','Vegetariano Mas',      16.30, 'Arroz, frijoles, lechuga, queso, crema, guacamole, brócoli, coliflor, calabacita, zanahoria, salsa de burrito', 'Rice, Whole Beans, Lettuce, Cheese, Sour Cream, Guacamole, Broccoli, Cauliflower, Zucchini, Carrots, topped with Burrito Sauce'),
+  I('burrito-veg',       'burritos', 'Burrito sin carne',     'Vegetariano',           15.07, 'Arroz, frijoles, lechuga, queso, crema, guacamole, salsa de burrito', 'Rice, Whole Beans, Lettuce, Cheese, Sour Cream, Guacamole, topped with Burrito Sauce'),
+  I('burrito-veg-mas',   'burritos', 'Burrito sin carne plus', 'Vegetariano Mas',      16.30, 'Arroz, frijoles, lechuga, queso, crema, guacamole, brócoli, coliflor, calabacita, zanahoria, salsa de burrito', 'Rice, Whole Beans, Lettuce, Cheese, Sour Cream, Guacamole, Broccoli, Cauliflower, Zucchini, Carrots, topped with Burrito Sauce'),
   I('burrito-relleno',   'burritos', 'Burrito relleno',       'Burrito Relleno',       17.60, 'Chile relleno + arroz, frijoles, queso, crema, salsa de relleno', 'Chile Relleno, Rice, Whole Beans, Cheese, Sour Cream, topped with Relleno Sauce'),
   I('burrito-california','burritos', 'California burrito',    'California Burrito',    18.03, 'Carne, papas fritas, arroz, frijoles, crema, guacamole, queso, salsa de burrito', 'Meat, Fries, Rice, Whole Beans Sour Cream, Guacamole, Cheese, Topped with Burrito Sauce'),
   I('burrito-bowl',      'burritos', 'Burrito bowl',          'Burrito Bowl',          17.60, 'Arroz, frijoles, jitomate, lechuga, carne, queso, crema, guacamole, pico de gallo en tazón (mariscos +$3.00)', 'Rice, Whole Beans, Chopped Tomato, Lettuce, Meat, Cheese, Sour Cream, Guacamole, Pico de Gallo, Served in a Bowl (Seafood + $3.00)'),
@@ -211,35 +208,4 @@ export const menuItems: MenuItem[] = [
   I('tostada-ceviche',    'seafood', 'Tostada de ceviche',    'Tostada de Ceviche Shrimp', 11.13, undefined, undefined, ['seafood']),
   I('tostada-camaron',    'seafood', 'Tostada de camarón',    'Tostada de Camarón',    10.09, undefined, undefined, ['seafood']),
   I('tostada-pescado',    'seafood', 'Tostada ceviche de pescado','Tostada Ceviche de Pescado',11.13, undefined, undefined, ['seafood']),
-
-  // ============ BREAKFAST ============
-  I('huevos-rancheros', 'breakfast', 'Huevos rancheros',       'Huevos Rancheros',     16.75),
-  I('huevos-chorizo',   'breakfast', 'Huevos con chorizo',     'Eggs with Chorizo',    16.75),
-  I('huevos-jamon',     'breakfast', 'Huevos con jamón',       'Eggs with Ham',        16.75),
-  I('chilaquiles',      'breakfast', 'Chilaquiles',            'Chilaquiles',          16.75, 'Verdes o rojos', 'Green or red'),
-  I('machaca',          'breakfast', 'Machaca con huevos',     'Machaca with Eggs',    16.75),
-  I('breakfast-burrito','breakfast', 'Burrito de desayuno',    'Breakfast Burrito',    16.75),
-  I('veggie-omelet',    'breakfast', 'Omelet de vegetales',    'Veggie Omelet',        16.00, 'Huevo, pimiento, cebolla, champiñón, jitomate, espinaca, queso fundido', 'Egg, pepper, onion, mushroom, tomato, spinach, melted cheese'),
-  I('chorizo-omelet',   'breakfast', 'Omelet con chorizo',     'Chorizo Omelet',       18.00),
-
-  // ============ KIDS ============
-  I('kids-fun',         'kids', 'Kids Fun Meal',                'Kids Fun Meal',           11.99, undefined, undefined, ['kids']),
-  I('kids-quesadilla',  'kids', 'Quesadilla',                   'Quesadilla',               9.00, undefined, undefined, ['kids']),
-  I('kids-quesadilla-meat','kids','Quesadilla con carne',       'Quesadilla with Meat',    11.99, undefined, undefined, ['kids']),
-  I('kids-rice-beans',  'kids', 'Arroz y frijoles',             'Rice and Beans',           9.75, undefined, undefined, ['kids']),
-  I('kids-burrito-mini','kids', 'Burrito pequeño',              'Small Burrito',           10.50, undefined, undefined, ['kids']),
-  I('kids-burrito-meat','kids', 'Burrito pequeño con carne',    'Small Burrito with Meat', 12.50, undefined, undefined, ['kids']),
-  I('kids-mini-nachos', 'kids', 'Mini nachos',                  'Mini Nachos',             10.50, undefined, undefined, ['kids']),
-  I('kids-mini-nachos-meat','kids','Mini nachos con carne',     'Mini Nachos with Meat',   12.50, undefined, undefined, ['kids']),
-  I('kids-fries',       'kids', 'Papas fritas',                 'French Fries',             6.50, undefined, undefined, ['kids']),
-  I('kids-taco',        'kids', 'Kids taco con arroz y frijoles','Kids Taco with Rice & Beans',11.99, undefined, undefined, ['kids']),
-  I('kids-nuggets',     'kids', 'Chicken nuggets (6) con papas','Chicken Nuggets (6) with Fries',10.75, undefined, undefined, ['kids']),
-  I('kids-burger',      'kids', 'Chico burger con papas',       'Chico Burger with Fries', 11.50, undefined, undefined, ['kids']),
-
-  // ============ DESSERTS ============
-  I('flan',          'desserts', 'Flan',                  'Flan',                   8.50, undefined, undefined, ['popular']),
-  I('fried-icecream','desserts', 'Helado frito',          'Deep Fried Ice Cream',  13.99),
-  I('churros',       'desserts', 'Churros',               'Churros',               15.99, undefined, undefined, ['popular']),
-  I('sopapilla',     'desserts', 'Sopapilla',             'Sopapilla',             13.99),
-  I('icecream',      'desserts', 'Helado',                'Ice Cream',              9.50)
 ]
