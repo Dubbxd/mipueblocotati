@@ -34,25 +34,21 @@ const catIcon = (slug: string) => CAT_ICONS[slug] ?? 'MenuBoard'
 
 // ── Tags: icono + color ──────────────────────────────────────────
 const TAG_META: Record<string, { icon: string; cls: string }> = {
-  popular:     { icon: 'Star1',      cls: 'text-amber-600 bg-amber-50 border-amber-200' },
-  vegetarian:  { icon: 'Heart',      cls: 'text-green-700 bg-green-50 border-green-200' },
-  seafood:     { icon: 'Drop',       cls: 'text-sky-700 bg-sky-50 border-sky-200' },
-  spicy:       { icon: 'Flash',      cls: 'text-red-600 bg-red-50 border-red-200' },
-  kids:        { icon: 'Gift',       cls: 'text-purple-600 bg-purple-50 border-purple-200' },
-  new:         { icon: 'Add',        cls: 'text-teal-600 bg-teal-50 border-teal-200' },
-  gluten_free: { icon: 'TickCircle', cls: 'text-lime-700 bg-lime-50 border-lime-200' },
-  chefchoice:  { icon: 'Crown',      cls: 'text-brand bg-brand/10 border-brand/30' },
+  popular:    { icon: 'Star1', cls: 'text-amber-600 bg-amber-50 border-amber-200' },
+  seafood:    { icon: 'Drop', cls: 'text-sky-700 bg-sky-50 border-sky-200' },
+  spicy:      { icon: 'Flash', cls: 'text-red-600 bg-red-50 border-red-200' },
+  kids:       { icon: 'Gift', cls: 'text-purple-600 bg-purple-50 border-purple-200' },
+  chefchoice: { icon: 'Crown', cls: 'text-brand bg-brand/10 border-brand/30' },
 }
 const tagMeta = (tag: string) => TAG_META[tag] ?? { icon: 'Tag', cls: 'text-secondary bg-sand-100 border-sand-200' }
 
 // ── Filtros ──────────────────────────────────────────────────────
 const FILTERS = computed<{ id: MenuTag | 'all'; icon: string; label: string }[]>(() => [
-  { id: 'all',        icon: 'MenuBoard', label: t('menu.filters.all') },
-  { id: 'popular',    icon: 'Star1',     label: t('menu.tags.popular') },
-  { id: 'vegetarian', icon: 'Heart',     label: t('menu.filters.vegetarian') },
-  { id: 'seafood',    icon: 'Drop',      label: t('menu.filters.seafood') },
-  { id: 'spicy',      icon: 'Flash',     label: t('menu.filters.spicy') },
-  { id: 'kids',       icon: 'Gift',      label: t('menu.filters.kids') },
+  { id: 'all',     icon: 'MenuBoard', label: t('menu.filters.all') },
+  { id: 'popular', icon: 'Star1',     label: t('menu.tags.popular') },
+  { id: 'seafood', icon: 'Drop',      label: t('menu.filters.seafood') },
+  { id: 'spicy',   icon: 'Flash',     label: t('menu.filters.spicy') },
+  { id: 'kids',    icon: 'Gift',      label: t('menu.filters.kids') },
 ])
 
 const fmt = (p: number | null) => p == null ? '' : `$${p.toFixed(2)}`
@@ -219,9 +215,8 @@ function clearFilters() {
               <div class="h-6 w-40 rounded-lg bg-sand-200 animate-pulse" />
             </div>
             <div class="grid gap-3 sm:grid-cols-2">
-              <div v-for="i in 4" :key="i" class="flex gap-3 p-4 rounded-2xl bg-white border border-sand-100 animate-pulse">
-                <div class="w-[88px] h-[88px] rounded-xl bg-sand-200 shrink-0" />
-                <div class="flex-1 space-y-2 py-1">
+              <div v-for="i in 4" :key="i" class="p-4 rounded-2xl bg-white border border-sand-100 animate-pulse">
+                <div class="space-y-2 py-1">
                   <div class="h-4 bg-sand-200 rounded w-3/4" />
                   <div class="h-3 bg-sand-200 rounded w-1/2" />
                   <div class="h-3 bg-sand-200 rounded w-2/3" />
@@ -278,51 +273,28 @@ function clearFilters() {
             <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
               <article
                 v-for="m in g.items" :key="m.id"
-                class="group flex gap-3 p-3.5 rounded-2xl bg-white border border-sand-100 hover:border-brand/25 hover:shadow-soft transition-all duration-200"
+                class="p-3.5 rounded-2xl bg-white border border-sand-100 hover:border-brand/25 hover:shadow-soft transition-all duration-200"
               >
-                <!-- Foto o placeholder -->
-                <div class="w-[88px] h-[88px] md:w-[104px] md:h-[104px] rounded-xl overflow-hidden bg-sand-100 shrink-0 relative">
-                  <img
-                    v-if="m.photo"
-                    :src="m.photo"
-                    :alt="locale === 'es' ? m.name.es : m.name.en"
-                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    loading="lazy"
-                  />
-                  <div v-else class="w-full h-full flex flex-col items-center justify-center gap-1 bg-gradient-to-br from-sand-50 to-sand-100">
-                    <Icon :name="catIcon(g.category.id)" :size="28" class="text-secondary/25" type="Bold" />
-                  </div>
-                  <!-- Badge popular en foto -->
-                  <span v-if="m.photo && m.tags.includes('popular')"
-                    class="absolute top-1.5 left-1.5 bg-amber-400 text-white rounded-full w-5 h-5 flex items-center justify-center shadow"
-                  >
-                    <Icon name="Star1" :size="10" type="Bold" />
+                <div class="flex items-start justify-between gap-2 mb-1">
+                  <h3 class="font-bold text-secondary-dark text-sm leading-snug">
+                    {{ locale === 'es' ? m.name.es : m.name.en }}
+                  </h3>
+                  <span v-if="m.price" class="text-brand font-bold text-sm shrink-0 whitespace-nowrap tabular-nums">
+                    {{ fmt(m.price) }}
                   </span>
                 </div>
-
-                <!-- Info del platillo -->
-                <div class="flex-1 min-w-0 flex flex-col gap-1">
-                  <div class="flex items-start justify-between gap-2">
-                    <h3 class="font-bold text-secondary-dark text-sm leading-snug">
-                      {{ locale === 'es' ? m.name.es : m.name.en }}
-                    </h3>
-                    <span v-if="m.price" class="text-brand font-bold text-sm shrink-0 whitespace-nowrap tabular-nums">
-                      {{ fmt(m.price) }}
-                    </span>
-                  </div>
-                  <p v-if="m.description" class="text-[11px] text-ink-muted leading-relaxed line-clamp-2">
-                    {{ locale === 'es' ? m.description.es : m.description.en }}
-                  </p>
-                  <div v-if="m.tags.filter(tg => tg !== 'popular').length" class="flex flex-wrap gap-1 mt-auto pt-1">
-                    <span
-                      v-for="tg in m.tags.filter(tg => tg !== 'popular')" :key="tg"
-                      class="inline-flex items-center gap-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-full border"
-                      :class="tagMeta(tg).cls"
-                    >
-                      <Icon :name="tagMeta(tg).icon" :size="9" type="Bold" />
-                      {{ t(`menu.tags.${tg}`) }}
-                    </span>
-                  </div>
+                <p v-if="m.description" class="text-[11px] text-ink-muted leading-relaxed line-clamp-2">
+                  {{ locale === 'es' ? m.description.es : m.description.en }}
+                </p>
+                <div v-if="m.tags.filter(tg => tg !== 'popular').length" class="flex flex-wrap gap-1 mt-2">
+                  <span
+                    v-for="tg in m.tags.filter(tg => tg !== 'popular')" :key="tg"
+                    class="inline-flex items-center gap-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-full border"
+                    :class="tagMeta(tg).cls"
+                  >
+                    <Icon :name="tagMeta(tg).icon" :size="9" type="Bold" />
+                    {{ t(`menu.tags.${tg}`) }}
+                  </span>
                 </div>
               </article>
             </div>
