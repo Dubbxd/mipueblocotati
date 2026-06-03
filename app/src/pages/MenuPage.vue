@@ -174,7 +174,7 @@ function clearFilters() {
                 :type="activeSection === g.category.id ? 'Bold' : 'Linear'"
                 class="shrink-0"
               />
-              <span class="flex-1 leading-tight">{{ catName(g.category) }}</span>
+              <span class="flex-1 leading-tight">{{ g.category.name.es }}</span>
               <span class="text-[10px] opacity-50 shrink-0 tabular-nums">{{ g.items.length }}</span>
             </button>
           </nav>
@@ -201,7 +201,7 @@ function clearFilters() {
                 :type="activeSection === g.category.id ? 'Bold' : 'Linear'"
               />
               <span class="text-[10px] font-semibold leading-tight text-center line-clamp-2 max-w-[64px]">
-                {{ catName(g.category) }}
+                {{ g.category.name.es }}
               </span>
             </button>
           </div>
@@ -261,7 +261,7 @@ function clearFilters() {
               </span>
               <div>
                 <h2 class="font-display text-xl md:text-2xl font-bold text-secondary-dark leading-tight">
-                  {{ catName(g.category) }}
+                  {{ g.category.name.es }}
                 </h2>
                 <p class="text-[11px] text-ink-muted tabular-nums">
                   {{ g.items.length }} {{ t('menu.dishes') }}
@@ -277,14 +277,14 @@ function clearFilters() {
               >
                 <div class="flex items-start justify-between gap-2 mb-1">
                   <h3 class="font-bold text-secondary-dark text-sm leading-snug">
-                    {{ locale === 'es' ? m.name.es : m.name.en }}
+                    {{ m.name.es }}
                   </h3>
                   <span v-if="m.price" class="text-brand font-bold text-sm shrink-0 whitespace-nowrap tabular-nums">
                     {{ fmt(m.price) }}
                   </span>
                 </div>
                 <p v-if="m.description" class="text-[11px] text-ink-muted leading-relaxed line-clamp-2">
-                  {{ locale === 'es' ? m.description.es : m.description.en }}
+                  {{ m.description.es }}
                 </p>
                 <div v-if="m.tags.filter(tg => tg !== 'popular').length" class="flex flex-wrap gap-1 mt-2">
                   <span
