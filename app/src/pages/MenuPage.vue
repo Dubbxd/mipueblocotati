@@ -288,9 +288,6 @@ function clearFilters() {
                   <h3 class="font-bold text-secondary-dark text-sm leading-snug">
                     {{ m.name.en }}
                   </h3>
-                  <span v-if="m.price" class="text-brand font-bold text-sm shrink-0 whitespace-nowrap tabular-nums">
-                    {{ fmt(m.price) }}
-                  </span>
                 </div>
                 <p v-if="m.description" class="text-[11px] text-ink-muted leading-relaxed line-clamp-2">
                   {{ m.description.en }}
