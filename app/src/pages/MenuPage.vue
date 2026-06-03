@@ -7,9 +7,19 @@ import type { MenuTag } from '@/types/domain'
 
 defineOptions({ name: 'MenuPage' })
 
-const { t, locale } = useI18n()
+const { t } = useI18n()
 const menu = useMenuStore()
 onMounted(() => menu.init())
+
+// ── Notas de categoría (tal como aparecen en el menú físico) ────
+const CAT_NOTES: Record<string, string> = {
+  'small-combos':   'Served with rice & refried beans.',
+  'large-combos':   'Served with rice & refried beans.',
+  'seafood-combos': 'Additional charge for seafood.',
+  'burritos':       'Choice of tortilla: spinach, flour, sun-dried tomato, or wheat.',
+  'meats':          'Served with rice & refried beans.',
+}
+const catNote = (slug: string) => CAT_NOTES[slug] ?? null
 
 // ── Iconos por categoría ─────────────────────────────────────────
 const CAT_ICONS: Record<string, string> = {
@@ -53,8 +63,6 @@ const FILTERS = computed<{ id: MenuTag | 'all'; icon: string; label: string }[]>
 
 const fmt = (p: number | null) => p == null ? '' : `$${p.toFixed(2)}`
 const groups = computed(() => menu.grouped)
-const catName = (cat: { name: { es: string; en: string } }) =>
-  locale.value === 'es' ? cat.name.es : cat.name.en
 
 // ── Sección activa (IntersectionObserver) ────────────────────────
 const activeSection = ref<string>('')
@@ -174,7 +182,7 @@ function clearFilters() {
                 :type="activeSection === g.category.id ? 'Bold' : 'Linear'"
                 class="shrink-0"
               />
-              <span class="flex-1 leading-tight">{{ g.category.name.es }}</span>
+              <span class="flex-1 leading-tight">{{ g.category.name.en }}</span>
               <span class="text-[10px] opacity-50 shrink-0 tabular-nums">{{ g.items.length }}</span>
             </button>
           </nav>
@@ -201,7 +209,7 @@ function clearFilters() {
                 :type="activeSection === g.category.id ? 'Bold' : 'Linear'"
               />
               <span class="text-[10px] font-semibold leading-tight text-center line-clamp-2 max-w-[64px]">
-                {{ g.category.name.es }}
+                {{ g.category.name.en }}
               </span>
             </button>
           </div>
@@ -261,8 +269,9 @@ function clearFilters() {
               </span>
               <div>
                 <h2 class="font-display text-xl md:text-2xl font-bold text-secondary-dark leading-tight">
-                  {{ g.category.name.es }}
+                  {{ g.category.name.en }}
                 </h2>
+                <p v-if="catNote(g.category.id)" class="text-[11px] text-ink-muted italic mt-0.5">{{ catNote(g.category.id) }}</p>
                 <p class="text-[11px] text-ink-muted tabular-nums">
                   {{ g.items.length }} {{ t('menu.dishes') }}
                 </p>
@@ -277,14 +286,14 @@ function clearFilters() {
               >
                 <div class="flex items-start justify-between gap-2 mb-1">
                   <h3 class="font-bold text-secondary-dark text-sm leading-snug">
-                    {{ m.name.es }}
+                    {{ m.name.en }}
                   </h3>
                   <span v-if="m.price" class="text-brand font-bold text-sm shrink-0 whitespace-nowrap tabular-nums">
                     {{ fmt(m.price) }}
                   </span>
                 </div>
                 <p v-if="m.description" class="text-[11px] text-ink-muted leading-relaxed line-clamp-2">
-                  {{ m.description.es }}
+                  {{ m.description.en }}
                 </p>
                 <div v-if="m.tags.filter(tg => tg !== 'popular').length" class="flex flex-wrap gap-1 mt-2">
                   <span
