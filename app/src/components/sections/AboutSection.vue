@@ -84,22 +84,14 @@ defineProps<{
         </a>
       </div>
 
-      <!-- IMAGE — tarjeta enmarcada con fondo decorativo -->
+      <!-- IMAGE — foto a sangre, sin marco -->
       <div class="relative group">
-        <!-- Fondo decorativo con degradado de marca -->
-        <div
-          class="absolute -inset-3 md:-inset-4 bg-gradient-to-br from-accent/25 via-brand/15 to-transparent rounded-[2.5rem] -rotate-2 group-hover:rotate-0 transition-transform duration-700"
-          aria-hidden="true"
-        ></div>
-
-        <div class="relative h-[420px] md:h-[540px] rounded-3xl overflow-hidden shadow-elev ring-1 ring-sand-200 bg-white">
-          <img
-            :src="image"
-            :alt="imageAlt"
-            class="w-full h-full object-contain transition-transform duration-700 group-hover:scale-[1.04]"
-            loading="lazy"
-          />
-        </div>
+        <img
+          :src="image"
+          :alt="imageAlt"
+          class="w-full h-[420px] md:h-[540px] object-cover rounded-3xl shadow-elev transition-transform duration-700 group-hover:scale-[1.03]"
+          loading="lazy"
+        />
 
         <div
           v-if="badge"
