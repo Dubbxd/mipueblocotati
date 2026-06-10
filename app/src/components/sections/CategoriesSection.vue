@@ -16,12 +16,12 @@ interface CatCard {
 }
 
 const cards: CatCard[] = [
-  { id: 'burritos',    slug: 'burritos',    photo: '/assets/gallery/burrito-served.jpg',           bestSeller: true,  rotation: '-rotate-2' },
-  { id: 'tacos',       slug: 'tacos',       photo: '/assets/gallery/quesa-birria-taco-closeup.jpg', rotation: 'rotate-1' },
-  { id: 'specialties', slug: 'specialties', photo: '/assets/gallery/chile-relleno.jpg',            rotation: '-rotate-1' },
-  { id: 'meats',       slug: 'meats',       photo: '/assets/gallery/molcajete-bowl.jpg',           bestSeller: true, rotation: 'rotate-2' },
-  { id: 'seafood',     slug: 'seafood',     photo: '/assets/gallery/camarones-con-steak.jpg',      rotation: '-rotate-2' },
-  { id: 'appetizers',  slug: 'appetizers',  photo: '/assets/gallery/super-nachos.jpg',             rotation: 'rotate-1' }
+  { id: 'burritos',    slug: 'burritos',    photo: '/assets/gallery/burrito-deluxe.jpg',           bestSeller: true,  rotation: '-rotate-2' },
+  { id: 'tacos',       slug: 'tacos',       photo: '/assets/gallery/tacos-al-pastor-grill.jpg',    rotation: 'rotate-1' },
+  { id: 'specialties', slug: 'specialties', photo: '/assets/gallery/tomahawk-steak.jpg',           rotation: '-rotate-1' },
+  { id: 'meats',       slug: 'meats',       photo: '/assets/gallery/fajitas-sizzling.jpg',         bestSeller: true, rotation: 'rotate-2' },
+  { id: 'seafood',     slug: 'seafood',     photo: '/assets/gallery/pescado-frito-entero.jpg',     rotation: '-rotate-2' },
+  { id: 'appetizers',  slug: 'appetizers',  photo: '/assets/gallery/aguachile-tostada.jpg',        rotation: 'rotate-1' }
 ]
 
 const labels = computed<Record<string, { es: string; en: string }>>(() => ({

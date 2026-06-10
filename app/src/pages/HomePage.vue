@@ -59,8 +59,8 @@ const googleRatingStar = computed(() =>
       :body="t('home.catering.body')"
       :cta-label="t('home.catering.cta')"
       cta-href="/catering"
-      image="/assets/gallery/catering-buffet-setup.jpg"
-      image-alt="Catering Mi Pueblo"
+      image="/assets/gallery/parrillada-especial.jpg"
+      image-alt="Parrillada especial Mi Pueblo, ideal para eventos"
       reverse
       bg="cream"
       kicker-icon="Cake"
@@ -82,8 +82,8 @@ const googleRatingStar = computed(() =>
       :body="t('home.parties.body')"
       :cta-label="t('home.parties.cta')"
       cta-href="/reservar"
-      image="/assets/gallery/dining-room-tables-set.jpg"
-      image-alt="Salón privado Mi Pueblo"
+      image="/assets/gallery/clientes-brindis-patio.jpg"
+      image-alt="Clientes celebrando en el patio de Mi Pueblo"
       bg="white"
       kicker-icon="Music"
       :stats="[
