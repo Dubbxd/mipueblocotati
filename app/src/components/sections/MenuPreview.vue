@@ -3,11 +3,12 @@ import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useMenuStore } from '@/stores'
 import Icon from '@/components/ui/Icon.vue'
+import { dishPhoto } from '@/data/categoryPhotos'
 
 const { t, locale } = useI18n()
 const menu = useMenuStore()
-// Solo platillos con foto, hasta 10 — computed para reactividad cuando carga el store
-const featured = computed(() => menu.popular.filter(m => m.photo).slice(0, 10))
+// Hasta 10 platillos populares — usan su foto propia o una de respaldo por categoría
+const featured = computed(() => menu.popular.slice(0, 10))
 const fmt = (p: number | null) => p == null ? '—' : `$${p.toFixed(2)}`
 
 const scroller = ref<HTMLElement | null>(null)
@@ -53,7 +54,7 @@ const scrollBy = (dir: 1 | -1) => {
           <RouterLink v-for="m in featured" :key="m.id" :to="`/menu#${m.categoryId}`"
                       class="card group shrink-0 w-[78%] sm:w-[46%] md:w-[31%] lg:w-[23%] snap-start">
             <div class="aspect-[3/4] bg-sand-200 overflow-hidden relative">
-              <img :src="m.photo!.replace('.webp', '.jpg')" :alt="locale === 'es' ? m.name.es : m.name.en"
+              <img :src="dishPhoto(m)" :alt="locale === 'es' ? m.name.es : m.name.en"
                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                    loading="lazy" />
               <div class="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/85 via-black/40 to-transparent"></div>

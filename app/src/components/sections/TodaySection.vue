@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useMenuStore, useSiteStore } from '@/stores'
 import Icon from '@/components/ui/Icon.vue'
+import { dishPhoto } from '@/data/categoryPhotos'
 
 const { t, locale } = useI18n()
 const menu = useMenuStore()
@@ -11,7 +12,7 @@ const main = computed(() => site.mainRestaurant)
 
 const todayPromo = computed(() => site.promotions.find(p => p.active) ?? null)
 
-// Plato estrella: el primer popular con foto
+// Plato estrella: el primer popular con foto propia, o el primero de la lista
 const star = computed(() => menu.popular.find(m => m.photo) ?? menu.popular[0])
 
 const fmt = (p: number | null) => p == null ? '' : `$${p.toFixed(2)}`
@@ -59,7 +60,7 @@ const tt = (txt: { es: string; en: string }) => locale.value === 'es' ? txt.es :
           class="card group overflow-hidden"
         >
           <div class="aspect-[4/3] overflow-hidden bg-sand-200">
-            <img v-if="star.photo" :src="star.photo.replace('.webp', '.jpg')" :alt="tt(star.name)"
+            <img :src="dishPhoto(star)" :alt="tt(star.name)"
                  class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy" />
           </div>
           <div class="p-5">
