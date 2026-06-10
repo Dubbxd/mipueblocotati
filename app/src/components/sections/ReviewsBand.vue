@@ -92,7 +92,7 @@ const countFmt = computed(() =>
 </script>
 
 <template>
-  <section class="relative bg-brand text-white overflow-hidden py-20 md:py-28">
+  <section id="resenas" class="relative bg-brand text-white overflow-hidden py-20 md:py-28 scroll-mt-20">
     <!-- Patrón sutil -->
     <div class="absolute inset-0 bg-fiesta-pattern opacity-[0.06] pointer-events-none"></div>
     <!-- Decoración -->

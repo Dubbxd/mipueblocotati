@@ -1,21 +1,15 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useMenuStore, useSiteStore } from '@/stores'
+import { useSiteStore } from '@/stores'
 import Icon from '@/components/ui/Icon.vue'
-import { dishPhoto } from '@/data/categoryPhotos'
 
 const { t, locale } = useI18n()
-const menu = useMenuStore()
 const site = useSiteStore()
 const main = computed(() => site.mainRestaurant)
 
 const todayPromo = computed(() => site.promotions.find(p => p.active) ?? null)
 
-// Plato estrella: el primer popular con foto propia, o el primero de la lista
-const star = computed(() => menu.popular.find(m => m.photo) ?? menu.popular[0])
-
-const fmt = (p: number | null) => p == null ? '' : `$${p.toFixed(2)}`
 const tt = (txt: { es: string; en: string }) => locale.value === 'es' ? txt.es : txt.en
 </script>
 
@@ -51,29 +45,34 @@ const tt = (txt: { es: string; en: string }) => locale.value === 'es' ? txt.es :
           </div>
         </article>
 
-        <!-- Plato estrella -->
+        <!-- Reseña destacada -->
         <article
-          v-if="star"
           v-motion
           :initial="{ opacity: 0, y: 20 }"
           :visibleOnce="{ opacity: 1, y: 0, transition: { duration: 500, delay: 100 } }"
-          class="card group overflow-hidden"
+          class="card group flex flex-col !shadow-elev relative overflow-hidden"
         >
-          <div class="aspect-[4/3] overflow-hidden bg-sand-200">
-            <img :src="dishPhoto(star)" :alt="tt(star.name)"
-                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy" />
-          </div>
-          <div class="p-5">
-            <span class="text-xs font-bold uppercase tracking-widest text-accent mb-2 inline-flex items-center gap-1.5">
+          <Icon name="QuoteUp" type="Bold" :size="110"
+                class="absolute -top-4 -right-4 text-accent/10 pointer-events-none" aria-hidden="true" />
+          <div class="p-6 flex-1 flex flex-col relative">
+            <span class="text-xs font-bold uppercase tracking-widest text-accent mb-3 inline-flex items-center gap-1.5">
               <Icon name="Star1" type="Bold" :size="14" />
-              <span>{{ t('home.today.starLabel') }}</span>
+              <span>{{ t('home.today.reviewLabel') }}</span>
             </span>
-            <h3 class="display-serif text-xl text-secondary-dark mb-1">{{ tt(star.name) }}</h3>
-            <div class="flex items-center justify-between mt-3">
-              <span class="text-2xl font-extrabold text-brand">{{ fmt(star.price) }}</span>
-              <RouterLink to="/menu" class="text-secondary font-bold text-sm hover:text-brand">
-                {{ t('cta.viewMenu') }} →
-              </RouterLink>
+            <div class="flex items-center gap-1 text-accent mb-3" aria-hidden="true">
+              <Icon v-for="i in 5" :key="i" name="Star1" type="Bold" :size="16" />
+            </div>
+            <p class="display-serif text-lg md:text-xl text-secondary-dark leading-snug flex-1 mb-6">
+              "{{ t('home.today.reviewQuote') }}"
+            </p>
+            <div class="flex items-center justify-between border-t border-sand-200 pt-4">
+              <div>
+                <p class="font-bold text-secondary-dark text-sm">{{ t('home.today.reviewAuthor') }}</p>
+                <p class="text-[11px] text-ink-muted uppercase tracking-wider">{{ t('home.today.reviewSource') }}</p>
+              </div>
+              <a href="#resenas" class="text-secondary font-bold text-sm hover:text-brand inline-flex items-center gap-1 shrink-0">
+                {{ t('home.today.reviewCta') }} →
+              </a>
             </div>
           </div>
         </article>
