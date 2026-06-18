@@ -513,6 +513,7 @@ export const reservationSettings = pgTable('reservation_settings', {
   maxAdvanceDays: integer('max_advance_days').notNull().default(60),
   /** Mensaje personalizado cuando las reservas están cerradas (i18n JSON) */
   closedMessage: jsonb('closed_message').$type<{ es: string; en: string }>(),
+  autoConfirm: boolean('auto_confirm').notNull().default(false),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
 })
 

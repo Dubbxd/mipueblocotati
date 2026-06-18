@@ -18,6 +18,7 @@ const DAYS = [
 
 interface Settings {
   isActive: boolean
+  autoConfirm: boolean
   availableDays: number[]
   timeSlots: string[]
   minPartySize: number
@@ -38,6 +39,7 @@ const loading = ref(true)
 const saving = ref(false)
 const settings = ref<Settings>({
   isActive: true,
+  autoConfirm: false,
   availableDays: [1, 2, 3, 4, 5, 6],
   timeSlots: ['12:00', '13:00', '14:00', '18:00', '19:00', '20:00', '21:00'],
   minPartySize: 1,
@@ -205,6 +207,30 @@ function formatDate(iso: string) {
             <input v-model="closedMsgEn" type="text" placeholder="Reservations are currently unavailable"
               class="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:ring-2 focus:ring-brand/30 focus:border-brand outline-none" />
           </div>
+        </div>
+      </section>
+
+      <!-- Auto-confirm -->
+      <section class="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="font-semibold text-gray-900">Confirmación automática</h2>
+            <p class="text-sm text-gray-500 mt-0.5">Las reservas se confirman al instante y el cliente recibe el email de confirmación inmediato</p>
+          </div>
+          <button @click="settings.autoConfirm = !settings.autoConfirm"
+            :class="settings.autoConfirm ? 'bg-emerald-500' : 'bg-gray-300'"
+            class="relative inline-flex h-7 w-12 items-center rounded-full transition-colors">
+            <span :class="settings.autoConfirm ? 'translate-x-6' : 'translate-x-1'"
+              class="inline-block h-5 w-5 rounded-full bg-white shadow transition-transform" />
+          </button>
+        </div>
+        <div v-if="settings.autoConfirm" class="mt-3 flex items-start gap-2 bg-emerald-50 border border-emerald-200 rounded-xl p-3">
+          <Icon name="TickCircle" type="Bold" :size="16" class="text-emerald-500 shrink-0 mt-0.5" />
+          <p class="text-xs text-emerald-700">Activo — todas las reservas nuevas se confirman automáticamente. No necesitas confirmar manualmente.</p>
+        </div>
+        <div v-else class="mt-3 flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-xl p-3">
+          <Icon name="Clock" type="Bold" :size="16" class="text-amber-500 shrink-0 mt-0.5" />
+          <p class="text-xs text-amber-700">Desactivado — las reservas llegan como "pendientes" y deben ser confirmadas manualmente desde el panel de reservas.</p>
         </div>
       </section>
 

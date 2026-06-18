@@ -115,7 +115,10 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
         return { error: 'Demasiadas solicitudes. Intenta de nuevo en 15 minutos.' }
       }
       const { consentTerms, consentData, consentMarketing, ...values } = body
-      const rows = await db.insert(reservations).values(values).returning()
+      // Check auto-confirm setting
+      const [cfg] = await db.select({ autoConfirm: reservationSettings.autoConfirm }).from(reservationSettings).where(eq(reservationSettings.id, 1)).limit(1)
+      const status = cfg?.autoConfirm ? 'confirmed' : 'pending'
+      const rows = await db.insert(reservations).values({ ...values, status }).returning()
       const r = rows[0]!
       // CRM — fire-and-forget
       upsertContact({
@@ -881,6 +884,7 @@ export const adminRoutes = new Elysia({ prefix: '/admin' })
       minAdvanceHours: t.Optional(t.Number()),
       maxAdvanceDays: t.Optional(t.Number()),
       closedMessage: t.Optional(t.Any()),
+      autoConfirm: t.Optional(t.Boolean()),
     }),
   })
   // ── Blocked Dates ──────────────────────────────────────────────
