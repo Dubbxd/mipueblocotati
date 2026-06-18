@@ -59,29 +59,15 @@ const reviewPill = computed(() => {
     <!-- Content -->
     <div class="relative z-10 container-page pb-12 md:pb-20 pt-32 w-full">
 
-      <!-- Logo + badge -->
-      <div
-        v-motion
-        :initial="{ opacity: 0, y: 16 }"
-        :enter="{ opacity: 1, y: 0, transition: { duration: 500, delay: 100 } }"
-        class="flex items-center gap-3 mb-6"
-      >
-        <img src="/assets/logos/logo-cotati.png" alt="Mi Pueblo" class="w-12 h-12 rounded-xl shadow-lg" />
-        <div>
-          <p class="text-white font-bold text-sm tracking-wide">Mi Pueblo Cotati</p>
-          <p class="text-sand-300 text-xs">{{ locale === 'es' ? 'Desde 1997 · Sonoma County' : 'Since 1997 · Sonoma County' }}</p>
-        </div>
-      </div>
-
       <!-- Headline -->
       <h1
         v-motion
         :initial="{ opacity: 0, y: 24 }"
         :enter="{ opacity: 1, y: 0, transition: { duration: 600, delay: 200 } }"
-        class="font-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-white leading-[1.05] tracking-tight max-w-3xl mb-5"
+        class="headline-impact text-[15vw] sm:text-8xl md:text-[9rem] lg:text-[11rem] mb-6 max-w-5xl"
       >
-        <span class="block">{{ t('home.hero.line1') }}</span>
-        <span class="block">{{ t('home.hero.line2') }}</span>
+        <span class="block text-sand-50">{{ t('home.hero.line1') }}</span>
+        <span class="block text-sand-50">{{ t('home.hero.line2') }}</span>
         <span class="block text-accent">{{ t('home.hero.line3') }}</span>
       </h1>
 
