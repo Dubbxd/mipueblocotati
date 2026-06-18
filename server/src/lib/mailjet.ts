@@ -11,7 +11,8 @@ const MJ_API_KEY = process.env.MAILJET_API_KEY ?? ''
 const MJ_SECRET_KEY = process.env.MAILJET_SECRET_KEY ?? ''
 const FROM_EMAIL = process.env.MAILJET_FROM_EMAIL ?? 'noreply@mipueblocotati.com'
 const FROM_NAME = process.env.MAILJET_FROM_NAME ?? 'Mi Pueblo Cotati'
-const ADMIN_EMAIL = process.env.MAILJET_ADMIN_EMAIL ?? 'admin@mipueblocotati.com'
+const ADMIN_EMAILS = (process.env.MAILJET_ADMIN_EMAIL ?? 'admin@mipueblocotati.com')
+  .split(',').map(e => e.trim()).filter(Boolean)
 const PUBLIC_URL = process.env.PUBLIC_URL ?? 'https://mipueblocotati.com'
 // API server URL used for backend links (unsubscribe endpoint, etc.)
 const API_URL = process.env.API_URL ?? `http://localhost:${process.env.PORT ?? 3001}`
@@ -263,7 +264,7 @@ export async function notifyAdminReservation(r: {
     <div class="cta-wrap"><a href="${PUBLIC_URL}/admin/reservations" class="btn">View in Admin</a></div>
   `)
   return sendEmail({
-    to: [{ email: ADMIN_EMAIL, name: 'Admin Mi Pueblo' }],
+    to: ADMIN_EMAILS.map(e => ({ email: e, name: 'Admin Mi Pueblo' })),
     subject: `New reservation: ${esc(r.name)} · ${esc(r.date)} ${esc(r.time)}`,
     html,
   })
@@ -356,7 +357,7 @@ export async function notifyAdminCatering(c: {
     <div class="cta-wrap"><a href="${PUBLIC_URL}/admin/catering" class="btn">Manage in Admin</a></div>
   `)
   return sendEmail({
-    to: [{ email: ADMIN_EMAIL, name: 'Admin Mi Pueblo' }],
+    to: ADMIN_EMAILS.map(e => ({ email: e, name: 'Admin Mi Pueblo' })),
     subject: `New catering: ${esc(c.name)} · ${c.guests ?? '?'} guests`,
     html,
   })
@@ -409,7 +410,7 @@ export async function notifyAdminContact(contact: {
     <div class="cta-wrap"><a href="mailto:${esc(contact.email)}" class="btn">Reply Now</a></div>
   `)
   return sendEmail({
-    to: [{ email: ADMIN_EMAIL, name: 'Admin Mi Pueblo' }],
+    to: ADMIN_EMAILS.map(e => ({ email: e, name: 'Admin Mi Pueblo' })),
     subject: `New contact: ${esc(contact.name)} — ${esc(contact.subject || contact.message.slice(0, 40))}`,
     html,
     replyTo: contact.email,
@@ -442,7 +443,7 @@ export async function notifyAdminSurvey(s: {
     ${s.email ? `<div class="cta-wrap"><a href="mailto:${esc(s.email)}" class="btn">Reply to Guest</a></div>` : ''}
   `)
   return sendEmail({
-    to: [{ email: ADMIN_EMAIL, name: 'Admin Mi Pueblo' }],
+    to: ADMIN_EMAILS.map(e => ({ email: e, name: 'Admin Mi Pueblo' })),
     subject: `New survey: ${STARS[s.rating] ?? s.rating + '/5'}${s.name ? ` — ${s.name}` : ''}`,
     html,
     replyTo: s.email ?? undefined,
