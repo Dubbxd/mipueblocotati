@@ -7,6 +7,7 @@ import { api } from '@/lib/api'
 const { t } = useI18n()
 const email = ref('')
 const consentTerms = ref(false)
+const consentData = ref(false)
 const consentMarketing = ref(false)
 const status = ref<'idle' | 'ok' | 'err'>('idle')
 
@@ -19,12 +20,14 @@ const submit = async () => {
       body: {
         email: email.value,
         consentTerms: consentTerms.value,
+        consentData: consentData.value,
         consentMarketing: consentMarketing.value,
       },
     })
     status.value = 'ok'
     email.value = ''
     consentTerms.value = false
+    consentData.value = false
     consentMarketing.value = false
   } catch {
     status.value = 'err'
@@ -40,7 +43,7 @@ const submit = async () => {
       <div class="flex flex-col sm:flex-row gap-2">
         <input v-model="email" type="email" required inputmode="email" autocomplete="email" :placeholder="t('newsletter.placeholder')"
           class="flex-1 min-w-0 px-3 py-2.5 rounded-md text-ink text-sm bg-white" />
-        <button :disabled="!consentTerms" class="btn-primary text-xs whitespace-nowrap !py-2.5 disabled:opacity-50 disabled:cursor-not-allowed">{{ t('cta.subscribe') }}</button>
+        <button :disabled="!consentTerms || !consentData" class="btn-primary text-xs whitespace-nowrap !py-2.5 disabled:opacity-50 disabled:cursor-not-allowed">{{ t('cta.subscribe') }}</button>
       </div>
       <!-- Consent checkboxes — dark footer variant -->
       <div class="space-y-2 pt-1 border-t border-white/20">
@@ -53,6 +56,11 @@ const submit = async () => {
             {{ t('consent.and') }}
             <a href="/legal/privacidad" target="_blank" class="text-sand-100 underline">{{ t('consent.privacyLink') }}</a>. *
           </span>
+        </label>
+        <label class="flex items-start gap-2 cursor-pointer">
+          <input type="checkbox" v-model="consentData" required
+            class="mt-0.5 h-3.5 w-3.5 shrink-0 rounded border-white/40 text-brand cursor-pointer" />
+          <span class="text-[11px] text-sand-200 leading-relaxed">{{ t('consent.data') }} *</span>
         </label>
         <label class="flex items-start gap-2 cursor-pointer">
           <input type="checkbox" v-model="consentMarketing"
