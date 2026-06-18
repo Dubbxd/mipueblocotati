@@ -5,7 +5,7 @@
 import Mailjet from 'node-mailjet'
 import { readFileSync } from 'fs'
 import { join } from 'path'
-import { unsubToken } from './hmac'
+import { unsubToken, cancelReservationToken } from './hmac'
 
 const MJ_API_KEY = process.env.MAILJET_API_KEY ?? ''
 const MJ_SECRET_KEY = process.env.MAILJET_SECRET_KEY ?? ''
@@ -203,6 +203,7 @@ export async function sendEmail(opts: SendOpts) {
 
 /** Confirmation email to customer after reservation */
 export async function sendReservationConfirmation(r: {
+  id: number
   name: string
   email: string
   date: string
@@ -211,6 +212,8 @@ export async function sendReservationConfirmation(r: {
   locationName?: string
   notes?: string | null
 }) {
+  const token = cancelReservationToken(r.id, r.email)
+  const cancelUrl = `${API_URL}/api/public/reservations/cancel?id=${r.id}&email=${encodeURIComponent(r.email)}&token=${token}`
   const html = baseTemplate('Reservation Confirmed · Mi Pueblo', `
     <div class="badge">Reservation Confirmed</div>
     <h2>Your reservation is set, ${esc(r.name)}!</h2>
@@ -222,9 +225,12 @@ export async function sendReservationConfirmation(r: {
       ${r.locationName ? `<div class="detail-row"><span class="detail-label">Location:</span><span class="detail-value">${esc(r.locationName)}</span></div>` : ''}
       ${r.notes ? `<div class="detail-row"><span class="detail-label">Notes:</span><span class="detail-value">${esc(r.notes)}</span></div>` : ''}
     </div>
-    <p>We will confirm your reservation shortly. To make changes or cancel, call us at <strong>(707) 823-1234</strong>.</p>
+    <p>Need to make changes? Call us at <strong>(707) 823-1234</strong>.</p>
     <div class="cta-wrap"><a href="${PUBLIC_URL}/reservar" class="btn">Make Another Reservation</a></div>
-    <p style="font-size:12px;color:#8A5A38;margin-top:16px;">If you did not make this reservation, please disregard this email.</p>
+    <hr class="divider" />
+    <p style="font-size:12px;color:#8A5A38;text-align:center;">
+      Can't make it? <a href="${cancelUrl}" style="color:#C8501C;">Cancel this reservation</a>
+    </p>
   `)
   return sendEmail({
     to: [{ email: r.email, name: r.name }],

@@ -21,7 +21,7 @@ import {
   blockedDates,
 } from '../db/schema'
 import { authPlugin, requireAuth, requireRole } from '../lib/auth'
-import { verifyUnsubToken } from '../lib/hmac'
+import { verifyUnsubToken, verifyCancelReservationToken } from '../lib/hmac'
 import { upsertContact } from '../lib/crm'
 
 // ─── Public-form rate limiter ──────────────────────────────────
@@ -139,6 +139,7 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
       // Send emails in background
       if (body.email) {
         sendReservationConfirmation({
+          id: r.id,
           name: body.name,
           email: body.email,
           date: body.date,
@@ -171,6 +172,51 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
         consentTerms: t.Boolean(),
         consentData: t.Boolean(),
         consentMarketing: t.Optional(t.Boolean()),
+      }),
+    }
+  )
+  .get(
+    '/reservations/cancel',
+    async ({ query, set }) => {
+      const id = Number(query.id)
+      const email = query.email as string
+      const token = query.token as string
+      if (!id || !email || !token) { set.status = 400; return { error: 'Parámetros faltantes' } }
+      if (!verifyCancelReservationToken(id, email, token)) {
+        set.status = 403
+        return { error: 'Token inválido' }
+      }
+      const [r] = await db.select().from(reservations).where(eq(reservations.id, id)).limit(1)
+      if (!r) { set.status = 404; return { error: 'Reserva no encontrada' } }
+      if (r.status === 'cancelled') {
+        set.headers['Content-Type'] = 'text/html; charset=utf-8'
+        const pubUrl = process.env.PUBLIC_URL ?? 'https://mipueblocotati.com'
+        return `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Reserva cancelada</title><style>body{font-family:Arial,sans-serif;max-width:500px;margin:80px auto;text-align:center;color:#3A2010;background:#FFFCF0;}h1{color:#C8501C;}a{color:#C8501C;}.btn{display:inline-block;background:#C8501C;color:#fff;text-decoration:none;padding:12px 32px;border-radius:8px;font-weight:bold;margin-top:20px;}</style></head><body><h1>Mi Pueblo Cotati</h1><p>Esta reserva ya fue cancelada anteriormente.</p><a href="${pubUrl}/reservar" class="btn">Hacer nueva reserva</a></body></html>`
+      }
+      if (r.status === 'completed') {
+        set.headers['Content-Type'] = 'text/html; charset=utf-8'
+        return `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Reserva completada</title><style>body{font-family:Arial,sans-serif;max-width:500px;margin:80px auto;text-align:center;color:#3A2010;background:#FFFCF0;}h1{color:#C8501C;}</style></head><body><h1>Mi Pueblo Cotati</h1><p>Esta reserva ya fue completada y no puede cancelarse.</p></body></html>`
+      }
+      await db.update(reservations)
+        .set({ status: 'cancelled', adminNotes: 'Cancelada por el cliente', updatedAt: new Date() })
+        .where(eq(reservations.id, id))
+      if (r.email) {
+        sendReservationCancellation({
+          name: r.name, email: r.email,
+          date: r.date, time: r.time,
+          partySize: r.partySize,
+          reason: 'Cancelada por el cliente',
+        }).catch(e => console.error('[mail] self-cancel:', e))
+      }
+      set.headers['Content-Type'] = 'text/html; charset=utf-8'
+      const pubUrl = process.env.PUBLIC_URL ?? 'https://mipueblocotati.com'
+      return `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Reserva cancelada</title><style>body{font-family:Arial,sans-serif;max-width:500px;margin:80px auto;text-align:center;color:#3A2010;background:#FFFCF0;}h1{color:#C8501C;}a{color:#C8501C;}.detail{background:#fff;border-left:4px solid #C8501C;padding:16px 20px;margin:20px auto;text-align:left;max-width:300px;border-radius:0 8px 8px 0;}.detail p{margin:4px 0;font-size:14px;}.btn{display:inline-block;background:#C8501C;color:#fff;text-decoration:none;padding:12px 32px;border-radius:8px;font-weight:bold;margin-top:20px;}</style></head><body><h1>Mi Pueblo Cotati</h1><p>Tu reserva ha sido cancelada correctamente.</p><div class="detail"><p><strong>Fecha:</strong> ${r.date}</p><p><strong>Hora:</strong> ${r.time}</p><p><strong>Personas:</strong> ${r.partySize}</p></div><p>Esperamos verte pronto.</p><a href="${pubUrl}/reservar" class="btn">Hacer nueva reserva</a></body></html>`
+    },
+    {
+      query: t.Object({
+        id: t.String(),
+        email: t.String(),
+        token: t.String({ minLength: 32, maxLength: 32 }),
       }),
     }
   )

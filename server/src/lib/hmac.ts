@@ -7,10 +7,21 @@ export function unsubToken(email: string): string {
   return createHmac('sha256', UNSUB_SECRET).update(email.toLowerCase()).digest('hex').slice(0, 32)
 }
 
+/** Generate a cancellation token for a reservation (id + email). */
+export function cancelReservationToken(id: number, email: string): string {
+  return createHmac('sha256', UNSUB_SECRET).update(`cancel:${id}:${email.toLowerCase()}`).digest('hex').slice(0, 32)
+}
+
 /** Constant-time compare to avoid timing attacks. */
+function timingSafeCompare(a: string, b: string): boolean {
+  if (a.length !== b.length) return false
+  return require('node:crypto').timingSafeEqual(Buffer.from(a), Buffer.from(b))
+}
+
 export function verifyUnsubToken(email: string, token: string): boolean {
-  const expected = unsubToken(email)
-  if (expected.length !== token.length) return false
-  // Use crypto.timingSafeEqual via Buffer
-  return require('node:crypto').timingSafeEqual(Buffer.from(expected), Buffer.from(token))
+  return timingSafeCompare(unsubToken(email), token)
+}
+
+export function verifyCancelReservationToken(id: number, email: string, token: string): boolean {
+  return timingSafeCompare(cancelReservationToken(id, email), token)
 }
