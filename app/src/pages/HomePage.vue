@@ -8,6 +8,7 @@ import DeliveryBand from '@/components/sections/DeliveryBand.vue'
 import CategoriesSection from '@/components/sections/CategoriesSection.vue'
 import ReviewsBand from '@/components/sections/ReviewsBand.vue'
 import AwardsBand from '@/components/sections/AwardsBand.vue'
+import InstagramBand from '@/components/sections/InstagramBand.vue'
 import MapGoogle from '@/components/sections/MapGoogle.vue'
 import { useI18n } from 'vue-i18n'
 import { computed } from 'vue'
@@ -93,6 +94,8 @@ const googleRatingStar = computed(() =>
       ]"
       :badge="{ icon: 'Cake', title: '100+', subtitle: t('home.parties.badgeSubtitle') }"
     />
+
+    <InstagramBand />
 
     <section class="section bg-sand-100">
       <div class="container-page">
