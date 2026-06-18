@@ -12,7 +12,7 @@ const isOpen = computed(() => {
   const h = new Date().getHours()
   if (main.value?.openHour != null && main.value?.closeHour != null)
     return h >= main.value.openHour && h < main.value.closeHour
-  return h >= 11 && h < 21 // fallback
+  return h >= 11 && h < 21
 })
 
 function fmtHour(h: number) {
@@ -45,53 +45,43 @@ const reviewPill = computed(() => {
 </script>
 
 <template>
-  <section class="relative overflow-hidden bg-night text-sand-100">
-    <!-- Foto de fondo (cocina con flameado) — más visible -->
+  <section class="relative min-h-[100dvh] flex items-end overflow-hidden bg-night">
+    <!-- Background photo -->
     <picture class="absolute inset-0 w-full h-full">
       <source srcset="/assets/gallery/chef-flames.webp" type="image/webp" />
       <img src="/assets/gallery/chef-flames.jpg" alt=""
-           class="w-full h-full object-cover opacity-70" loading="eager" fetchpriority="high" />
+           class="w-full h-full object-cover" loading="eager" fetchpriority="high" />
     </picture>
-    <!-- Gradiente lateral para que el texto resalte sobre la foto -->
-    <div class="absolute inset-0 bg-gradient-to-r from-night/85 via-night/50 to-night/10 pointer-events-none"></div>
-    <div class="absolute inset-0 bg-gradient-to-t from-night/60 via-night/10 to-transparent pointer-events-none"></div>
 
-    <!-- Wordmark semi-transparente como marca de agua -->
-    <span class="absolute top-1/2 -translate-y-1/2 right-[-4%] brand-script text-[18rem] md:text-[26rem] text-accent/10 leading-none select-none pointer-events-none whitespace-nowrap">
-      Mi&nbsp;Pueblo
-    </span>
+    <!-- Clean gradient overlay -->
+    <div class="absolute inset-0 bg-gradient-to-t from-night via-night/50 to-night/10 pointer-events-none" />
 
-    <div class="relative z-10 container-page pt-8 pb-24 md:pt-12 md:pb-32 min-h-[100dvh] flex flex-col justify-center">
-      <!-- Pills de confianza -->
+    <!-- Content -->
+    <div class="relative z-10 container-page pb-12 md:pb-20 pt-32 w-full">
+
+      <!-- Logo + badge -->
       <div
         v-motion
         :initial="{ opacity: 0, y: 16 }"
         :enter="{ opacity: 1, y: 0, transition: { duration: 500, delay: 100 } }"
-        class="flex flex-wrap items-center gap-2 mb-8"
+        class="flex items-center gap-3 mb-6"
       >
-        <span class="pill !bg-night-soft !text-sand-100 !border-night-light">
-          <span class="pill-dot" :class="{ '!bg-rose-500': !isOpen }"></span>
-          {{ openClosedPill }}
-        </span>
-        <span class="pill !bg-night-soft !text-sand-100 !border-night-light inline-flex items-center gap-1.5">
-          <Icon name="Star1" type="Bold" :size="14" class="text-amber-300" />
-          {{ reviewPill }}
-        </span>
-        <span class="pill !bg-night-soft !text-sand-100 !border-night-light inline-flex items-center gap-1.5">
-          <Icon name="Location" :size="14" />
-          {{ main?.city ? `${main.city}, CA` : t('home.hero.location') }}
-        </span>
+        <img src="/assets/logos/logo-cotati.png" alt="Mi Pueblo" class="w-12 h-12 rounded-xl shadow-lg" />
+        <div>
+          <p class="text-white font-bold text-sm tracking-wide">Mi Pueblo Cotati</p>
+          <p class="text-sand-300 text-xs">{{ locale === 'es' ? 'Desde 1997 · Sonoma County' : 'Since 1997 · Sonoma County' }}</p>
+        </div>
       </div>
 
-      <!-- Headline impacto -->
+      <!-- Headline -->
       <h1
         v-motion
         :initial="{ opacity: 0, y: 24 }"
         :enter="{ opacity: 1, y: 0, transition: { duration: 600, delay: 200 } }"
-        class="headline-impact text-[15vw] sm:text-8xl md:text-[9rem] lg:text-[11rem] mb-6 max-w-5xl"
+        class="font-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-white leading-[1.05] tracking-tight max-w-3xl mb-5"
       >
-        <span class="block text-sand-50">{{ t('home.hero.line1') }}</span>
-        <span class="block text-sand-50">{{ t('home.hero.line2') }}</span>
+        <span class="block">{{ t('home.hero.line1') }}</span>
+        <span class="block">{{ t('home.hero.line2') }}</span>
         <span class="block text-accent">{{ t('home.hero.line3') }}</span>
       </h1>
 
@@ -99,35 +89,59 @@ const reviewPill = computed(() => {
         v-motion
         :initial="{ opacity: 0, y: 16 }"
         :enter="{ opacity: 1, y: 0, transition: { duration: 500, delay: 350 } }"
-        class="font-body text-base md:text-xl text-sand-100/80 max-w-xl mb-8 leading-relaxed"
+        class="text-sand-200 text-base md:text-lg max-w-lg mb-8 leading-relaxed"
       >
         {{ t('home.heroSubtitle') }}
       </p>
 
+      <!-- CTAs -->
       <div
         v-motion
         :initial="{ opacity: 0, y: 12 }"
-        :enter="{ opacity: 1, y: 0, transition: { duration: 500, delay: 480 } }"
-        class="flex flex-wrap items-center gap-3"
+        :enter="{ opacity: 1, y: 0, transition: { duration: 500, delay: 450 } }"
+        class="flex flex-wrap items-center gap-3 mb-10"
       >
-        <a :href="main?.links.pickup ?? '#'" target="_blank" rel="noopener" class="btn-accent !px-8 !py-4 !text-base shadow-elev inline-flex items-center gap-2 active:scale-[0.98]">
-          <Icon name="Truck" :size="22" />
-          {{ t('cta.orderOnline') }}
-        </a>
-        <RouterLink to="/menu" class="btn-light !text-base inline-flex items-center gap-2 active:scale-[0.98]">
+        <RouterLink to="/menu" class="btn-primary !px-7 !py-3.5 !text-base inline-flex items-center gap-2">
+          <Icon name="MenuBoard" :size="20" type="Bold" />
           {{ t('cta.viewMenu') }}
-          <Icon name="ArrowRight" :size="18" />
         </RouterLink>
-        <RouterLink to="/reservar" class="text-sand-100 hover:text-accent text-sm font-bold underline underline-offset-4 ml-2">
+        <RouterLink to="/reservar" class="btn-light !text-base inline-flex items-center gap-2">
+          <Icon name="Calendar" :size="18" />
           {{ t('cta.reserve') }}
         </RouterLink>
+        <a v-if="main?.links.pickup" :href="main.links.pickup" target="_blank" rel="noopener"
+           class="text-sand-100 hover:text-white text-sm font-semibold underline underline-offset-4 decoration-sand-100/40 hover:decoration-white transition-colors ml-1">
+          {{ t('cta.orderOnline') }}
+        </a>
+      </div>
+
+      <!-- Info pills -->
+      <div
+        v-motion
+        :initial="{ opacity: 0 }"
+        :enter="{ opacity: 1, transition: { duration: 500, delay: 600 } }"
+        class="flex flex-wrap items-center gap-2"
+      >
+        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-xs font-medium text-sand-100">
+          <span class="w-1.5 h-1.5 rounded-full" :class="isOpen ? 'bg-emerald-400' : 'bg-rose-400'" />
+          {{ openClosedPill }}
+        </span>
+        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-xs font-medium text-sand-100">
+          <Icon name="Star1" type="Bold" :size="12" class="text-amber-300" />
+          {{ reviewPill }}
+        </span>
+        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-xs font-medium text-sand-100">
+          <Icon name="Location" :size="12" />
+          {{ main?.city ? `${main.city}, CA` : t('home.hero.location') }}
+        </span>
       </div>
     </div>
 
-    <!-- Foto de chiles decorativos a la derecha -->
-    <img src="/assets/decor/chilles.png" alt="" aria-hidden="true"
-         class="hidden md:block absolute right-[-6%] lg:right-[-2%] top-[-6%] h-[115%] w-auto opacity-55 pointer-events-none select-none drop-shadow-[0_10px_30px_rgba(0,0,0,0.6)]" />
-    <!-- Gradiente extra izquierda para limpiar el área del headline -->
-    <div class="absolute inset-0 bg-gradient-to-r from-night/85 via-night/50 to-transparent pointer-events-none"></div>
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-1 opacity-50">
+      <div class="w-5 h-8 rounded-full border-2 border-white/40 flex items-start justify-center pt-1.5">
+        <div class="w-1 h-2 rounded-full bg-white/60 animate-bounce" />
+      </div>
+    </div>
   </section>
 </template>
