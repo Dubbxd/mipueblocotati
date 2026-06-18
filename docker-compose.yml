@@ -68,6 +68,9 @@ services:
       # Email logo — baked into the image at /app/email-logo.png
       LOGO_PATH: /app/email-logo.png
 
+    networks:
+      - default
+      - dokploy-network
     volumes:
       - uploads:/app/uploads
 
@@ -89,6 +92,10 @@ services:
     depends_on:
       api:
         condition: service_healthy
+
+networks:
+  dokploy-network:
+    external: true
 
 volumes:
   # Named volume so uploaded files survive container restarts/updates
