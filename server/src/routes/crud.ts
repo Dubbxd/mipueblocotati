@@ -53,6 +53,7 @@ function getClientIp(request: Request): string {
 }
 import {
   sendReservationConfirmation,
+  sendReservationCancellation,
   notifyAdminReservation,
   sendCateringConfirmation,
   notifyAdminCatering,
@@ -705,6 +706,29 @@ export const adminRoutes = new Elysia({ prefix: '/admin' })
         ))
     },
   }))
+  // Cancel reservation — sends cancellation email
+  .use(authPlugin)
+  .post(
+    '/reservations/:id/cancel',
+    async ({ params, body, set }) => {
+      const [r] = await db.select().from(reservations).where(eq(reservations.id, Number(params.id))).limit(1)
+      if (!r) { set.status = 404; return { error: 'Not found' } }
+      if (r.status === 'cancelled') { set.status = 400; return { error: 'Already cancelled' } }
+      await db.update(reservations)
+        .set({ status: 'cancelled', adminNotes: body.reason || r.adminNotes, updatedAt: new Date() })
+        .where(eq(reservations.id, r.id))
+      if (r.email) {
+        sendReservationCancellation({
+          name: r.name, email: r.email,
+          date: r.date, time: r.time,
+          partySize: r.partySize,
+          reason: body.reason,
+        }).catch(e => console.error('[mail] reservation cancel:', e))
+      }
+      return { ok: true, id: r.id }
+    },
+    { beforeHandle: requireRole('superadmin', 'admin'), body: t.Object({ reason: t.Optional(t.String()) }) }
+  )
   .use(adminCrud({ prefix: '/catering', table: cateringRequests, schema: cateringBody, orderBy: desc(cateringRequests.createdAt) }))
   .use(adminCrud({ prefix: '/newsletter', table: newsletterSubscribers, schema: newsletterBody, orderBy: desc(newsletterSubscribers.createdAt) }))
   .use(adminCrud({ prefix: '/blog', table: blogPosts, schema: blogPostBody, orderBy: desc(blogPosts.createdAt) }))

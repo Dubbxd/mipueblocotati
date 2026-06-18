@@ -263,6 +263,37 @@ export async function notifyAdminReservation(r: {
   })
 }
 
+/** Cancellation email to customer when admin cancels a reservation */
+export async function sendReservationCancellation(r: {
+  name: string
+  email: string
+  date: string
+  time: string
+  partySize: number
+  reason?: string | null
+}) {
+  const html = baseTemplate('Reservation Cancelled · Mi Pueblo', `
+    <div class="badge" style="background:#8B0000;">Reservation Cancelled</div>
+    <h2>Your reservation has been cancelled</h2>
+    <p>Hi ${esc(r.name)}, we are sorry to inform you that your reservation has been cancelled.</p>
+    <div class="detail-box">
+      <div class="detail-row"><span class="detail-label">Date:</span><span class="detail-value">${esc(r.date)}</span></div>
+      <div class="detail-row"><span class="detail-label">Time:</span><span class="detail-value">${esc(r.time)}</span></div>
+      <div class="detail-row"><span class="detail-label">Party size:</span><span class="detail-value">${r.partySize}</span></div>
+      ${r.reason ? `<div class="detail-row"><span class="detail-label">Reason:</span><span class="detail-value">${esc(r.reason)}</span></div>` : ''}
+    </div>
+    <p>We apologize for any inconvenience. You are welcome to make a new reservation at any time.</p>
+    <div class="cta-wrap"><a href="${PUBLIC_URL}/reservar" class="btn">Make a New Reservation</a></div>
+    <hr class="divider" />
+    <p style="font-size:13px;color:#8A5A38;">Questions? Call us at <strong>(707) 823-1234</strong> or reply to this email.</p>
+  `)
+  return sendEmail({
+    to: [{ email: r.email, name: r.name }],
+    subject: `Reservation cancelled for ${esc(r.date)} · Mi Pueblo`,
+    html,
+  })
+}
+
 /** Confirmation email to customer after catering request */
 export async function sendCateringConfirmation(c: {
   name: string
