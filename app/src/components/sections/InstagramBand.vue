@@ -2,19 +2,19 @@
 import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
+import img1 from '@/newimages/492329884_1221306036673428_4219020819468303765_n.jpg'
+import img2 from '@/newimages/492381093_1228167192653979_6397371103519838411_n.jpg'
+import img3 from '@/newimages/493123974_1223504709786894_1318860153922132709_n.jpg'
+import img4 from '@/newimages/493322978_1222099666594065_7037526391163655909_n.jpg'
+import img5 from '@/newimages/493808205_1225969919540373_2181102379598483657_n.jpg'
+import img6 from '@/newimages/493916205_1223504636453568_5605877025446183823_n.jpg'
+
 const { locale } = useI18n()
 
 const INSTAGRAM_URL = 'https://www.instagram.com/mipueblocotati/'
 const HANDLE = 'mipueblocotati'
 
-const photos = [
-  '/assets/gallery/molcajete-bowl.jpg',
-  '/assets/gallery/catering-buffet-setup.jpg',
-  '/assets/gallery/quesa-birria-taco-closeup.jpg',
-  '/assets/gallery/parrillada-especial.jpg',
-  '/assets/gallery/chile-relleno.jpg',
-  '/assets/gallery/burrito-served.jpg',
-]
+const photos = [img1, img2, img3, img4, img5, img6]
 
 const visible = ref(false)
 onMounted(() => {
