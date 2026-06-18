@@ -53,7 +53,9 @@ export default defineConfig({
         ]
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,svg,png,ico,webp,woff2}'],
+        globPatterns: ['**/*.{js,css,html,ico,woff2}'],
+        skipWaiting: true,
+        clientsClaim: true,
         navigateFallback: '/index.html',
         navigateFallbackDenylist: [/^\/api\//, /^\/admin\//],
         cleanupOutdatedCaches: true,
@@ -68,25 +70,25 @@ export default defineConfig({
             }
           },
           {
-            urlPattern: /\/assets\/(gallery|hero|menu|decor|awards)\/.*\.(?:webp|jpg|jpeg|png|avif|svg)$/,
-            handler: 'CacheFirst',
+            urlPattern: /\/assets\/.*\.(?:webp|jpg|jpeg|png|avif|svg)$/,
+            handler: 'StaleWhileRevalidate',
             options: {
               cacheName: 'mipueblo-images',
-              expiration: { maxEntries: 200, maxAgeSeconds: 60 * 60 * 24 * 30 }
+              expiration: { maxEntries: 80, maxAgeSeconds: 60 * 60 * 24 * 7 }
             }
           },
           {
             urlPattern: /\/api\/public\/(menu|locations|gallery|promotions|awards|reviews)/,
             handler: 'NetworkFirst',
             options: {
-              cacheName: 'mipueblo-api-static',
+              cacheName: 'mipueblo-api',
               networkTimeoutSeconds: 3,
-              expiration: { maxEntries: 60, maxAgeSeconds: 60 * 60 },
+              expiration: { maxEntries: 30, maxAgeSeconds: 60 * 60 },
               cacheableResponse: { statuses: [0, 200] }
             }
           },
           {
-            urlPattern: /\/api\/(reservations|reviews|surveys|subscribers)/,
+            urlPattern: /\/api\//,
             handler: 'NetworkFirst',
             options: { cacheName: 'mipueblo-api-live', networkTimeoutSeconds: 5 }
           }
