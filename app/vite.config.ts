@@ -77,10 +77,11 @@ export default defineConfig({
           },
           {
             urlPattern: /\/api\/public\/(menu|locations|gallery|promotions|awards|reviews)/,
-            handler: 'StaleWhileRevalidate',
+            handler: 'NetworkFirst',
             options: {
               cacheName: 'mipueblo-api-static',
-              expiration: { maxEntries: 60, maxAgeSeconds: 60 * 60 * 12 },
+              networkTimeoutSeconds: 3,
+              expiration: { maxEntries: 60, maxAgeSeconds: 60 * 60 },
               cacheableResponse: { statuses: [0, 200] }
             }
           },
