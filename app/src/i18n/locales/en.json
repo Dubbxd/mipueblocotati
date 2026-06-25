@@ -192,7 +192,8 @@
     "title": "Subscribe to our Newsletter",
     "sub": "Get $5 off when you spend $40 + birthday voucher",
     "placeholder": "you{'@'}email.com",
-    "success": "All set! Check your inbox to confirm.",
+    "success": "All set! Check your inbox — we sent your $5 coupon.",
+    "already": "This email is already subscribed. Check your inbox for your coupon.",
     "error": "Something went wrong. Please try again."
   },
   "contact": {

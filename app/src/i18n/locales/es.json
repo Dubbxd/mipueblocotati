@@ -192,7 +192,8 @@
     "title": "Suscríbete al newsletter",
     "sub": "Recibe $5 de descuento al consumir $40 + cupón de cumpleaños",
     "placeholder": "tu{'@'}email.com",
-    "success": "¡Listo! Revisa tu correo para confirmar.",
+    "success": "¡Listo! Revisa tu correo — te enviamos tu cupón de $5.",
+    "already": "Este correo ya está suscrito. Revisa tu bandeja para tu cupón.",
     "error": "Hubo un problema. Inténtalo de nuevo."
   },
   "contact": {

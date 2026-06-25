@@ -9,12 +9,12 @@ const email = ref('')
 const consentTerms = ref(false)
 const consentData = ref(false)
 const consentMarketing = ref(false)
-const status = ref<'idle' | 'ok' | 'err'>('idle')
+const status = ref<'idle' | 'ok' | 'already' | 'err'>('idle')
 
 const submit = async () => {
   if (!email.value || !email.value.includes('@')) { status.value = 'err'; return }
   try {
-    await api('/api/public/newsletter', {
+    const res = await api<{ ok: boolean; isNew: boolean }>('/api/public/newsletter', {
       method: 'POST',
       auth: false,
       body: {
@@ -24,7 +24,7 @@ const submit = async () => {
         consentMarketing: consentMarketing.value,
       },
     })
-    status.value = 'ok'
+    status.value = res.isNew ? 'ok' : 'already'
     email.value = ''
     consentTerms.value = false
     consentData.value = false
@@ -70,6 +70,7 @@ const submit = async () => {
       </div>
     </form>
     <p v-if="status === 'ok'" class="mt-2 text-xs text-green-300">{{ t('newsletter.success') }}</p>
+    <p v-if="status === 'already'" class="mt-2 text-xs text-amber-300">{{ t('newsletter.already') }}</p>
     <p v-if="status === 'err'" class="mt-2 text-xs text-red-300">{{ t('newsletter.error') }}</p>
   </div>
 </template>

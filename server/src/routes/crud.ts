@@ -397,7 +397,7 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
             }).catch(e => console.error('[mail] admin newsletter:', e))
           }).catch(e => console.error('[coupon] welcome:', e))
         }
-        return { ok: true, id: r?.id }
+        return { ok: true, id: r?.id, isNew: !!r }
       } catch (e) {
         set.status = 500
         return { ok: false }
