@@ -194,11 +194,11 @@ export const cateringRequests = pgTable('catering_requests', {
   id: serial('id').primaryKey(),
   name: varchar('name', { length: 160 }).notNull(),
   phone: varchar('phone', { length: 40 }).notNull(),
-  email: varchar('email', { length: 200 }).notNull(),
+  email: varchar('email', { length: 200 }),
   eventType: varchar('event_type', { length: 80 }), // boda, corporativo, fiesta...
   eventDate: varchar('event_date', { length: 10 }),
   guests: integer('guests'),
-  budget: decimal('budget', { precision: 10, scale: 2 }),
+  budget: varchar('budget', { length: 40 }),
   message: text('message'),
   status: cateringStatusEnum('status').notNull().default('new'),
   adminNotes: text('admin_notes'),

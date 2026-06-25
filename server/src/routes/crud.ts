@@ -681,7 +681,7 @@ const reservationBody = t.Object({
 const cateringBody = t.Object({
   name: t.String(),
   phone: t.String(),
-  email: t.String(),
+  email: t.Optional(t.String()),
   eventType: t.Optional(t.String()),
   eventDate: t.Optional(t.String()),
   guests: t.Optional(t.Number()),
