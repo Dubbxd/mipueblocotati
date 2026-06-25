@@ -3,7 +3,6 @@ import HeroSection from '@/components/sections/HeroSection.vue'
 import TodaySection from '@/components/sections/TodaySection.vue'
 import AboutSection from '@/components/sections/AboutSection.vue'
 import GalleryMasonry from '@/components/sections/GalleryMasonry.vue'
-import MenuPreview from '@/components/sections/MenuPreview.vue'
 import DeliveryBand from '@/components/sections/DeliveryBand.vue'
 import CategoriesSection from '@/components/sections/CategoriesSection.vue'
 import ReviewsBand from '@/components/sections/ReviewsBand.vue'
@@ -31,8 +30,6 @@ const googleRatingStar = computed(() =>
     <TodaySection />
 
     <CategoriesSection />
-
-    <MenuPreview />
 
     <DeliveryBand />
 
