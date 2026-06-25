@@ -47,6 +47,8 @@ export const users = pgTable(
     passwordHash: varchar('password_hash', { length: 255 }).notNull(),
     name: varchar('name', { length: 120 }).notNull(),
     role: userRoleEnum('role').notNull().default('editor'),
+    /** Módulos a los que tiene acceso. Null o vacío = todos (superadmin/admin). */
+    allowedModules: jsonb('allowed_modules').$type<string[]>().notNull().default([]),
     isActive: boolean('is_active').notNull().default(true),
     lastLoginAt: timestamp('last_login_at'),
     createdAt: timestamp('created_at').notNull().defaultNow(),

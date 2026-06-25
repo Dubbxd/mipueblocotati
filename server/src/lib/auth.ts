@@ -42,6 +42,7 @@ export const authPlugin = new Elysia({ name: 'auth' })
         email: u.email,
         name: u.name,
         role: u.role,
+        allowedModules: u.allowedModules ?? [],
       },
     }
   })
@@ -64,5 +65,25 @@ export const requireRole =
     if (!roles.includes(user.role)) {
       set.status = 403
       return { error: 'Forbidden' }
+    }
+  }
+
+export const ALL_MODULES = [
+  'menu', 'promotions', 'reservations', 'catering', 'locations',
+  'messages', 'contacts', 'reviews', 'gallery', 'newsletter',
+  'coupons', 'blog', 'campaigns', 'users',
+] as const
+export type ModuleName = typeof ALL_MODULES[number]
+
+export const requireModule =
+  (mod: ModuleName) =>
+  ({ user, set }: any) => {
+    if (!user) { set.status = 401; return { error: 'Unauthorized' } }
+    if (user.role === 'superadmin') return
+    const allowed: string[] = user.allowedModules ?? []
+    if (allowed.length === 0) return
+    if (!allowed.includes(mod)) {
+      set.status = 403
+      return { error: 'No tienes acceso a este módulo' }
     }
   }

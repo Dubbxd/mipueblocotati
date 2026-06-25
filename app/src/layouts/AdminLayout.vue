@@ -13,7 +13,36 @@ const pendingReservations = ref(0)
 const pendingCatering = ref(0)
 const newMessages = ref(0)
 
-const sections = [
+const MODULE_MAP: Record<string, string> = {
+  '/admin/menu/items': 'menu', '/admin/menu/categories': 'menu',
+  '/admin/promotions': 'promotions',
+  '/admin/reservations': 'reservations', '/admin/reservas-config': 'reservations',
+  '/admin/catering': 'catering',
+  '/admin/locations': 'locations',
+  '/admin/mensajes': 'messages',
+  '/admin/contactos': 'contacts',
+  '/admin/reviews': 'reviews',
+  '/admin/gallery': 'gallery',
+  '/admin/newsletter': 'newsletter',
+  '/admin/cupones': 'coupons',
+  '/admin/blog': 'blog',
+  '/admin/campaigns': 'campaigns',
+  '/admin/users': 'users',
+}
+
+function canSee(to: string): boolean {
+  const u = auth.user
+  if (!u) return false
+  if (u.role === 'superadmin') return true
+  if (to === '/admin') return true
+  const mod = MODULE_MAP[to]
+  if (!mod) return true
+  if (mod === 'users') return false
+  if (!u.allowedModules?.length) return true
+  return u.allowedModules.includes(mod)
+}
+
+const allSections = [
   { group: 'Principal', items: [
     { to: '/admin', label: 'Dashboard', icon: 'Element4', exact: true }
   ]},
@@ -41,8 +70,17 @@ const sections = [
   { group: 'Contenido', items: [
     { to: '/admin/blog', label: 'Blog', icon: 'Book1' },
     { to: '/admin/campaigns', label: 'Campañas', icon: 'Send2' }
-  ]}
+  ]},
+  { group: 'Sistema', items: [
+    { to: '/admin/users', label: 'Usuarios', icon: 'SecurityUser' }
+  ]},
 ]
+
+const sections = computed(() =>
+  allSections
+    .map(s => ({ ...s, items: s.items.filter(i => canSee(i.to)) }))
+    .filter(s => s.items.length > 0)
+)
 
 const initials = computed(() => {
   const n = auth.user?.name || auth.user?.email || '?'

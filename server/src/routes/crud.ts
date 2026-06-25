@@ -20,10 +20,12 @@ import {
   reservationSettings,
   blockedDates,
   coupons,
+  users,
 } from '../db/schema'
-import { authPlugin, requireAuth, requireRole } from '../lib/auth'
+import { authPlugin, requireAuth, requireRole, ALL_MODULES } from '../lib/auth'
 import { verifyUnsubToken, verifyCancelReservationToken } from '../lib/hmac'
 import { upsertContact } from '../lib/crm'
+import { hashPassword } from '../lib/password'
 
 // ─── Public-form rate limiter ──────────────────────────────────
 // Limits: 8 submissions per 15 min per IP per endpoint type.
@@ -1013,3 +1015,65 @@ export const adminRoutes = new Elysia({ prefix: '/admin' })
     beforeHandle: requireAuth,
     body: t.Object({ redeemedBy: t.Optional(t.String()) }),
   })
+  // ── User Management (superadmin only) ─────────────────────────
+  .use(authPlugin)
+  .get('/users', async () => {
+    const rows = await db.select({
+      id: users.id, email: users.email, name: users.name,
+      role: users.role, allowedModules: users.allowedModules,
+      isActive: users.isActive, lastLoginAt: users.lastLoginAt,
+      createdAt: users.createdAt,
+    }).from(users).orderBy(desc(users.createdAt))
+    return rows
+  }, { beforeHandle: requireRole('superadmin') })
+  .post('/users', async ({ body, set }) => {
+    const existing = await db.select({ id: users.id }).from(users).where(eq(users.email, body.email.toLowerCase())).limit(1)
+    if (existing.length) { set.status = 409; return { error: 'Ya existe un usuario con ese email' } }
+    const passwordHash = await hashPassword(body.password)
+    const [u] = await db.insert(users).values({
+      email: body.email.toLowerCase(),
+      passwordHash,
+      name: body.name,
+      role: body.role ?? 'editor',
+      allowedModules: body.allowedModules ?? [],
+      isActive: true,
+    }).returning({ id: users.id, email: users.email, name: users.name, role: users.role })
+    return u
+  }, {
+    beforeHandle: requireRole('superadmin'),
+    body: t.Object({
+      email: t.String({ format: 'email' }),
+      password: t.String({ minLength: 8 }),
+      name: t.String({ minLength: 2 }),
+      role: t.Optional(t.Union([t.Literal('superadmin'), t.Literal('admin'), t.Literal('editor')])),
+      allowedModules: t.Optional(t.Array(t.String())),
+    }),
+  })
+  .patch('/users/:id', async ({ params, body, user, set }) => {
+    const id = Number(params.id)
+    if (user && id === user.id && body.role && body.role !== user.role) {
+      set.status = 400; return { error: 'No puedes cambiar tu propio rol' }
+    }
+    const updates: Record<string, unknown> = { updatedAt: new Date() }
+    if (body.name) updates.name = body.name
+    if (body.role) updates.role = body.role
+    if (body.allowedModules !== undefined) updates.allowedModules = body.allowedModules
+    if (body.isActive !== undefined) updates.isActive = body.isActive
+    if (body.password) updates.passwordHash = await hashPassword(body.password)
+    const [r] = await db.update(users).set(updates).where(eq(users.id, id)).returning({
+      id: users.id, email: users.email, name: users.name, role: users.role,
+      allowedModules: users.allowedModules, isActive: users.isActive,
+    })
+    if (!r) { set.status = 404; return { error: 'Not found' } }
+    return r
+  }, {
+    beforeHandle: requireRole('superadmin'),
+    body: t.Object({
+      name: t.Optional(t.String()),
+      role: t.Optional(t.Union([t.Literal('superadmin'), t.Literal('admin'), t.Literal('editor')])),
+      allowedModules: t.Optional(t.Array(t.String())),
+      isActive: t.Optional(t.Boolean()),
+      password: t.Optional(t.String({ minLength: 8 })),
+    }),
+  })
+  .get('/modules', () => ALL_MODULES, { beforeHandle: requireAuth })

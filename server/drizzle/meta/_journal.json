@@ -57,6 +57,13 @@
       "when": 1777926600000,
       "tag": "0007_add_coupons",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1777926700000,
+      "tag": "0008_add_user_modules",
+      "breakpoints": true
     }
   ]
 }

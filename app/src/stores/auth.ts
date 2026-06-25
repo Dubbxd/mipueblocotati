@@ -7,6 +7,7 @@ export type AdminUser = {
   email: string
   name: string
   role: 'superadmin' | 'admin' | 'editor'
+  allowedModules: string[]
 }
 
 export const useAuthStore = defineStore('auth', () => {
