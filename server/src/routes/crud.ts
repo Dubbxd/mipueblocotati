@@ -22,7 +22,7 @@ import {
   coupons,
   users,
 } from '../db/schema'
-import { authPlugin, requireAuth, requireRole, ALL_MODULES } from '../lib/auth'
+import { authPlugin, requireAuth, requireRole, requireModule, ALL_MODULES } from '../lib/auth'
 import { verifyUnsubToken, verifyCancelReservationToken } from '../lib/hmac'
 import { upsertContact } from '../lib/crm'
 import { hashPassword } from '../lib/password'
@@ -532,11 +532,15 @@ function adminCrud<T extends { id: any }>(opts: {
   table: any
   schema: any
   orderBy?: any
+  module?: import('../lib/auth').ModuleName
   requireRoles?: Array<'superadmin' | 'admin' | 'editor'>
   beforeList?: () => Promise<void>
 }) {
   const { prefix, table, schema, orderBy, beforeList } = opts
   const guardWrite = requireRole(...(opts.requireRoles ?? ['superadmin', 'admin', 'editor']))
+  const guardModule = opts.module ? requireModule(opts.module) : null
+  const readGuards = guardModule ? [requireAuth, guardModule] : [requireAuth]
+  const writeGuards = guardModule ? [guardWrite, guardModule] : [guardWrite]
 
   return new Elysia({ prefix })
     .use(authPlugin)
@@ -544,7 +548,7 @@ function adminCrud<T extends { id: any }>(opts: {
       if (beforeList) await beforeList()
       return db.select().from(table).orderBy(orderBy ?? desc(table.id))
     }, {
-      beforeHandle: requireAuth,
+      beforeHandle: readGuards,
     })
     .get(
       '/:id',
@@ -556,7 +560,7 @@ function adminCrud<T extends { id: any }>(opts: {
         }
         return r
       },
-      { beforeHandle: requireAuth }
+      { beforeHandle: readGuards }
     )
     .post(
       '/',
@@ -564,7 +568,7 @@ function adminCrud<T extends { id: any }>(opts: {
         const [r] = await db.insert(table).values(body as any).returning()
         return r
       },
-      { body: schema, beforeHandle: guardWrite }
+      { body: schema, beforeHandle: writeGuards }
     )
     .patch(
       '/:id',
@@ -580,7 +584,7 @@ function adminCrud<T extends { id: any }>(opts: {
         }
         return r
       },
-      { body: t.Partial(schema as any), beforeHandle: guardWrite }
+      { body: t.Partial(schema as any), beforeHandle: writeGuards }
     )
     .delete(
       '/:id',
@@ -756,16 +760,17 @@ const campaignBody = t.Object({
 
 /* ─── ADMIN ROUTES ────────────────────────────────────────────── */
 export const adminRoutes = new Elysia({ prefix: '/admin' })
-  .use(adminCrud({ prefix: '/menu/categories', table: menuCategories, schema: categoryBody, orderBy: asc(menuCategories.sortOrder) }))
-  .use(adminCrud({ prefix: '/menu/items', table: menuItems, schema: itemBody, orderBy: asc(menuItems.sortOrder) }))
-  .use(adminCrud({ prefix: '/promotions', table: promotions, schema: promoBody, orderBy: asc(promotions.sortOrder) }))
-  .use(adminCrud({ prefix: '/locations', table: locations, schema: locationBody, orderBy: asc(locations.sortOrder) }))
-  .use(adminCrud({ prefix: '/reviews', table: reviews, schema: reviewBody, orderBy: asc(reviews.sortOrder) }))
-  .use(adminCrud({ prefix: '/gallery', table: gallery, schema: galleryBody, orderBy: asc(gallery.sortOrder) }))
+  .use(adminCrud({ prefix: '/menu/categories', table: menuCategories, schema: categoryBody, module: 'menu', orderBy: asc(menuCategories.sortOrder) }))
+  .use(adminCrud({ prefix: '/menu/items', table: menuItems, schema: itemBody, module: 'menu', orderBy: asc(menuItems.sortOrder) }))
+  .use(adminCrud({ prefix: '/promotions', table: promotions, schema: promoBody, module: 'promotions', orderBy: asc(promotions.sortOrder) }))
+  .use(adminCrud({ prefix: '/locations', table: locations, schema: locationBody, module: 'locations', orderBy: asc(locations.sortOrder) }))
+  .use(adminCrud({ prefix: '/reviews', table: reviews, schema: reviewBody, module: 'reviews', orderBy: asc(reviews.sortOrder) }))
+  .use(adminCrud({ prefix: '/gallery', table: gallery, schema: galleryBody, module: 'gallery', orderBy: asc(gallery.sortOrder) }))
   .use(adminCrud({
     prefix: '/reservations',
     table: reservations,
     schema: reservationBody,
+    module: 'reservations',
     orderBy: desc(reservations.createdAt),
     beforeList: async () => {
       const today = new Date().toISOString().slice(0, 10)
@@ -800,33 +805,33 @@ export const adminRoutes = new Elysia({ prefix: '/admin' })
     },
     { beforeHandle: requireRole('superadmin', 'admin'), body: t.Object({ reason: t.Optional(t.String()) }) }
   )
-  .use(adminCrud({ prefix: '/catering', table: cateringRequests, schema: cateringBody, orderBy: desc(cateringRequests.createdAt) }))
-  .use(adminCrud({ prefix: '/newsletter', table: newsletterSubscribers, schema: newsletterBody, orderBy: desc(newsletterSubscribers.createdAt) }))
-  .use(adminCrud({ prefix: '/blog', table: blogPosts, schema: blogPostBody, orderBy: desc(blogPosts.createdAt) }))
-  .use(adminCrud({ prefix: '/campaigns', table: emailCampaigns, schema: campaignBody, orderBy: desc(emailCampaigns.createdAt) }))
+  .use(adminCrud({ prefix: '/catering', table: cateringRequests, schema: cateringBody, module: 'catering', orderBy: desc(cateringRequests.createdAt) }))
+  .use(adminCrud({ prefix: '/newsletter', table: newsletterSubscribers, schema: newsletterBody, module: 'newsletter', orderBy: desc(newsletterSubscribers.createdAt) }))
+  .use(adminCrud({ prefix: '/blog', table: blogPosts, schema: blogPostBody, module: 'blog', orderBy: desc(blogPosts.createdAt) }))
+  .use(adminCrud({ prefix: '/campaigns', table: emailCampaigns, schema: campaignBody, module: 'campaigns', orderBy: desc(emailCampaigns.createdAt) }))
   // Surveys — solo lectura para admin (el POST es público)
   .use(authPlugin)
   .get('/surveys', async () => db.select().from(surveys).orderBy(desc(surveys.createdAt)), {
-    beforeHandle: requireAuth,
+    beforeHandle: [requireAuth, requireModule('reviews')],
   })
   // Contact messages — guardados desde POST /public/contact
   .use(authPlugin)
   .get('/contact-messages', async () =>
     db.select().from(contactMessages).orderBy(desc(contactMessages.createdAt)), {
-    beforeHandle: requireAuth,
+    beforeHandle: [requireAuth, requireModule('messages')],
   })
   .patch('/contact-messages/:id', async ({ params, body }) => {
     await db.update(contactMessages)
       .set({ status: body.status, adminNotes: body.adminNotes, updatedAt: new Date() })
       .where(eq(contactMessages.id, Number(params.id)))
     return { ok: true }
-  }, { beforeHandle: requireAuth, body: t.Object({ status: t.Optional(t.String()), adminNotes: t.Optional(t.String()) }) })
+  }, { beforeHandle: [requireAuth, requireModule('messages')], body: t.Object({ status: t.Optional(t.String()), adminNotes: t.Optional(t.String()) }) })
   // CRM Contacts
   .use(authPlugin)
   .get('/contacts', async ({ query }) => {
     const rows = await db.select().from(contacts).orderBy(desc(contacts.lastSeen))
     return rows
-  }, { beforeHandle: requireAuth })
+  }, { beforeHandle: [requireAuth, requireModule('contacts')] })
   .get('/contacts/:id', async ({ params, set }) => {
     const [contact] = await db.select().from(contacts).where(eq(contacts.id, Number(params.id))).limit(1)
     if (!contact) { set.status = 404; return { error: 'Not found' } }
@@ -834,14 +839,14 @@ export const adminRoutes = new Elysia({ prefix: '/admin' })
       .where(eq(contactInteractions.contactId, Number(params.id)))
       .orderBy(desc(contactInteractions.createdAt))
     return { ...contact, interactions }
-  }, { beforeHandle: requireAuth })
+  }, { beforeHandle: [requireAuth, requireModule('contacts')] })
   .patch('/contacts/:id', async ({ params, body }) => {
     await db.update(contacts)
       .set({ ...body, updatedAt: new Date() })
       .where(eq(contacts.id, Number(params.id)))
     return { ok: true }
   }, {
-    beforeHandle: requireAuth,
+    beforeHandle: [requireAuth, requireModule('contacts')],
     body: t.Object({
       name: t.Optional(t.String()),
       phone: t.Optional(t.String()),
@@ -933,7 +938,7 @@ export const adminRoutes = new Elysia({ prefix: '/admin' })
   .get('/reservation-settings', async () => {
     const [row] = await db.select().from(reservationSettings).where(eq(reservationSettings.id, 1)).limit(1)
     return row ?? null
-  }, { beforeHandle: requireAuth })
+  }, { beforeHandle: [requireAuth, requireModule('reservations')] })
   .patch('/reservation-settings', async ({ body }) => {
     await db.update(reservationSettings)
       .set({ ...body, updatedAt: new Date() })
@@ -941,7 +946,7 @@ export const adminRoutes = new Elysia({ prefix: '/admin' })
     const [row] = await db.select().from(reservationSettings).where(eq(reservationSettings.id, 1)).limit(1)
     return row
   }, {
-    beforeHandle: requireRole('superadmin', 'admin'),
+    beforeHandle: [requireRole('superadmin', 'admin'), requireModule('reservations')],
     body: t.Object({
       isActive: t.Optional(t.Boolean()),
       availableDays: t.Optional(t.Array(t.Number())),
@@ -984,7 +989,7 @@ export const adminRoutes = new Elysia({ prefix: '/admin' })
   .use(authPlugin)
   .get('/coupons', async () => {
     return db.select().from(coupons).orderBy(desc(coupons.createdAt))
-  }, { beforeHandle: requireAuth })
+  }, { beforeHandle: [requireAuth, requireModule('coupons')] })
   .get('/coupons/validate/:code', async ({ params, set }) => {
     const [coupon] = await db.select().from(coupons)
       .where(eq(coupons.code, params.code.toUpperCase().trim()))
@@ -997,7 +1002,7 @@ export const adminRoutes = new Elysia({ prefix: '/admin' })
       return { valid: false, error: 'Este cupón ha expirado', coupon }
     }
     return { valid: true, coupon }
-  }, { beforeHandle: requireAuth })
+  }, { beforeHandle: [requireAuth, requireModule('coupons')] })
   .post('/coupons/redeem/:code', async ({ params, body, set }) => {
     const code = params.code.toUpperCase().trim()
     const [coupon] = await db.select().from(coupons).where(eq(coupons.code, code)).limit(1)
@@ -1012,7 +1017,7 @@ export const adminRoutes = new Elysia({ prefix: '/admin' })
       .returning()
     return { ok: true, coupon: updated }
   }, {
-    beforeHandle: requireAuth,
+    beforeHandle: [requireAuth, requireModule('coupons')],
     body: t.Object({ redeemedBy: t.Optional(t.String()) }),
   })
   // ── User Management (superadmin only) ─────────────────────────
