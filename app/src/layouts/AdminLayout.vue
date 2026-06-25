@@ -35,7 +35,8 @@ const sections = [
   { group: 'Marketing', items: [
     { to: '/admin/reviews', label: 'Reseñas', icon: 'Star1' },
     { to: '/admin/gallery', label: 'Galería', icon: 'Gallery' },
-    { to: '/admin/newsletter', label: 'Suscriptores', icon: 'Sms' }
+    { to: '/admin/newsletter', label: 'Suscriptores', icon: 'Sms' },
+    { to: '/admin/cupones', label: 'Cupones', icon: 'TicketDiscount' }
   ]},
   { group: 'Contenido', items: [
     { to: '/admin/blog', label: 'Blog', icon: 'Book1' },

@@ -24,7 +24,8 @@ const routes: RouteRecordRaw[] = [
       { path: 'campaigns', name: 'admin-campaigns', component: () => import('@/pages/admin/CampaignsPage.vue'), meta: { title: 'Campañas' } },
       { path: 'mensajes', name: 'admin-mensajes', component: () => import('@/pages/admin/MensajesPage.vue'), meta: { title: 'Mensajes' } },
       { path: 'contactos', name: 'admin-contactos', component: () => import('@/pages/admin/ContactosPage.vue'), meta: { title: 'Contactos CRM' } },
-      { path: 'reservas-config', name: 'admin-reservas-config', component: () => import('@/pages/admin/ReservaConfigPage.vue'), meta: { title: 'Config. Reservas' } }
+      { path: 'reservas-config', name: 'admin-reservas-config', component: () => import('@/pages/admin/ReservaConfigPage.vue'), meta: { title: 'Config. Reservas' } },
+      { path: 'cupones', name: 'admin-cupones', component: () => import('@/pages/admin/CuponsPage.vue'), meta: { title: 'Cupones' } }
     ]
   },
   // ── PÚBLICO ───────────────────────────────────────────────────

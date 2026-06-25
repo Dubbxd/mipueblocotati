@@ -530,5 +530,46 @@ export const blockedDates = pgTable('blocked_dates', {
   createdAt: timestamp('created_at').notNull().defaultNow(),
 })
 
+// ─────────────────────────────────────────────────────────────────
+// CUPONES
+// Cupones de descuento generados automáticamente (newsletter signup,
+// cumpleaños, promos). El staff los valida/canjea desde el admin.
+// ─────────────────────────────────────────────────────────────────
+export const couponStatusEnum = pgEnum('coupon_status', ['active', 'redeemed', 'expired'])
+
+export const coupons = pgTable(
+  'coupons',
+  {
+    id: serial('id').primaryKey(),
+    code: varchar('code', { length: 20 }).notNull(),
+    /** welcome | birthday | promo */
+    type: varchar('type', { length: 20 }).notNull().default('welcome'),
+    /** fixed = $X off, percent = X% off */
+    discountType: varchar('discount_type', { length: 10 }).notNull().default('fixed'),
+    /** Discount amount: 5.00 = $5 off (fixed) or 10 = 10% (percent) */
+    discountValue: decimal('discount_value', { precision: 8, scale: 2 }).notNull(),
+    /** Minimum purchase to apply the coupon */
+    minPurchase: decimal('min_purchase', { precision: 8, scale: 2 }),
+    /** Description shown to the customer */
+    description: varchar('description', { length: 200 }),
+    /** Email of the subscriber who received this coupon */
+    subscriberEmail: varchar('subscriber_email', { length: 200 }),
+    /** Link to CRM contact */
+    contactId: integer('contact_id').references(() => contacts.id, { onDelete: 'set null' }),
+    status: couponStatusEnum('status').notNull().default('active'),
+    expiresAt: timestamp('expires_at'),
+    redeemedAt: timestamp('redeemed_at'),
+    /** Name of staff member who redeemed */
+    redeemedBy: varchar('redeemed_by', { length: 120 }),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+  },
+  (t) => ({
+    codeIdx: uniqueIndex('coupons_code_idx').on(t.code),
+    statusIdx: index('coupons_status_idx').on(t.status),
+    emailIdx: index('coupons_email_idx').on(t.subscriberEmail),
+  })
+)
+
 export type ReservationSettings = typeof reservationSettings.$inferSelect
 export type BlockedDate = typeof blockedDates.$inferSelect
+export type Coupon = typeof coupons.$inferSelect

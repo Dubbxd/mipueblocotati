@@ -19,6 +19,7 @@ import {
   contactMessages,
   reservationSettings,
   blockedDates,
+  coupons,
 } from '../db/schema'
 import { authPlugin, requireAuth, requireRole } from '../lib/auth'
 import { verifyUnsubToken, verifyCancelReservationToken } from '../lib/hmac'
@@ -61,7 +62,10 @@ import {
   notifyAdminContact,
   sendCampaign,
   notifyAdminSurvey,
+  sendNewsletterWelcome,
+  notifyAdminNewsletter,
 } from '../lib/mailjet'
+import { generateCouponCode, createWelcomeCoupon } from '../lib/coupons'
 
 /* ─── PUBLIC ROUTES (sin auth, leen solo activos) ─────────────── */
 export const publicRoutes = new Elysia({ prefix: '/public' })
@@ -361,22 +365,38 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
           .values(subValues)
           .onConflictDoNothing({ target: newsletterSubscribers.email })
           .returning()
-        // CRM
-        upsertContact({
-          email: body.email,
-          name: body.name,
-          locale: body.locale,
-          consentTerms: consentTerms ?? false,
-          consentData: consentData ?? false,
-          consentMarketing: consentMarketing ?? true,
-          interaction: {
-            type: 'newsletter_sub',
-            refTable: 'newsletter_subscribers',
-            refId: r?.id,
-            summary: 'Newsletter · suscripción',
-            metadata: { source: body.source },
-          },
-        }).catch(e => console.error('[crm] newsletter:', e))
+        // Only send welcome + coupon for new subscribers (r is null on conflict)
+        if (r) {
+          // CRM
+          const contactId = await upsertContact({
+            email: body.email,
+            name: body.name,
+            locale: body.locale,
+            consentTerms: consentTerms ?? false,
+            consentData: consentData ?? false,
+            consentMarketing: consentMarketing ?? true,
+            interaction: {
+              type: 'newsletter_sub',
+              refTable: 'newsletter_subscribers',
+              refId: r.id,
+              summary: 'Newsletter · suscripción',
+              metadata: { source: body.source },
+            },
+          }).catch(e => { console.error('[crm] newsletter:', e); return null })
+          // Generate welcome coupon & send emails
+          createWelcomeCoupon(body.email, contactId).then(couponCode => {
+            sendNewsletterWelcome({
+              email: body.email,
+              name: body.name,
+              couponCode,
+            }).catch(e => console.error('[mail] newsletter welcome:', e))
+            notifyAdminNewsletter({
+              email: body.email,
+              name: body.name,
+              couponCode,
+            }).catch(e => console.error('[mail] admin newsletter:', e))
+          }).catch(e => console.error('[coupon] welcome:', e))
+        }
         return { ok: true, id: r?.id }
       } catch (e) {
         set.status = 500
@@ -958,3 +978,38 @@ export const adminRoutes = new Elysia({ prefix: '/admin' })
     if (!row) { set.status = 404; return { error: 'Not found' } }
     return { ok: true }
   }, { beforeHandle: requireRole('superadmin', 'admin') })
+  // ── Coupons ────────────────────────────────────────────────────
+  .use(authPlugin)
+  .get('/coupons', async () => {
+    return db.select().from(coupons).orderBy(desc(coupons.createdAt))
+  }, { beforeHandle: requireAuth })
+  .get('/coupons/validate/:code', async ({ params, set }) => {
+    const [coupon] = await db.select().from(coupons)
+      .where(eq(coupons.code, params.code.toUpperCase().trim()))
+      .limit(1)
+    if (!coupon) { set.status = 404; return { error: 'Cupón no encontrado', valid: false } }
+    if (coupon.status === 'redeemed') {
+      return { valid: false, error: 'Este cupón ya fue canjeado', coupon }
+    }
+    if (coupon.status === 'expired' || (coupon.expiresAt && new Date(coupon.expiresAt) < new Date())) {
+      return { valid: false, error: 'Este cupón ha expirado', coupon }
+    }
+    return { valid: true, coupon }
+  }, { beforeHandle: requireAuth })
+  .post('/coupons/redeem/:code', async ({ params, body, set }) => {
+    const code = params.code.toUpperCase().trim()
+    const [coupon] = await db.select().from(coupons).where(eq(coupons.code, code)).limit(1)
+    if (!coupon) { set.status = 404; return { error: 'Cupón no encontrado' } }
+    if (coupon.status === 'redeemed') { set.status = 400; return { error: 'Este cupón ya fue canjeado' } }
+    if (coupon.status === 'expired' || (coupon.expiresAt && new Date(coupon.expiresAt) < new Date())) {
+      set.status = 400; return { error: 'Este cupón ha expirado' }
+    }
+    const [updated] = await db.update(coupons)
+      .set({ status: 'redeemed', redeemedAt: new Date(), redeemedBy: body.redeemedBy || 'staff' })
+      .where(eq(coupons.id, coupon.id))
+      .returning()
+    return { ok: true, coupon: updated }
+  }, {
+    beforeHandle: requireAuth,
+    body: t.Object({ redeemedBy: t.Optional(t.String()) }),
+  })

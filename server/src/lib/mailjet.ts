@@ -451,6 +451,65 @@ export async function notifyAdminSurvey(s: {
 }
 
 // ─────────────────────────────────────────────────────────────────
+// NEWSLETTER — WELCOME EMAIL (con cupón)
+// ─────────────────────────────────────────────────────────────────
+
+export async function sendNewsletterWelcome(sub: {
+  email: string
+  name?: string | null
+  couponCode: string
+}) {
+  const greeting = sub.name ? `Hi, ${esc(sub.name)}!` : 'Hi there!'
+  const html = baseTemplate('Welcome to Mi Pueblo! · Your $5 Coupon', `
+    <div class="badge">Welcome &middot; Newsletter</div>
+    <h2>${greeting}</h2>
+    <p>Thank you for subscribing to the Mi Pueblo newsletter! As promised, here is your <strong>$5 off</strong> coupon:</p>
+    <div style="text-align:center;margin:28px 0;">
+      <div style="display:inline-block;background:#3D1A08;color:#F09828;font-size:28px;font-weight:900;letter-spacing:6px;padding:18px 36px;border-radius:12px;font-family:monospace;">
+        ${esc(sub.couponCode)}
+      </div>
+      <p style="font-size:13px;color:#8A5A38;margin-top:10px;">$5 off when you spend $40 or more</p>
+    </div>
+    <div class="detail-box">
+      <div class="detail-row"><span class="detail-label">Coupon code:</span><span class="detail-value" style="font-weight:700;letter-spacing:2px;">${esc(sub.couponCode)}</span></div>
+      <div class="detail-row"><span class="detail-label">Discount:</span><span class="detail-value">$5.00 off</span></div>
+      <div class="detail-row"><span class="detail-label">Minimum order:</span><span class="detail-value">$40.00</span></div>
+      <div class="detail-row"><span class="detail-label">Valid for:</span><span class="detail-value">90 days</span></div>
+    </div>
+    <p>Show this code to your server or at checkout to redeem your discount. Stay tuned for exclusive deals, birthday surprises, and the latest from our kitchen!</p>
+    <div class="cta-wrap"><a href="${PUBLIC_URL}/menu" class="btn">Browse Our Menu</a></div>
+  `, sub.email)
+  return sendEmail({
+    to: [{ email: sub.email, name: sub.name ?? sub.email }],
+    subject: `Your $5 coupon is here! · Mi Pueblo Cotati`,
+    html,
+  })
+}
+
+/** Notification to admin when someone subscribes to newsletter */
+export async function notifyAdminNewsletter(sub: {
+  email: string
+  name?: string | null
+  couponCode: string
+}) {
+  const html = baseTemplate('New Newsletter Subscriber · Admin', `
+    <div class="badge">Admin &middot; Newsletter</div>
+    <h2>New subscriber</h2>
+    <div class="detail-box">
+      <div class="detail-row"><span class="detail-label">Email:</span><span class="detail-value">${esc(sub.email)}</span></div>
+      ${sub.name ? `<div class="detail-row"><span class="detail-label">Name:</span><span class="detail-value">${esc(sub.name)}</span></div>` : ''}
+      <div class="detail-row"><span class="detail-label">Coupon issued:</span><span class="detail-value" style="font-weight:700;letter-spacing:2px;">${esc(sub.couponCode)}</span></div>
+    </div>
+    <div class="cta-wrap"><a href="${PUBLIC_URL}/admin/newsletter" class="btn">View Subscribers</a></div>
+  `)
+  return sendEmail({
+    to: ADMIN_EMAILS.map(e => ({ email: e, name: 'Admin Mi Pueblo' })),
+    subject: `New subscriber: ${esc(sub.email)}`,
+    html,
+  })
+}
+
+// ─────────────────────────────────────────────────────────────────
 // NEWSLETTER BULK SEND
 // ─────────────────────────────────────────────────────────────────
 export interface Subscriber {
