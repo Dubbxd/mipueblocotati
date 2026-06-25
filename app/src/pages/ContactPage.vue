@@ -15,6 +15,7 @@ const main = computed(() => site.mainRestaurant)
 const form = ref({ name: '', email: '', phone: '', subject: '', message: '' })
 const consentTerms = ref(false)
 const consentData = ref(false)
+const hp = ref('')
 const status = ref<'idle' | 'loading' | 'success'>('idle')
 
 async function submit() {
@@ -31,6 +32,7 @@ async function submit() {
         message: form.value.message,
         consentTerms: consentTerms.value,
         consentData: consentData.value,
+        website: hp.value,
       },
     })
     status.value = 'success'
@@ -219,6 +221,7 @@ async function submit() {
                 v-model:terms="consentTerms"
                 v-model:data="consentData"
               />
+              <input v-model="hp" type="text" name="website" autocomplete="off" tabindex="-1" class="absolute opacity-0 h-0 w-0 pointer-events-none" aria-hidden="true" />
 
               <button type="submit" :disabled="status === 'loading' || !consentTerms || !consentData"
                 class="w-full btn-primary py-3.5 text-base font-bold inline-flex items-center justify-center gap-2 disabled:opacity-60">

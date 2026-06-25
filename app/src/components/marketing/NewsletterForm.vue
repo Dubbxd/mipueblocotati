@@ -9,6 +9,7 @@ const email = ref('')
 const consentTerms = ref(false)
 const consentData = ref(false)
 const consentMarketing = ref(false)
+const hp = ref('')
 const status = ref<'idle' | 'ok' | 'already' | 'err'>('idle')
 
 const submit = async () => {
@@ -22,6 +23,7 @@ const submit = async () => {
         consentTerms: consentTerms.value,
         consentData: consentData.value,
         consentMarketing: consentMarketing.value,
+        website: hp.value,
       },
     })
     status.value = res.isNew ? 'ok' : 'already'
@@ -68,6 +70,7 @@ const submit = async () => {
           <span class="text-[11px] text-sand-200 leading-relaxed">{{ t('consent.marketing') }}</span>
         </label>
       </div>
+      <input v-model="hp" type="text" name="website" autocomplete="off" tabindex="-1" class="absolute opacity-0 h-0 w-0 pointer-events-none" aria-hidden="true" />
     </form>
     <p v-if="status === 'ok'" class="mt-2 text-xs text-green-300">{{ t('newsletter.success') }}</p>
     <p v-if="status === 'already'" class="mt-2 text-xs text-amber-300">{{ t('newsletter.already') }}</p>

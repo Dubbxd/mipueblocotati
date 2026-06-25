@@ -61,6 +61,7 @@ const email = ref('')
 const notes = ref('')
 const consentTerms = ref(false)
 const consentData = ref(false)
+const hp = ref('')
 
 // ─── Calendar logic ──────────────────────────────────────────────
 const today = new Date()
@@ -150,6 +151,7 @@ async function submit() {
         date: selectedDate.value, time: selectedTime.value,
         notes: notes.value || undefined,
         consentTerms: consentTerms.value, consentData: consentData.value,
+        website: hp.value,
       },
     })
     submitted.value = true
@@ -381,6 +383,7 @@ const weekLabels = computed(() => WEEK_LABELS[locale.value as 'es' | 'en'] ?? WE
               class="w-full mt-1 rounded-xl border border-gray-200 px-4 py-3 text-sm focus:ring-2 focus:ring-brand/30 focus:border-brand outline-none resize-none transition-shadow" />
           </label>
           <ConsentCheckboxes v-model:terms="consentTerms" v-model:data="consentData" />
+          <input v-model="hp" type="text" name="website" autocomplete="off" tabindex="-1" class="absolute opacity-0 h-0 w-0 pointer-events-none" aria-hidden="true" />
           <button type="submit" :disabled="submitting || !consentTerms || !consentData || !name || !phone"
             class="w-full btn-primary py-4 text-base flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed">
             <svg v-if="submitting" class="w-5 h-5 animate-spin" viewBox="0 0 24 24" fill="none">

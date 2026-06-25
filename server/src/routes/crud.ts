@@ -47,6 +47,10 @@ function checkPublicRate(ip: string, type: string): boolean {
   return true
 }
 
+function isBot(body: Record<string, unknown>): boolean {
+  return typeof body.website === 'string' && body.website.length > 0
+}
+
 function getClientIp(request: Request): string {
   return (
     request.headers.get('x-forwarded-for')?.split(',')[0].trim() ??
@@ -116,6 +120,7 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
   .post(
     '/reservations',
     async ({ body, request, set }) => {
+      if (isBot(body)) return { ok: true, id: 0 }
       if (!checkPublicRate(getClientIp(request), 'reservations')) {
         set.status = 429
         return { error: 'Demasiadas solicitudes. Intenta de nuevo en 15 minutos.' }
@@ -168,16 +173,17 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
     {
       body: t.Object({
         locationId: t.Optional(t.Number()),
-        name: t.String({ minLength: 2 }),
-        phone: t.String({ minLength: 7 }),
-        email: t.Optional(t.String({ pattern: '^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$' })),
+        name: t.String({ minLength: 2, maxLength: 160 }),
+        phone: t.String({ minLength: 7, maxLength: 40 }),
+        email: t.Optional(t.String({ maxLength: 200, pattern: '^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$' })),
         partySize: t.Number({ minimum: 1, maximum: 50 }),
-        date: t.String(),
-        time: t.String(),
-        notes: t.Optional(t.String()),
+        date: t.String({ minLength: 10, maxLength: 10, pattern: '^\\d{4}-\\d{2}-\\d{2}$' }),
+        time: t.String({ minLength: 5, maxLength: 5, pattern: '^\\d{2}:\\d{2}$' }),
+        notes: t.Optional(t.String({ maxLength: 1000 })),
         consentTerms: t.Boolean(),
         consentData: t.Boolean(),
         consentMarketing: t.Optional(t.Boolean()),
+        website: t.Optional(t.String()),
       }),
     }
   )
@@ -229,6 +235,7 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
   .post(
     '/catering',
     async ({ body, request, set }) => {
+      if (isBot(body)) return { ok: true, id: 0 }
       if (!checkPublicRate(getClientIp(request), 'catering')) {
         set.status = 429
         return { error: 'Demasiadas solicitudes. Intenta de nuevo en 15 minutos.' }
@@ -277,23 +284,25 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
     },
     {
       body: t.Object({
-        name: t.String({ minLength: 2 }),
-        phone: t.String({ minLength: 7 }),
-        email: t.Optional(t.String({ pattern: '^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$' })),
-        eventType: t.Optional(t.String()),
-        eventDate: t.Optional(t.String()),
-        guests: t.Optional(t.Number()),
-        budget: t.Optional(t.String()),
-        message: t.Optional(t.String()),
+        name: t.String({ minLength: 2, maxLength: 160 }),
+        phone: t.String({ minLength: 7, maxLength: 40 }),
+        email: t.Optional(t.String({ maxLength: 200, pattern: '^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$' })),
+        eventType: t.Optional(t.String({ maxLength: 80 })),
+        eventDate: t.Optional(t.String({ maxLength: 10 })),
+        guests: t.Optional(t.Number({ minimum: 1, maximum: 10000 })),
+        budget: t.Optional(t.String({ maxLength: 40 })),
+        message: t.Optional(t.String({ maxLength: 2000 })),
         consentTerms: t.Boolean(),
         consentData: t.Boolean(),
         consentMarketing: t.Optional(t.Boolean()),
+        website: t.Optional(t.String()),
       }),
     }
   )
   .post(
     '/contact',
     async ({ body, request, set }) => {
+      if (isBot(body)) return { ok: true }
       if (!checkPublicRate(getClientIp(request), 'contact')) {
         set.status = 429
         return { error: 'Demasiadas solicitudes. Intenta de nuevo en 15 minutos.' }
@@ -343,19 +352,21 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
     },
     {
       body: t.Object({
-        name: t.String({ minLength: 2 }),
-        email: t.String({ pattern: '^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$' }),
-        phone: t.Optional(t.String()),
-        subject: t.Optional(t.String()),
-        message: t.String({ minLength: 10 }),
+        name: t.String({ minLength: 2, maxLength: 160 }),
+        email: t.String({ maxLength: 200, pattern: '^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$' }),
+        phone: t.Optional(t.String({ maxLength: 40 })),
+        subject: t.Optional(t.String({ maxLength: 200 })),
+        message: t.String({ minLength: 10, maxLength: 5000 }),
         consentTerms: t.Boolean(),
         consentData: t.Boolean(),
+        website: t.Optional(t.String()),
       }),
     }
   )
   .post(
     '/newsletter',
     async ({ body, set, request }) => {
+      if (isBot(body)) return { ok: true, isNew: false }
       if (!checkPublicRate(getClientIp(request), 'newsletter')) {
         set.status = 429
         return { error: 'Demasiadas solicitudes. Intenta de nuevo en 15 minutos.' }
@@ -407,13 +418,14 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
     },
     {
       body: t.Object({
-        email: t.String(),
-        name: t.Optional(t.String()),
-        locale: t.Optional(t.String()),
-        source: t.Optional(t.String()),
+        email: t.String({ maxLength: 200, pattern: '^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$' }),
+        name: t.Optional(t.String({ maxLength: 160 })),
+        locale: t.Optional(t.String({ maxLength: 5 })),
+        source: t.Optional(t.String({ maxLength: 40 })),
         consentTerms: t.Optional(t.Boolean()),
         consentData: t.Optional(t.Boolean()),
         consentMarketing: t.Optional(t.Boolean()),
+        website: t.Optional(t.String()),
       }),
     }
   )
@@ -457,6 +469,7 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
   .post(
     '/surveys',
     async ({ body, set }) => {
+      if (isBot(body)) return { ok: true, id: 0 }
       if (body.rating < 1 || body.rating > 5) {
         set.status = 400
         return { ok: false, error: 'Rating must be between 1 and 5' }
@@ -487,10 +500,11 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
         rating: t.Number({ minimum: 1, maximum: 5 }),
         comment: t.Optional(t.String({ maxLength: 2000 })),
         name: t.Optional(t.String({ maxLength: 120 })),
-        email: t.Optional(t.String()),
+        email: t.Optional(t.String({ maxLength: 200 })),
         locale: t.Optional(t.String({ maxLength: 10 })),
         consentTerms: t.Optional(t.Boolean()),
         consentData: t.Optional(t.Boolean()),
+        website: t.Optional(t.String()),
       }),
     }
   )

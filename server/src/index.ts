@@ -19,7 +19,7 @@ const SWAGGER_ENABLED = IS_PROD ? process.env.SWAGGER_ENABLED === 'true' : true
 // Initialize storage (creates bucket on MinIO if needed)
 await getStorage()
 
-const app = new Elysia()
+const app = new Elysia({ serve: { maxRequestBodySize: 5 * 1024 * 1024 } })
   .use(
     cors({
       origin: CORS_ORIGIN.split(',').map((o) => o.trim()),

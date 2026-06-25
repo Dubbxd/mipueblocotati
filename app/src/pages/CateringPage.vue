@@ -30,6 +30,7 @@ const message = ref('')
 const consentTerms = ref(false)
 const consentData = ref(false)
 const consentMarketing = ref(false)
+const hp = ref('')
 
 // ── Constants ─────────────────────────────────────────────────────
 const EVENT_TYPES = [
@@ -118,6 +119,7 @@ async function submit() {
         consentTerms: consentTerms.value,
         consentData: consentData.value,
         consentMarketing: consentMarketing.value,
+        website: hp.value,
       },
     })
     submitted.value = true
@@ -480,6 +482,7 @@ async function submit() {
                 v-model:marketing="consentMarketing"
                 :showMarketing="true"
               />
+              <input v-model="hp" type="text" name="website" autocomplete="off" tabindex="-1" class="absolute opacity-0 h-0 w-0 pointer-events-none" aria-hidden="true" />
               <div class="flex gap-3 pt-1">
                 <button type="button" @click="step = 3"
                   class="flex items-center gap-1 text-sm text-gray-400 hover:text-gray-600 transition-colors shrink-0">

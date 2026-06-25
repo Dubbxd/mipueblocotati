@@ -19,6 +19,7 @@ const name = ref('')
 const email = ref('')
 const consentTerms = ref(false)
 const consentData = ref(false)
+const hp = ref('')
 
 async function submit() {
   error.value = ''
@@ -35,6 +36,7 @@ async function submit() {
         locale: locale.value,
         consentTerms: consentTerms.value,
         consentData: consentData.value,
+        website: hp.value,
       },
     })
     submitted.value = true
@@ -164,6 +166,7 @@ const txt = (o: { es: string; en: string }) => locale.value === 'es' ? o.es : o.
         v-model:terms="consentTerms"
         v-model:data="consentData"
       />
+      <input v-model="hp" type="text" name="website" autocomplete="off" tabindex="-1" class="absolute opacity-0 h-0 w-0 pointer-events-none" aria-hidden="true" />
 
       <button
         type="submit"
