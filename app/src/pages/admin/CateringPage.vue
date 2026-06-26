@@ -64,7 +64,7 @@ const columns = [
   { key: 'name', label: 'Cliente', render: (r: Catering) => `<div class="font-medium">${r.name}</div><div class="text-xs text-white/50">${r.phone} · ${r.email}</div>` },
   { key: 'eventType', label: 'Evento', render: (r: Catering) => `<div>${r.eventType || '—'}</div><div class="text-xs text-white/50">${r.eventDate || ''} · ${r.guests || '?'} pers</div>` },
   { key: 'budget', label: 'Presupuesto', render: (r: Catering) => r.budget ? `$${r.budget}` : '—' },
-  { key: 'status', label: 'Estado', render: statusBadge }
+  { key: 'status', label: 'Estado', render: (r: Catering) => statusBadge(r.status) }
 ]
 
 onMounted(load)
