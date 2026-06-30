@@ -8,7 +8,7 @@ const { t, locale } = useI18n()
 const { needRefresh, offlineReady, updateServiceWorker } = useRegisterSW({
   immediate: true,
   onRegisteredSW(swUrl: string) {
-    // Re-check every hour for updates while the tab stays open
+    // Re-check every 5 min for updates while the tab stays open
     if ('serviceWorker' in navigator) {
       setInterval(async () => {
         try {
@@ -17,7 +17,7 @@ const { needRefresh, offlineReady, updateServiceWorker } = useRegisterSW({
         } catch {
           /* ignore */
         }
-      }, 60 * 60 * 1000)
+      }, 5 * 60 * 1000)
     }
   }
 })

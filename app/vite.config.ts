@@ -74,7 +74,7 @@ export default defineConfig({
             handler: 'StaleWhileRevalidate',
             options: {
               cacheName: 'mipueblo-images',
-              expiration: { maxEntries: 80, maxAgeSeconds: 60 * 60 * 24 * 7 }
+              expiration: { maxEntries: 80, maxAgeSeconds: 60 * 60 * 24 }
             }
           },
           {
@@ -82,8 +82,8 @@ export default defineConfig({
             handler: 'NetworkFirst',
             options: {
               cacheName: 'mipueblo-api',
-              networkTimeoutSeconds: 3,
-              expiration: { maxEntries: 30, maxAgeSeconds: 60 * 60 },
+              networkTimeoutSeconds: 2,
+              expiration: { maxEntries: 30, maxAgeSeconds: 60 * 5 },
               cacheableResponse: { statuses: [0, 200] }
             }
           },
