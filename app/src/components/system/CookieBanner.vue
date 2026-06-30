@@ -29,7 +29,7 @@ function accept(choice: ConsentChoice) {
       role="dialog"
       aria-modal="false"
       :aria-label="t('cookies.bannerLabel')"
-      class="fixed bottom-0 inset-x-0 z-50 bg-night text-sand-100 shadow-2xl border-t-2 border-brand"
+      class="fixed inset-x-0 z-50 bg-night text-sand-100 shadow-2xl border-t-2 border-brand bottom-[calc(env(safe-area-inset-bottom,0px)+3.5rem)] md:bottom-0"
     >
       <div class="container-page py-5 flex flex-col gap-4">
         <!-- Main row -->

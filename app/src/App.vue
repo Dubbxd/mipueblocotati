@@ -3,6 +3,7 @@ import { computed, defineAsyncComponent, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import AppNavbar from '@/components/layout/AppNavbar.vue'
 import AppFooter from '@/components/layout/AppFooter.vue'
+import MobileBottomNav from '@/components/layout/MobileBottomNav.vue'
 import PromoBar from '@/components/marketing/PromoBar.vue'
 import CookieBanner from '@/components/system/CookieBanner.vue'
 import ToastContainer from '@/components/ui/ToastContainer.vue'
@@ -36,7 +37,8 @@ onMounted(() => { menu.init(); site.init() })
         </Transition>
       </RouterView>
     </main>
-    <AppFooter />
+    <AppFooter class="mb-bottomnav" />
+    <MobileBottomNav />
     <PwaUpdatePrompt />
     <CookieBanner />
   </template>
