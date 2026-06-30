@@ -22,7 +22,6 @@ const eventDate = ref('')
 const guests = ref(50)
 const budget = ref('')
 const serviceStyle = ref('')
-const dietary = ref<string[]>([])
 const name = ref('')
 const phone = ref('')
 const email = ref('')
@@ -57,22 +56,8 @@ const SERVICE_STYLES = [
   { value: 'taco-bar', icon: 'Bag2',       es: 'Taco bar',        en: 'Taco bar' },
 ]
 
-const DIETARY = [
-  { value: 'vegetarian',  icon: 'Heart',      es: 'Vegetariano', en: 'Vegetarian' },
-  { value: 'vegan',       icon: 'Tree',       es: 'Vegano',      en: 'Vegan' },
-  { value: 'gluten-free', icon: 'TickCircle', es: 'Sin gluten',  en: 'Gluten-free' },
-  { value: 'halal',       icon: 'Star1',      es: 'Halal',       en: 'Halal' },
-  { value: 'kids',        icon: 'Gift',       es: 'Menú niños',  en: 'Kids menu' },
-]
-
 function txt(o: { es: string; en: string }) {
   return locale.value === 'es' ? o.es : o.en
-}
-
-function toggleDietary(v: string) {
-  const i = dietary.value.indexOf(v)
-  if (i === -1) dietary.value.push(v)
-  else dietary.value.splice(i, 1)
 }
 
 function changeGuests(delta: number) {
@@ -97,10 +82,8 @@ const todayISO = new Date().toISOString().slice(0, 10)
 async function submit() {
   submitting.value = true
   try {
-    const dietaryStr = dietary.value.length ? dietary.value.join(', ') : undefined
     const notes = [
       serviceStyle.value ? `Servicio: ${serviceStyle.value}` : '',
-      dietaryStr ? `Dieta: ${dietaryStr}` : '',
       message.value,
     ].filter(Boolean).join('\n')
 
@@ -371,7 +354,7 @@ async function submit() {
           <div v-else-if="step === 3" class="space-y-6">
             <div>
               <h3 class="text-xl font-bold text-gray-900">{{ locale === 'es' ? 'Preferencias de servicio' : 'Service preferences' }}</h3>
-              <p class="text-sm text-gray-500 mt-1">{{ locale === 'es' ? 'Elige el estilo y cualquier requerimiento dietético.' : 'Choose your service style and any dietary requirements.' }}</p>
+              <p class="text-sm text-gray-500 mt-1">{{ locale === 'es' ? 'Elige el estilo de servicio para tu evento.' : 'Choose the service style for your event.' }}</p>
             </div>
 
             <!-- Estilo de servicio -->
@@ -391,23 +374,6 @@ async function submit() {
                   ]">
                   <Icon :name="ss.icon" :size="24" :type="serviceStyle === ss.value ? 'Bold' : 'Linear'" />
                   {{ txt(ss) }}
-                </button>
-              </div>
-            </div>
-
-            <!-- Requerimientos dietéticos -->
-            <div>
-              <label class="text-sm font-semibold text-gray-600 block mb-3">
-                {{ locale === 'es' ? 'Requerimientos dietéticos' : 'Dietary requirements' }}
-                <span class="font-normal text-gray-400 ml-1">({{ locale === 'es' ? 'selecciona todos los que apliquen' : 'select all that apply' }})</span>
-              </label>
-              <div class="flex flex-wrap gap-2">
-                <button v-for="d in DIETARY" :key="d.value" type="button"
-                  @click="toggleDietary(d.value)"
-                  :class="dietary.includes(d.value) ? 'bg-brand text-white border-brand shadow-sm' : 'bg-white text-gray-600 border-gray-200 hover:border-brand/50'"
-                  class="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-semibold transition-all">
-                  <Icon :name="d.icon" :size="14" :type="dietary.includes(d.value) ? 'Bold' : 'Linear'" />
-                  {{ txt(d) }}
                 </button>
               </div>
             </div>
