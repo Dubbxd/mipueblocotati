@@ -3,3 +3,4 @@
 
 // vue-iconsax ships without type declarations
 declare module 'vue-iconsax'
+declare module 'vue-iconsax/dist/components/icons/*.vue.js'

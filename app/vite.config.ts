@@ -54,8 +54,6 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,woff2}'],
-        // Excluye chunks individuales de íconos del precache — se cachean en runtime
-        globIgnores: ['**/assets/icons-*.js'],
         skipWaiting: true,
         clientsClaim: true,
         navigateFallback: '/index.html',
@@ -109,9 +107,6 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
-          // Agrupa todos los íconos de vue-iconsax en un único chunk
-          // en vez de ~993 archivos individuales que Workbox precachearía
-          if (id.includes('vue-iconsax')) return 'icons'
           if (id.includes('node_modules')) return 'vendor'
         }
       }

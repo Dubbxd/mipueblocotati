@@ -1,0 +1,93 @@
+import type { Component } from 'vue'
+
+import Activity        from 'vue-iconsax/dist/components/icons/Activity.vue.js'
+import Add             from 'vue-iconsax/dist/components/icons/Add.vue.js'
+import ArrowLeft       from 'vue-iconsax/dist/components/icons/ArrowLeft.vue.js'
+import ArrowLeft2      from 'vue-iconsax/dist/components/icons/ArrowLeft2.vue.js'
+import ArrowRight      from 'vue-iconsax/dist/components/icons/ArrowRight.vue.js'
+import ArrowRight2     from 'vue-iconsax/dist/components/icons/ArrowRight2.vue.js'
+import Award           from 'vue-iconsax/dist/components/icons/Award.vue.js'
+import Bag2            from 'vue-iconsax/dist/components/icons/Bag2.vue.js'
+import Book1           from 'vue-iconsax/dist/components/icons/Book1.vue.js'
+import Box1            from 'vue-iconsax/dist/components/icons/Box1.vue.js'
+import Building        from 'vue-iconsax/dist/components/icons/Building.vue.js'
+import Buildings       from 'vue-iconsax/dist/components/icons/Buildings.vue.js'
+import Buildings2      from 'vue-iconsax/dist/components/icons/Buildings2.vue.js'
+import Cake            from 'vue-iconsax/dist/components/icons/Cake.vue.js'
+import Calendar        from 'vue-iconsax/dist/components/icons/Calendar.vue.js'
+import Calendar1       from 'vue-iconsax/dist/components/icons/Calendar1.vue.js'
+import CalendarRemove  from 'vue-iconsax/dist/components/icons/CalendarRemove.vue.js'
+import CalendarTick    from 'vue-iconsax/dist/components/icons/CalendarTick.vue.js'
+import Call            from 'vue-iconsax/dist/components/icons/Call.vue.js'
+import Camera          from 'vue-iconsax/dist/components/icons/Camera.vue.js'
+import Category2       from 'vue-iconsax/dist/components/icons/Category2.vue.js'
+import Clock           from 'vue-iconsax/dist/components/icons/Clock.vue.js'
+import CloseCircle     from 'vue-iconsax/dist/components/icons/CloseCircle.vue.js'
+import Coffee          from 'vue-iconsax/dist/components/icons/Coffee.vue.js'
+import Crown           from 'vue-iconsax/dist/components/icons/Crown.vue.js'
+import Crown1          from 'vue-iconsax/dist/components/icons/Crown1.vue.js'
+import Cup             from 'vue-iconsax/dist/components/icons/Cup.vue.js'
+import Danger          from 'vue-iconsax/dist/components/icons/Danger.vue.js'
+import DiscountShape   from 'vue-iconsax/dist/components/icons/DiscountShape.vue.js'
+import DocumentDownload from 'vue-iconsax/dist/components/icons/DocumentDownload.vue.js'
+import Driving         from 'vue-iconsax/dist/components/icons/Driving.vue.js'
+import Drop            from 'vue-iconsax/dist/components/icons/Drop.vue.js'
+import Edit2           from 'vue-iconsax/dist/components/icons/Edit2.vue.js'
+import Element4        from 'vue-iconsax/dist/components/icons/Element4.vue.js'
+import ExportSquare    from 'vue-iconsax/dist/components/icons/ExportSquare.vue.js'
+import Eye             from 'vue-iconsax/dist/components/icons/Eye.vue.js'
+import EyeSlash        from 'vue-iconsax/dist/components/icons/EyeSlash.vue.js'
+import Facebook        from 'vue-iconsax/dist/components/icons/Facebook.vue.js'
+import Flash           from 'vue-iconsax/dist/components/icons/Flash.vue.js'
+import Gallery         from 'vue-iconsax/dist/components/icons/Gallery.vue.js'
+import GalleryAdd      from 'vue-iconsax/dist/components/icons/GalleryAdd.vue.js'
+import Gift            from 'vue-iconsax/dist/components/icons/Gift.vue.js'
+import Global          from 'vue-iconsax/dist/components/icons/Global.vue.js'
+import HambergerMenu   from 'vue-iconsax/dist/components/icons/HambergerMenu.vue.js'
+import Heart           from 'vue-iconsax/dist/components/icons/Heart.vue.js'
+import Home            from 'vue-iconsax/dist/components/icons/Home.vue.js'
+import InfoCircle      from 'vue-iconsax/dist/components/icons/InfoCircle.vue.js'
+import Instagram       from 'vue-iconsax/dist/components/icons/Instagram.vue.js'
+import Location        from 'vue-iconsax/dist/components/icons/Location.vue.js'
+import LoginCurve      from 'vue-iconsax/dist/components/icons/LoginCurve.vue.js'
+import LogoutCurve     from 'vue-iconsax/dist/components/icons/LogoutCurve.vue.js'
+import Map1            from 'vue-iconsax/dist/components/icons/Map1.vue.js'
+import MedalStar       from 'vue-iconsax/dist/components/icons/MedalStar.vue.js'
+import MenuBoard       from 'vue-iconsax/dist/components/icons/MenuBoard.vue.js'
+import MessageText     from 'vue-iconsax/dist/components/icons/MessageText.vue.js'
+import Music           from 'vue-iconsax/dist/components/icons/Music.vue.js'
+import People          from 'vue-iconsax/dist/components/icons/People.vue.js'
+import QuoteUp         from 'vue-iconsax/dist/components/icons/QuoteUp.vue.js'
+import Refresh         from 'vue-iconsax/dist/components/icons/Refresh.vue.js'
+import Reserve         from 'vue-iconsax/dist/components/icons/Reserve.vue.js'
+import ScanBarcode     from 'vue-iconsax/dist/components/icons/ScanBarcode.vue.js'
+import SearchNormal1   from 'vue-iconsax/dist/components/icons/SearchNormal1.vue.js'
+import SecurityUser    from 'vue-iconsax/dist/components/icons/SecurityUser.vue.js'
+import Send2           from 'vue-iconsax/dist/components/icons/Send2.vue.js'
+import Setting2        from 'vue-iconsax/dist/components/icons/Setting2.vue.js'
+import ShoppingCart    from 'vue-iconsax/dist/components/icons/ShoppingCart.vue.js'
+import Sms             from 'vue-iconsax/dist/components/icons/Sms.vue.js'
+import Star1           from 'vue-iconsax/dist/components/icons/Star1.vue.js'
+import Tag             from 'vue-iconsax/dist/components/icons/Tag.vue.js'
+import TickCircle      from 'vue-iconsax/dist/components/icons/TickCircle.vue.js'
+import TickSquare      from 'vue-iconsax/dist/components/icons/TickSquare.vue.js'
+import TicketDiscount  from 'vue-iconsax/dist/components/icons/TicketDiscount.vue.js'
+import Trash           from 'vue-iconsax/dist/components/icons/Trash.vue.js'
+import Truck           from 'vue-iconsax/dist/components/icons/Truck.vue.js'
+import Warning2        from 'vue-iconsax/dist/components/icons/Warning2.vue.js'
+
+export const iconRegistry: Record<string, Component> = {
+  Activity, Add, ArrowLeft, ArrowLeft2, ArrowRight, ArrowRight2,
+  Award, Bag2, Book1, Box1, Building, Buildings, Buildings2,
+  Cake, Calendar, Calendar1, CalendarRemove, CalendarTick, Call, Camera,
+  Category2, Clock, CloseCircle, Coffee, Crown, Crown1, Cup,
+  Danger, DiscountShape, DocumentDownload, Driving, Drop,
+  Edit2, Element4, ExportSquare, Eye, EyeSlash,
+  Facebook, Flash, Gallery, GalleryAdd, Gift, Global,
+  HambergerMenu, Heart, Home, InfoCircle, Instagram,
+  Location, LoginCurve, LogoutCurve, Map1, MedalStar,
+  MenuBoard, MessageText, Music, People, QuoteUp,
+  Refresh, Reserve, ScanBarcode, SearchNormal1, SecurityUser,
+  Send2, Setting2, ShoppingCart, Sms, Star1,
+  Tag, TickCircle, TickSquare, TicketDiscount, Trash, Truck, Warning2,
+}

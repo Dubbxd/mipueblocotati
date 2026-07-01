@@ -1,16 +1,6 @@
 <script setup lang="ts">
-/**
- * Wrapper sobre `vue-iconsax` (Iconsax https://app.iconsax.io/).
- * Uso:
- *   <Icon name="Home" />
- *   <Icon name="Calendar" type="Bold" :size="20" class="text-brand" />
- *
- * Tipos disponibles: Linear · Outline · TwoTone · Bulk · Broken · Bold
- * Por defecto usa 'Linear'. El color hereda de `currentColor`,
- * así que basta con pintar el contenedor con `text-…` de Tailwind.
- */
 import { computed } from 'vue'
-import { VsxIcon } from 'vue-iconsax'
+import { iconRegistry } from '@/lib/icons'
 
 const props = defineProps<{
   name: string
@@ -20,14 +10,13 @@ const props = defineProps<{
   color?: string
 }>()
 
-// vue-iconsax internamente espera variantes en minúscula:
-// linear · outline · twotone · bulk · broken · bold
+const icon = computed(() => iconRegistry[props.name])
 const variant = computed(() => (props.type || 'linear').toLowerCase())
 </script>
 
 <template>
-  <VsxIcon
-    :iconName="name"
+  <component
+    :is="icon"
     :type="variant"
     :size="size || 20"
     :color="color || 'currentColor'"
