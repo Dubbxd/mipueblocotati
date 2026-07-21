@@ -35,7 +35,7 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/pages/HomePage.vue'),
     meta: {
       title: 'Mi Pueblo Cotati · Auténtica comida mexicana desde 1997',
-      seo: { description: 'Auténtica comida mexicana en Sonoma County desde 1997. Más de 170 platillos, 6 sucursales, catering y food truck.', image: '/og-image.jpg' }
+      seo: { description: 'Restaurante mexicano familiar en Cotati, California. Consulta el menú, reserva una mesa u ordena en línea.' }
     }
   },
   {
@@ -43,7 +43,7 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/pages/MenuPage.vue'),
     meta: {
       title: 'Menú · Mi Pueblo Cotati',
-      seo: { description: 'Explora nuestro menú de más de 170 platillos auténticos mexicanos: tacos, burritos, fajitas, mariscos y mucho más.', image: '/assets/hero/hero-menu.jpg' }
+      seo: { description: 'Explora el menú de Mi Pueblo Cotati: tacos, burritos, fajitas, mariscos y especialidades mexicanas.', image: '/assets/gallery/fajitas-sizzling.jpg' }
     }
   },
   { path: '/menu/:slug', name: 'menu-item', component: () => import('@/pages/MenuItemPage.vue') },
@@ -52,7 +52,7 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/pages/LocationsPage.vue'),
     meta: {
       title: 'Sucursales · Mi Pueblo Cotati',
-      seo: { description: 'Encuentra nuestra sucursal más cercana en Cotati, Petaluma, Rohnert Park y más ciudades del condado de Sonoma.' }
+      seo: { description: 'Información, dirección y horario de Mi Pueblo Cotati y las ubicaciones activas de la familia Mi Pueblo.' }
     }
   },
   { path: '/sucursales/:slug', name: 'location-detail', component: () => import('@/pages/LocationDetailPage.vue') },
@@ -96,7 +96,7 @@ const routes: RouteRecordRaw[] = [
       seo: { description: 'Lo que dicen nuestros clientes. Reseñas reales de personas que han disfrutado nuestra comida.' }
     }
   },
-  { path: '/encuesta', name: 'survey', component: () => import('@/pages/SurveyPage.vue'), meta: { title: 'Encuesta · Mi Pueblo Cotati' } },
+  { path: '/encuesta', name: 'survey', component: () => import('@/pages/SurveyPage.vue'), meta: { title: 'Encuesta · Mi Pueblo Cotati', robots: 'noindex, nofollow' } },
   {
     path: '/contacto', name: 'contact',
     component: () => import('@/pages/ContactPage.vue'),
@@ -117,7 +117,7 @@ const routes: RouteRecordRaw[] = [
   { path: '/legal/privacidad', name: 'privacy', component: () => import('@/pages/legal/PrivacyPage.vue'), meta: { title: 'Privacidad · Mi Pueblo Cotati' } },
   { path: '/legal/terminos', name: 'terms', component: () => import('@/pages/legal/TermsPage.vue'), meta: { title: 'Términos · Mi Pueblo Cotati' } },
   { path: '/legal/cookies', name: 'cookies', component: () => import('@/pages/legal/CookiesPage.vue'), meta: { title: 'Cookies · Mi Pueblo Cotati' } },
-  { path: '/:pathMatch(.*)*', name: 'not-found', component: () => import('@/pages/NotFoundPage.vue') }
+  { path: '/:pathMatch(.*)*', name: 'not-found', component: () => import('@/pages/NotFoundPage.vue'), meta: { title: 'Página no encontrada · Mi Pueblo Cotati', robots: 'noindex, nofollow' } }
 ]
 
 const router = createRouter({
@@ -145,8 +145,9 @@ router.beforeEach(async (to) => {
 router.afterEach((to) => {
   const title = (to.meta?.title as string) || 'Mi Pueblo Cotati'
   const routeSeo = (to.meta?.seo as SeoMeta | undefined) ?? {}
-  const url = `https://mipueblocotati.easypage.mx${to.path}`
-  applySeo({ title, url, ...routeSeo })
+  const isPrivate = to.path.startsWith('/admin')
+  const robots = isPrivate ? 'noindex, nofollow' : (to.meta?.robots as string | undefined)
+  applySeo({ title, path: to.path, robots, ...routeSeo })
 })
 
 export default router

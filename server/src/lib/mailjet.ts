@@ -13,7 +13,7 @@ const FROM_EMAIL = process.env.MAILJET_FROM_EMAIL ?? 'noreply@mipueblocotati.com
 const FROM_NAME = process.env.MAILJET_FROM_NAME ?? 'Mi Pueblo Cotati'
 const ADMIN_EMAILS = (process.env.MAILJET_ADMIN_EMAIL ?? 'admin@mipueblocotati.com')
   .split(',').map(e => e.trim()).filter(Boolean)
-const PUBLIC_URL = process.env.PUBLIC_URL ?? 'https://mipueblocotati.com'
+const PUBLIC_URL = process.env.PUBLIC_URL ?? 'https://www.mipueblocotati.com'
 // API server URL used for backend links (unsubscribe endpoint, etc.)
 const API_URL = process.env.API_URL ?? `http://localhost:${process.env.PORT ?? 3001}`
 
@@ -150,7 +150,7 @@ function baseTemplate(title: string, content: string, unsubEmail?: string) {
   <div class="footer">
     <span class="footer-brand">Mi Pueblo Cotati</span>
     <p>7384 Commerce Blvd, Cotati, CA 94931</p>
-    <p><a href="tel:+17078231234">(707) 823-1234</a> &nbsp;·&nbsp; <a href="${PUBLIC_URL}">mipueblocotati.com</a></p>
+    <p><a href="tel:+17077924380">(707) 792-4380</a> &nbsp;·&nbsp; <a href="${PUBLIC_URL}">mipueblocotati.com</a></p>
     <p><a href="${PUBLIC_URL}/legal/privacidad">Privacy Policy</a></p>
     ${unsubSpan}
   </div>
@@ -226,7 +226,7 @@ export async function sendReservationConfirmation(r: {
       ${r.locationName ? `<div class="detail-row"><span class="detail-label">Location:</span><span class="detail-value">${esc(r.locationName)}</span></div>` : ''}
       ${r.notes ? `<div class="detail-row"><span class="detail-label">Notes:</span><span class="detail-value">${esc(r.notes)}</span></div>` : ''}
     </div>
-    <p>Need to make changes? Call us at <strong>(707) 823-1234</strong>.</p>
+    <p>Need to make changes? Call us at <strong>(707) 792-4380</strong>.</p>
     <div class="cta-wrap"><a href="${PUBLIC_URL}/reservar" class="btn">Make Another Reservation</a></div>
     <hr class="divider" />
     <p style="font-size:12px;color:#8A5A38;text-align:center;">
@@ -292,7 +292,7 @@ export async function sendReservationCancellation(r: {
     <p>We apologize for any inconvenience. You are welcome to make a new reservation at any time.</p>
     <div class="cta-wrap"><a href="${PUBLIC_URL}/reservar" class="btn">Make a New Reservation</a></div>
     <hr class="divider" />
-    <p style="font-size:13px;color:#8A5A38;">Questions? Call us at <strong>(707) 823-1234</strong> or reply to this email.</p>
+    <p style="font-size:13px;color:#8A5A38;">Questions? Call us at <strong>(707) 792-4380</strong> or reply to this email.</p>
   `)
   return sendEmail({
     to: [{ email: r.email, name: r.name }],
@@ -320,7 +320,7 @@ export async function sendCateringConfirmation(c: {
       ${c.guests ? `<div class="detail-row"><span class="detail-label">Guests:</span><span class="detail-value">${c.guests} people</span></div>` : ''}
       ${c.budget ? `<div class="detail-row"><span class="detail-label">Budget:</span><span class="detail-value">$${esc(c.budget)}</span></div>` : ''}
     </div>
-    <p>Have immediate questions? Call us at <strong>(707) 823-1234</strong> or email <a href="mailto:catering@mipueblocotati.com">catering@mipueblocotati.com</a>.</p>
+    <p>Have immediate questions? Call us at <strong>(707) 792-4380</strong> or email <a href="mailto:mipueblocotati1@gmail.com">mipueblocotati1@gmail.com</a>.</p>
     <div class="cta-wrap"><a href="${PUBLIC_URL}/catering" class="btn">Explore Catering Services</a></div>
   `)
   return sendEmail({
@@ -376,7 +376,7 @@ export async function sendContactAutoReply(contact: {
     <div class="quote-box">&ldquo;${esc(contact.message)}&rdquo;</div>
     <p>In the meantime, you can:</p>
     <table style="margin:4px 0 18px; border-collapse:collapse;" cellpadding="0" cellspacing="0">
-      <tr><td style="padding:5px 0; font-size:15px; line-height:1.6; color:#5A3820;">Call us at <strong>(707) 823-1234</strong></td></tr>
+      <tr><td style="padding:5px 0; font-size:15px; line-height:1.6; color:#5A3820;">Call us at <strong>(707) 792-4380</strong></td></tr>
       <tr><td style="padding:5px 0; font-size:15px; line-height:1.6;"><a href="${PUBLIC_URL}/sucursales" style="color:#C8501C;">Find our locations</a></td></tr>
       <tr><td style="padding:5px 0; font-size:15px; line-height:1.6;"><a href="${PUBLIC_URL}/menu" style="color:#C8501C;">Browse the menu</a></td></tr>
     </table>

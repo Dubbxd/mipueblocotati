@@ -54,7 +54,7 @@ const isEn = () => locale.value === 'en'
         <p>We may update these terms at any time. Continued use of the site after changes are posted constitutes acceptance of the new terms.</p>
 
         <h2>12. Contact</h2>
-        <p>Questions? Email <a href="mailto:info@mipueblocotati.com">info@mipueblocotati.com</a>.</p>
+        <p>Questions? Email <a href="mailto:mipueblocotati1@gmail.com">mipueblocotati1@gmail.com</a>.</p>
       </template>
 
       <template v-else>
@@ -97,7 +97,7 @@ const isEn = () => locale.value === 'en'
         <p>Podemos actualizar estos términos en cualquier momento. El uso continuo del sitio después de publicar los cambios constituye la aceptación de los nuevos términos.</p>
 
         <h2>12. Contacto</h2>
-        <p>¿Preguntas? Escríbenos a <a href="mailto:info@mipueblocotati.com">info@mipueblocotati.com</a>.</p>
+        <p>¿Preguntas? Escríbenos a <a href="mailto:mipueblocotati1@gmail.com">mipueblocotati1@gmail.com</a>.</p>
       </template>
     </div>
   </main>

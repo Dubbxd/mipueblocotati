@@ -6,6 +6,7 @@ import { swagger } from '@elysiajs/swagger'
 import { authRoutes } from './routes/auth'
 import { publicRoutes, adminRoutes } from './routes/crud'
 import { uploadRoutes } from './routes/upload'
+import { seoRoutes } from './routes/seo'
 import { getStorage } from './lib/storage'
 
 const PORT = Number(process.env.PORT ?? 3001)
@@ -55,6 +56,7 @@ if (SWAGGER_ENABLED) {
 
 app
   .get('/health', () => ({ ok: true, time: new Date().toISOString(), storage: STORAGE_DRIVER }))
+  .use(seoRoutes)
   .group('/api', (a) => a.use(authRoutes).use(publicRoutes).use(adminRoutes).use(uploadRoutes))
   .listen(PORT)
 

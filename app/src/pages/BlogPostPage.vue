@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watchEffect } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { api } from '@/lib/api'
 import { useI18n } from 'vue-i18n'
 import DOMPurify from 'dompurify'
+import { applySeo, absoluteUrl, breadcrumbSchema, restaurantSchema, SITE_URL } from '@/lib/seo'
 
 const { locale } = useI18n()
 const route = useRoute()
@@ -31,6 +32,56 @@ const title = computed(() => post.value ? (locale.value === 'en' ? post.value.ti
 const rawBody = computed(() => post.value ? (locale.value === 'en' ? post.value.bodyEn : post.value.bodyEs) : '')
 const body = computed(() => rawBody.value ? DOMPurify.sanitize(rawBody.value) : '')
 const excerpt = computed(() => post.value ? (locale.value === 'en' ? post.value.excerptEn : post.value.excerptEs) : '')
+
+watchEffect(() => {
+  const article = post.value
+  if (!article) {
+    if (notFound.value) {
+      applySeo({
+        title: 'Artículo no encontrado · Mi Pueblo Cotati',
+        path: route.path,
+        robots: 'noindex, nofollow',
+      })
+    }
+    return
+  }
+  const path = `/blog/${article.slug}`
+  const seoTitle = locale.value === 'en'
+    ? (article.metaTitleEn || article.titleEn)
+    : (article.metaTitleEs || article.titleEs)
+  const seoDescription = locale.value === 'en'
+    ? (article.metaDescriptionEn || article.excerptEn || article.titleEn)
+    : (article.metaDescriptionEs || article.excerptEs || article.titleEs)
+  applySeo({
+    title: `${seoTitle} · Mi Pueblo Cotati`,
+    description: seoDescription,
+    path,
+    type: 'article',
+    image: article.coverImage ?? undefined,
+    locale: locale.value === 'en' ? 'en_US' : 'es_US',
+    jsonLd: [
+      restaurantSchema(),
+      {
+        '@context': 'https://schema.org',
+        '@type': 'Article',
+        '@id': `${SITE_URL}${path}#article`,
+        headline: seoTitle,
+        description: seoDescription,
+        image: article.coverImage ? absoluteUrl(article.coverImage) : undefined,
+        datePublished: article.publishedAt,
+        inLanguage: locale.value === 'en' ? 'en-US' : 'es-US',
+        mainEntityOfPage: `${SITE_URL}${path}`,
+        author: { '@type': 'Organization', name: 'Mi Pueblo Cotati' },
+        publisher: { '@id': `${SITE_URL}/#restaurant` },
+      },
+      breadcrumbSchema([
+        { name: 'Mi Pueblo Cotati', path: '/' },
+        { name: 'Blog', path: '/blog' },
+        { name: seoTitle, path },
+      ]),
+    ],
+  })
+})
 
 async function load() {
   loading.value = true

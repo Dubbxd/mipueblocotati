@@ -1,13 +1,69 @@
 <script setup lang="ts">
 import { useRoute, RouterLink } from 'vue-router'
-import { computed } from 'vue'
+import { computed, watchEffect } from 'vue'
 import { useSiteStore } from '@/stores'
 import MapGoogle from '@/components/sections/MapGoogle.vue'
 import { useI18n } from 'vue-i18n'
-const { t } = useI18n()
+import { applySeo, absoluteUrl, breadcrumbSchema, SITE_URL } from '@/lib/seo'
+const { t, locale } = useI18n()
 const route = useRoute()
 const site = useSiteStore()
 const r = computed(() => site.restaurants.find(x => x.id === route.params.slug))
+
+watchEffect(() => {
+  const location = r.value
+  if (!location) {
+    if (!site.loading) {
+      applySeo({
+        title: 'Ubicación no encontrada · Mi Pueblo Cotati',
+        path: route.path,
+        robots: 'noindex, nofollow',
+      })
+    }
+    return
+  }
+  const path = `/sucursales/${location.slug}`
+  const description = `${location.name}, restaurante mexicano en ${location.city}, California. Dirección, teléfono, horario, pedidos y reservaciones.`
+  applySeo({
+    title: `${location.name} · Dirección y horario`,
+    description,
+    path,
+    image: location.photo,
+    locale: locale.value === 'en' ? 'en_US' : 'es_US',
+    jsonLd: [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'Restaurant',
+        '@id': `${SITE_URL}${path}#restaurant`,
+        name: location.name,
+        url: `${SITE_URL}${path}`,
+        image: location.photo ? absoluteUrl(location.photo) : undefined,
+        telephone: location.phone,
+        email: location.email,
+        servesCuisine: ['Mexican', 'Seafood'],
+        address: {
+          '@type': 'PostalAddress',
+          streetAddress: location.address,
+          addressLocality: location.city,
+          addressRegion: location.state,
+          postalCode: location.zip,
+          addressCountry: 'US',
+        },
+        geo: location.lat && location.lng ? {
+          '@type': 'GeoCoordinates',
+          latitude: location.lat,
+          longitude: location.lng,
+        } : undefined,
+        sameAs: [location.links.facebook, location.links.instagram].filter(Boolean),
+      },
+      breadcrumbSchema([
+        { name: 'Mi Pueblo Cotati', path: '/' },
+        { name: locale.value === 'en' ? 'Locations' : 'Sucursales', path: '/sucursales' },
+        { name: location.name, path },
+      ]),
+    ],
+  })
+})
 </script>
 
 <template>
@@ -18,7 +74,7 @@ const r = computed(() => site.restaurants.find(x => x.id === route.params.slug))
         <h1 class="font-display text-4xl font-bold text-brand">{{ r.name }}</h1>
         <p class="text-ink-muted mt-2">{{ r.address }}, {{ r.city }}, {{ r.state }} {{ r.zip }}</p>
         <a :href="`tel:${r.phone}`" class="block mt-2 text-secondary">{{ r.phone }}</a>
-        <a :href="`mailto:${r.email}`" class="block text-secondary">{{ r.email }}</a>
+        <a v-if="r.email" :href="`mailto:${r.email}`" class="block text-secondary">{{ r.email }}</a>
         <div class="mt-4 text-sm">
           <p>L-V · {{ r.hours.mon_fri }}</p>
           <p>S-D · {{ r.hours.sat_sun }}</p>

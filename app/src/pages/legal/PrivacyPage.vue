@@ -16,7 +16,7 @@ const isEn = () => locale.value === 'en'
     <div class="prose prose-stone max-w-none">
       <template v-if="isEn()">
         <h2>Who we are</h2>
-        <p>Mi Pueblo Cotati operates the website <strong>mipueblocotati.com</strong>. Our main location is at 216 E Cotati Ave, Cotati, CA 94931. You can reach us at <a href="mailto:info@mipueblocotati.com">info@mipueblocotati.com</a>.</p>
+        <p>Mi Pueblo Cotati operates the website <strong>mipueblocotati.com</strong>. Our main location is at 7384 Commerce Blvd, Cotati, CA 94931. You can reach us at <a href="mailto:mipueblocotati1@gmail.com">mipueblocotati1@gmail.com</a>.</p>
 
         <h2>Information we collect</h2>
         <ul>
@@ -52,7 +52,7 @@ const isEn = () => locale.value === 'en'
           <li>Opt out of the sale of personal information (we do <em>not</em> sell data).</li>
           <li>Non-discrimination for exercising these rights.</li>
         </ul>
-        <p>To exercise your rights, email <a href="mailto:info@mipueblocotati.com">info@mipueblocotati.com</a> with the subject line "CCPA Request".</p>
+        <p>To exercise your rights, email <a href="mailto:mipueblocotati1@gmail.com">mipueblocotati1@gmail.com</a> with the subject line "CCPA Request".</p>
 
         <h2>Security</h2>
         <p>We protect your data with industry-standard measures including HTTPS, hashed passwords, and access controls. However, no transmission over the internet is 100% secure.</p>
@@ -64,12 +64,12 @@ const isEn = () => locale.value === 'en'
         <p>We may update this policy periodically. We will post the revised date at the top of this page.</p>
 
         <h2>Contact</h2>
-        <p>Questions about this policy? Contact us at <a href="mailto:info@mipueblocotati.com">info@mipueblocotati.com</a> or call <a href="tel:+17079927684">(707) 992-7684</a>.</p>
+        <p>Questions about this policy? Contact us at <a href="mailto:mipueblocotati1@gmail.com">mipueblocotati1@gmail.com</a> or call <a href="tel:+17077924380">(707) 792-4380</a>.</p>
       </template>
 
       <template v-else>
         <h2>Quiénes somos</h2>
-        <p>Mi Pueblo Cotati opera el sitio web <strong>mipueblocotati.com</strong>. Nuestra ubicación principal es 216 E Cotati Ave, Cotati, CA 94931. Puedes contactarnos en <a href="mailto:info@mipueblocotati.com">info@mipueblocotati.com</a>.</p>
+        <p>Mi Pueblo Cotati opera el sitio web <strong>mipueblocotati.com</strong>. Nuestra ubicación principal es 7384 Commerce Blvd, Cotati, CA 94931. Puedes contactarnos en <a href="mailto:mipueblocotati1@gmail.com">mipueblocotati1@gmail.com</a>.</p>
 
         <h2>Información que recopilamos</h2>
         <ul>
@@ -105,7 +105,7 @@ const isEn = () => locale.value === 'en'
           <li>Optar por no participar en la venta de información personal (nosotros <em>no</em> vendemos datos).</li>
           <li>No ser discriminado por ejercer estos derechos.</li>
         </ul>
-        <p>Para ejercer tus derechos, envía un correo a <a href="mailto:info@mipueblocotati.com">info@mipueblocotati.com</a> con el asunto "CCPA Request".</p>
+        <p>Para ejercer tus derechos, envía un correo a <a href="mailto:mipueblocotati1@gmail.com">mipueblocotati1@gmail.com</a> con el asunto "CCPA Request".</p>
 
         <h2>Seguridad</h2>
         <p>Protegemos tus datos con medidas estándar de la industria que incluyen HTTPS, contraseñas cifradas y controles de acceso. Sin embargo, ninguna transmisión por Internet es 100% segura.</p>
@@ -117,7 +117,7 @@ const isEn = () => locale.value === 'en'
         <p>Podemos actualizar esta política periódicamente. Publicaremos la fecha de revisión al inicio de esta página.</p>
 
         <h2>Contacto</h2>
-        <p>¿Preguntas sobre esta política? Contáctanos en <a href="mailto:info@mipueblocotati.com">info@mipueblocotati.com</a> o llama al <a href="tel:+17079927684">(707) 992-7684</a>.</p>
+        <p>¿Preguntas sobre esta política? Contáctanos en <a href="mailto:mipueblocotati1@gmail.com">mipueblocotati1@gmail.com</a> o llama al <a href="tel:+17077924380">(707) 792-4380</a>.</p>
       </template>
     </div>
   </main>

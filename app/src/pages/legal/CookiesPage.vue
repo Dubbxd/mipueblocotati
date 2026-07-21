@@ -45,7 +45,7 @@ const isEn = () => locale.value === 'en'
         <p>We do not sell your personal information. For more information see our <RouterLink to="/legal/privacidad">Privacy Policy</RouterLink>.</p>
 
         <h2>Contact</h2>
-        <p>Questions? Email us at <a href="mailto:info@mipueblocotati.com">info@mipueblocotati.com</a>.</p>
+        <p>Questions? Email us at <a href="mailto:mipueblocotati1@gmail.com">mipueblocotati1@gmail.com</a>.</p>
       </template>
 
       <template v-else>
@@ -79,7 +79,7 @@ const isEn = () => locale.value === 'en'
         <p>No vendemos tu información personal. Para más información consulta nuestra <RouterLink to="/legal/privacidad">Política de Privacidad</RouterLink>.</p>
 
         <h2>Contacto</h2>
-        <p>¿Preguntas? Escríbenos a <a href="mailto:info@mipueblocotati.com">info@mipueblocotati.com</a>.</p>
+        <p>¿Preguntas? Escríbenos a <a href="mailto:mipueblocotati1@gmail.com">mipueblocotati1@gmail.com</a>.</p>
       </template>
     </div>
   </main>

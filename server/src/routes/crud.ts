@@ -202,7 +202,7 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
       if (!r) { set.status = 404; return { error: 'Reserva no encontrada' } }
       if (r.status === 'cancelled') {
         set.headers['Content-Type'] = 'text/html; charset=utf-8'
-        const pubUrl = process.env.PUBLIC_URL ?? 'https://mipueblocotati.com'
+        const pubUrl = process.env.PUBLIC_URL ?? 'https://www.mipueblocotati.com'
         return `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Reserva cancelada</title><style>body{font-family:Arial,sans-serif;max-width:500px;margin:80px auto;text-align:center;color:#3A2010;background:#FFFCF0;}h1{color:#C8501C;}a{color:#C8501C;}.btn{display:inline-block;background:#C8501C;color:#fff;text-decoration:none;padding:12px 32px;border-radius:8px;font-weight:bold;margin-top:20px;}</style></head><body><h1>Mi Pueblo Cotati</h1><p>Esta reserva ya fue cancelada anteriormente.</p><a href="${pubUrl}/reservar" class="btn">Hacer nueva reserva</a></body></html>`
       }
       if (r.status === 'completed') {
@@ -221,7 +221,7 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
         }).catch(e => console.error('[mail] self-cancel:', e))
       }
       set.headers['Content-Type'] = 'text/html; charset=utf-8'
-      const pubUrl = process.env.PUBLIC_URL ?? 'https://mipueblocotati.com'
+      const pubUrl = process.env.PUBLIC_URL ?? 'https://www.mipueblocotati.com'
       return `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Reserva cancelada</title><style>body{font-family:Arial,sans-serif;max-width:500px;margin:80px auto;text-align:center;color:#3A2010;background:#FFFCF0;}h1{color:#C8501C;}a{color:#C8501C;}.detail{background:#fff;border-left:4px solid #C8501C;padding:16px 20px;margin:20px auto;text-align:left;max-width:300px;border-radius:0 8px 8px 0;}.detail p{margin:4px 0;font-size:14px;}.btn{display:inline-block;background:#C8501C;color:#fff;text-decoration:none;padding:12px 32px;border-radius:8px;font-weight:bold;margin-top:20px;}</style></head><body><h1>Mi Pueblo Cotati</h1><p>Tu reserva ha sido cancelada correctamente.</p><div class="detail"><p><strong>Fecha:</strong> ${r.date}</p><p><strong>Hora:</strong> ${r.time}</p><p><strong>Personas:</strong> ${r.partySize}</p></div><p>Esperamos verte pronto.</p><a href="${pubUrl}/reservar" class="btn">Hacer nueva reserva</a></body></html>`
     },
     {
@@ -456,7 +456,7 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
       }).catch(e => console.error('[crm] unsub:', e))
       // Return simple HTML confirmation page
       set.headers['Content-Type'] = 'text/html; charset=utf-8'
-      const pubUrl = process.env.PUBLIC_URL ?? 'https://mipueblocotati.com'
+      const pubUrl = process.env.PUBLIC_URL ?? 'https://www.mipueblocotati.com'
       return `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Cancelar suscripción</title><style>body{font-family:Arial,sans-serif;max-width:500px;margin:80px auto;text-align:center;color:#3A2010;background:#FFFCF0;}h1{color:#C8501C;}a{color:#C8501C;}</style></head><body><h1>🌮 Mi Pueblo Cotati</h1><p>Tu suscripción fue cancelada correctamente.</p><p><a href="${pubUrl}">Volver al sitio</a></p></body></html>`
     },
     {

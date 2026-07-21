@@ -6,7 +6,7 @@
   "description": "Mi Pueblo Cotati — Vue 3 + Elysia PWA bilingüe (frontend)",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc -b && vite build",
+    "build": "vue-tsc -b && vite build && tsx scripts/generate-seo-heads.ts",
     "preview": "vite preview",
     "type-check": "vue-tsc --noEmit",
     "optimize:assets": "tsx scripts/optimize-assets.ts",

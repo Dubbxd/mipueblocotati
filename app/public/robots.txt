@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /admin
 
-Sitemap: https://mipueblocotati.easypage.mx/sitemap.xml
+Sitemap: https://www.mipueblocotati.com/sitemap.xml
