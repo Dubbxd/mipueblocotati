@@ -18,9 +18,15 @@ const mainAddress = computed(() => {
   const r = site.mainRestaurant
   return r ? `${r.address}, ${r.city}, ${r.state}` : 'Mi Pueblo Cotati, CA'
 })
-const googleRatingStar = computed(() =>
-  site.mainRestaurant?.googleRating ? `${site.mainRestaurant.googleRating.toFixed(1)} ★` : '4.4 ★'
-)
+const storyStats = computed(() => {
+  const stats = [
+    { icon: 'Calendar', label: t('home.story.stats.sinceLabel'), value: '1997' },
+    { icon: 'People', label: t('home.story.stats.familyLabel'), value: t('home.story.stats.familyValue') },
+  ]
+  const rating = site.mainRestaurant?.googleRating
+  if (rating != null) stats.push({ icon: 'Star1', label: 'Google', value: `${rating.toFixed(1)} ★` })
+  return stats
+})
 </script>
 
 <template>
@@ -41,11 +47,7 @@ const googleRatingStar = computed(() =>
       image-alt="Restaurante Mi Pueblo Cotati"
       bg="white"
       kicker-icon="Heart"
-      :stats="[
-        { icon: 'Calendar', label: t('home.story.stats.sinceLabel'), value: '1997' },
-        { icon: 'People',   label: t('home.story.stats.familyLabel'), value: t('home.story.stats.familyValue') },
-        { icon: 'Star1',    label: 'Google',  value: googleRatingStar }
-      ]"
+      :stats="storyStats"
       :badge="{ icon: 'Award', title: '25+', subtitle: t('home.story.badgeSubtitle') }"
     />
 

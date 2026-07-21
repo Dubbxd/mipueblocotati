@@ -16,12 +16,18 @@ const meta: Record<string, { year: string; source: string }> = {
   a5: { year: '2023', source: 'RestaurantJi' }
 }
 
-const trust = computed(() => [
-  { icon: 'Calendar', value: '28+', label: { es: 'Años', en: 'Years' } },
-  { icon: 'Star1',    value: site.mainRestaurant?.googleRating?.toFixed(1) ?? '4.4', label: { es: 'Google', en: 'Google' } },
-  { icon: 'Location', value: String(site.restaurants.length || 1), label: { es: 'Sucursales', en: 'Locations' } },
-  { icon: 'Award',    value: String(awards.length), label: { es: 'Premios', en: 'Awards' } }
-])
+const trust = computed(() => {
+  const metrics = [
+    { icon: 'Calendar', value: '28+', label: { es: 'Años', en: 'Years' } },
+    { icon: 'Location', value: String(site.restaurants.length || 1), label: { es: 'Sucursales', en: 'Locations' } },
+    { icon: 'Award', value: String(awards.length), label: { es: 'Premios', en: 'Awards' } },
+  ]
+  const rating = site.mainRestaurant?.googleRating
+  if (rating != null) {
+    metrics.splice(1, 0, { icon: 'Star1', value: rating.toFixed(1), label: { es: 'Google', en: 'Google' } })
+  }
+  return metrics
+})
 </script>
 
 <template>

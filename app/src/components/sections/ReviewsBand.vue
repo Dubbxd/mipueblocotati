@@ -16,9 +16,10 @@ const FALLBACK_MAPS_URL = 'https://www.google.com/maps?cid=5466729018176324884'
 const GOOGLE_MAPS_URL  = computed(() => site.mainRestaurant?.links?.googleMaps ?? FALLBACK_MAPS_URL)
 const WRITE_REVIEW_URL = computed(() => `${GOOGLE_MAPS_URL.value}&hl=${locale.value === 'es' ? 'es' : 'en'}`)
 
-// Rating y conteo: del store si ya se sincronizó desde Google; fallback estático
-const googleRating = computed(() => site.mainRestaurant?.googleRating      ?? 4.4)
-const googleCount  = computed(() => site.mainRestaurant?.googleReviewCount ?? 969)
+// Rating y conteo: se muestran solamente cuando existen en el CMS.
+const googleRating = computed(() => site.mainRestaurant?.googleRating)
+const googleCount  = computed(() => site.mainRestaurant?.googleReviewCount)
+const hasGoogleRating = computed(() => googleRating.value != null && googleCount.value != null)
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Reseñas: cargadas desde la API (isFeatured=true, status=approved)
@@ -82,12 +83,12 @@ const next = () => (idx.value = (idx.value + 1) % reviews.value.length)
 const prev = () => (idx.value = (idx.value - 1 + reviews.value.length) % reviews.value.length)
 
 const ratingFmt = computed(() =>
-  googleRating.value.toLocaleString(locale.value === 'es' ? 'es-MX' : 'en-US', {
+  googleRating.value?.toLocaleString(locale.value === 'es' ? 'es-MX' : 'en-US', {
     minimumFractionDigits: 1, maximumFractionDigits: 1,
-  })
+  }) ?? ''
 )
 const countFmt = computed(() =>
-  googleCount.value.toLocaleString(locale.value === 'es' ? 'es-MX' : 'en-US')
+  googleCount.value?.toLocaleString(locale.value === 'es' ? 'es-MX' : 'en-US') ?? ''
 )
 </script>
 
@@ -120,7 +121,7 @@ const countFmt = computed(() =>
       </h2>
 
       <!-- Aggregate badge Google -->
-      <a :href="GOOGLE_MAPS_URL" target="_blank" rel="noopener"
+      <a v-if="hasGoogleRating" :href="GOOGLE_MAPS_URL" target="_blank" rel="noopener"
          class="inline-flex flex-col sm:flex-row items-center gap-4 sm:gap-6 bg-white text-night px-6 sm:px-8 py-5 rounded-2xl shadow-elev hover:scale-[1.02] transition-transform mb-12 group">
         <!-- Google G logo (oficial multicolor) -->
         <svg viewBox="0 0 24 24" class="w-10 h-10 shrink-0" aria-hidden="true">
