@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
+import { useMediaQuery } from '@vueuse/core'
 import { useRoute, RouterLink, RouterView, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { api } from '@/lib/api'
@@ -9,6 +10,7 @@ const auth = useAuthStore()
 const route = useRoute()
 const router = useRouter()
 const open = ref(false)
+const isMobile = useMediaQuery('(max-width: 767px)')
 const pendingReservations = ref(0)
 const pendingCatering = ref(0)
 const newMessages = ref(0)
@@ -112,6 +114,10 @@ function logout() {
   router.replace('/admin/login')
 }
 
+watch(() => route.fullPath, () => {
+  open.value = false
+})
+
 onMounted(() => {
   if (auth.token && !auth.user) auth.fetchMe()
   loadBadges()
@@ -119,11 +125,14 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="admin-dark min-h-screen bg-night text-white flex">
+  <div class="admin-dark min-h-screen bg-night text-white flex overflow-x-hidden">
     <!-- Sidebar -->
     <aside
-      class="fixed md:static inset-y-0 left-0 z-40 w-64 bg-night-dark border-r border-white/10 transform transition-transform md:transform-none flex flex-col"
-      :class="open ? 'translate-x-0' : '-translate-x-full md:translate-x-0'"
+      id="admin-navigation"
+      class="admin-sidebar fixed md:static inset-y-0 left-0 z-40 w-64 shrink-0 bg-night-dark border-r border-white/10 flex flex-col"
+      :class="{ 'admin-sidebar--open': open }"
+      :inert="isMobile && !open"
+      :aria-hidden="isMobile && !open ? 'true' : undefined"
     >
       <div class="p-5 border-b border-white/10 flex flex-col items-center gap-1">
         <img src="/logo.png" alt="Mi Pueblo Cotati" class="h-12 brightness-0 invert" />
@@ -162,7 +171,13 @@ onMounted(() => {
     <!-- Main -->
     <div class="flex-1 min-w-0 flex flex-col">
       <header class="bg-night-soft border-b border-white/10 px-4 md:px-6 py-3 flex items-center gap-3">
-        <button @click="open = !open" class="md:hidden p-2 -ml-2 rounded hover:bg-white/10" aria-label="Menú">
+        <button
+          @click="open = !open"
+          class="md:hidden p-2 -ml-2 rounded hover:bg-white/10"
+          aria-label="Menú"
+          aria-controls="admin-navigation"
+          :aria-expanded="open"
+        >
           <Icon name="HambergerMenu" :size="22" />
         </button>
         <div class="text-sm text-white/70 truncate">{{ (route.meta?.title as string) || 'Panel' }}</div>
@@ -184,3 +199,25 @@ onMounted(() => {
     </div>
   </div>
 </template>
+
+<style scoped>
+.admin-sidebar {
+  transition: transform 200ms ease;
+}
+
+@media (max-width: 767px) {
+  .admin-sidebar {
+    transform: translateX(-100%);
+  }
+
+  .admin-sidebar--open {
+    transform: translateX(0);
+  }
+}
+
+@media (min-width: 768px) {
+  .admin-sidebar {
+    transform: none;
+  }
+}
+</style>

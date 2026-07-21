@@ -17,13 +17,16 @@ import {
 } from './schema'
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? 'admin@mipueblocotati.com'
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? 'changeme123!'
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD
 
 async function seedAdmin() {
   const existing = await db.select().from(users).where(eq(users.email, ADMIN_EMAIL))
   if (existing.length) {
     console.log(`👤 Admin ya existe: ${ADMIN_EMAIL}`)
     return
+  }
+  if (!ADMIN_PASSWORD) {
+    throw new Error('ADMIN_PASSWORD es obligatorio para crear el usuario administrador inicial')
   }
   const passwordHash = await bcrypt.hash(ADMIN_PASSWORD, 10)
   await db.insert(users).values({
@@ -32,7 +35,7 @@ async function seedAdmin() {
     name: 'Super Admin',
     role: 'superadmin',
   })
-  console.log(`✅ Admin creado: ${ADMIN_EMAIL} / ${ADMIN_PASSWORD}`)
+  console.log(`✅ Admin creado: ${ADMIN_EMAIL}`)
 }
 
 async function seedLocation() {
@@ -73,6 +76,9 @@ async function seedLocation() {
       sortOrder: 1,
     })
     .returning()
+  if (!loc) {
+    throw new Error('No se pudo crear la sucursal inicial')
+  }
   console.log(`✅ Sucursal creada: ${loc.name}`)
   return loc
 }

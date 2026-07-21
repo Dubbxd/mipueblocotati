@@ -1,3 +1,5 @@
+import { apiErrorMessage } from './apiError'
+
 const BASE = import.meta.env.VITE_API_URL || ''
 const TOKEN_KEY = 'mp_admin_token'
 
@@ -54,9 +56,7 @@ export async function api<T = unknown>(path: string, opts: Options = {}): Promis
   const ct = res.headers.get('content-type') || ''
   const data = ct.includes('application/json') ? await res.json() : await res.text()
   if (!res.ok) {
-    const msg = (data && typeof data === 'object' && 'message' in (data as any))
-      ? (data as any).message
-      : `HTTP ${res.status}`
+    const msg = apiErrorMessage(data, res.status)
     if (res.status === 401) tokenStorage.clear()
     throw new ApiError(res.status, msg, data)
   }

@@ -73,23 +73,28 @@ async function submit() {
 
         <form @submit.prevent="submit" class="space-y-5">
           <div>
-            <label class="block text-xs font-semibold uppercase tracking-wider text-white/50 mb-2">Correo electrónico</label>
+            <label for="admin-email" class="block text-xs font-semibold uppercase tracking-wider text-white/50 mb-2">Correo electrónico</label>
             <input
+              id="admin-email"
               v-model="email"
               type="email"
               required
               autofocus
-              placeholder="admin@mipueblocotati.com"
+              autocomplete="username"
+              placeholder="usuario@ejemplo.com"
               class="w-full bg-night border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition placeholder:text-white/25"
             />
           </div>
           <div>
-            <label class="block text-xs font-semibold uppercase tracking-wider text-white/50 mb-2">Contraseña</label>
+            <label for="admin-password" class="block text-xs font-semibold uppercase tracking-wider text-white/50 mb-2">Contraseña</label>
             <div class="relative">
               <input
+                id="admin-password"
                 v-model="password"
                 :type="showPwd ? 'text' : 'password'"
                 required
+                minlength="8"
+                autocomplete="current-password"
                 placeholder="••••••••"
                 class="w-full bg-night border border-white/10 rounded-xl px-4 py-3 pr-12 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition placeholder:text-white/25"
               />
@@ -101,7 +106,7 @@ async function submit() {
             </div>
           </div>
 
-          <p v-if="auth.error" class="text-sm text-accent bg-accent/10 border border-accent/25 rounded-xl px-4 py-2.5">
+          <p v-if="auth.error" role="alert" aria-live="polite" class="text-sm text-accent bg-accent/10 border border-accent/25 rounded-xl px-4 py-2.5">
             {{ auth.error }}
           </p>
 

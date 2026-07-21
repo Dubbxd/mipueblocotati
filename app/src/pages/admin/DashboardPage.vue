@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { api } from '@/lib/api'
+import { adminStatusLabel } from '@/lib/adminStatus'
 import Icon from '@/components/ui/Icon.vue'
 
 type Stats = {
@@ -98,7 +99,7 @@ const cards = [
               'bg-emerald-500/20 text-emerald-300': r.status === 'confirmed',
               'bg-white/10 text-white/60': r.status === 'completed',
               'bg-accent/20 text-accent': r.status === 'cancelled'
-            }">{{ r.status }}</span>
+            }">{{ adminStatusLabel(r.status) }}</span>
           </li>
         </ul>
       </section>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { api } from '@/lib/api'
+import { adminStatusLabel } from '@/lib/adminStatus'
 import DataTable from '@/components/admin/DataTable.vue'
 import AdminModal from '@/components/admin/AdminModal.vue'
 import FormField from '@/components/admin/FormField.vue'
@@ -74,7 +75,7 @@ const columns = [
   { key: 'isFeatured', label: 'Destacada', render: (r: Review) => r.isFeatured ? '<span class="inline-flex items-center gap-1 text-amber-300 text-xs"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-5.5 4.5L18 22l-6-4-6 4 1.5-8.5L2 9h7z"/></svg></span>' : '' },
   { key: 'status', label: 'Estado', render: (r: Review) => {
     const cls = r.status === 'approved' ? 'bg-emerald-500/20 text-emerald-300' : r.status === 'pending' ? 'bg-amber-500/20 text-amber-300' : 'bg-white/10 text-white/50'
-    return `<span class="text-[10px] uppercase px-2 py-1 rounded-full ${cls}">${r.status}</span>`
+    return `<span class="text-[10px] uppercase px-2 py-1 rounded-full ${cls}">${adminStatusLabel(r.status)}</span>`
   }}
 ]
 
