@@ -212,9 +212,10 @@ async function submit() {
               </div>
               <div>
                 <label class="form-label">{{ t('contact.fieldMessage') }} *</label>
-                <textarea v-model="form.message" rows="5" required
+                <textarea v-model="form.message" rows="5" required minlength="10"
                   :placeholder="t('contact.messagePlaceholder')"
                   class="form-input resize-none"></textarea>
+                <p class="mt-1 text-xs text-ink-muted">{{ t('contact.messageMinHint') }}</p>
               </div>
 
               <ConsentCheckboxes

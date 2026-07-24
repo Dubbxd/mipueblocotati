@@ -217,6 +217,7 @@
     "subjectPlaceholder": "What's your message about?",
     "fieldMessage": "Message",
     "messagePlaceholder": "How can we help you?",
+    "messageMinHint": "Write at least 10 characters",
     "sendBtn": "Send message",
     "sending": "Sending...",
     "errorMsg": "An error occurred. Please try again.",

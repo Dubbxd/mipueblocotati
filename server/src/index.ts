@@ -55,6 +55,14 @@ if (SWAGGER_ENABLED) {
 }
 
 app
+  .onError(({ code, error, set }) => {
+    if (code === 'VALIDATION') {
+      set.status = 422
+      const detail = (error as { valueError?: { path?: string; message?: string } }).valueError
+      const field = detail?.path ? detail.path.replace(/^\//, '') : undefined
+      return { error: 'validation', field, message: detail?.message }
+    }
+  })
   .get('/health', () => ({ ok: true, time: new Date().toISOString(), storage: STORAGE_DRIVER }))
   .use(seoRoutes)
   .group('/api', (a) => a.use(authRoutes).use(publicRoutes).use(adminRoutes).use(uploadRoutes))

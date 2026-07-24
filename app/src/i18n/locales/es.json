@@ -217,6 +217,7 @@
     "subjectPlaceholder": "¿De qué se trata tu mensaje?",
     "fieldMessage": "Mensaje",
     "messagePlaceholder": "¿En qué te podemos ayudar?",
+    "messageMinHint": "Escribe al menos 10 caracteres",
     "sendBtn": "Enviar mensaje",
     "sending": "Enviando...",
     "errorMsg": "Ocurrió un error. Intenta de nuevo.",

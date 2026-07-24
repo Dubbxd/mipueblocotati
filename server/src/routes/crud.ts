@@ -175,7 +175,7 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
         locationId: t.Optional(t.Number()),
         name: t.String({ minLength: 2, maxLength: 160 }),
         phone: t.String({ minLength: 7, maxLength: 40 }),
-        email: t.Optional(t.String({ maxLength: 200, pattern: '^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$' })),
+        email: t.Optional(t.String({ maxLength: 200, pattern: '^[^\\s@]+@[^\\s@]+$' })),
         partySize: t.Number({ minimum: 1, maximum: 50 }),
         date: t.String({ minLength: 10, maxLength: 10, pattern: '^\\d{4}-\\d{2}-\\d{2}$' }),
         time: t.String({ minLength: 5, maxLength: 5, pattern: '^\\d{2}:\\d{2}$' }),
@@ -286,7 +286,7 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
       body: t.Object({
         name: t.String({ minLength: 2, maxLength: 160 }),
         phone: t.String({ minLength: 7, maxLength: 40 }),
-        email: t.Optional(t.String({ maxLength: 200, pattern: '^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$' })),
+        email: t.Optional(t.String({ maxLength: 200, pattern: '^[^\\s@]+@[^\\s@]+$' })),
         eventType: t.Optional(t.String({ maxLength: 80 })),
         eventDate: t.Optional(t.String({ maxLength: 10 })),
         guests: t.Optional(t.Number({ minimum: 1, maximum: 10000 })),
@@ -353,7 +353,7 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
     {
       body: t.Object({
         name: t.String({ minLength: 2, maxLength: 160 }),
-        email: t.String({ maxLength: 200, pattern: '^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$' }),
+        email: t.String({ maxLength: 200, pattern: '^[^\\s@]+@[^\\s@]+$' }),
         phone: t.Optional(t.String({ maxLength: 40 })),
         subject: t.Optional(t.String({ maxLength: 200 })),
         message: t.String({ minLength: 10, maxLength: 5000 }),
@@ -418,7 +418,7 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
     },
     {
       body: t.Object({
-        email: t.String({ maxLength: 200, pattern: '^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$' }),
+        email: t.String({ maxLength: 200, pattern: '^[^\\s@]+@[^\\s@]+$' }),
         name: t.Optional(t.String({ maxLength: 160 })),
         locale: t.Optional(t.String({ maxLength: 5 })),
         source: t.Optional(t.String({ maxLength: 40 })),
