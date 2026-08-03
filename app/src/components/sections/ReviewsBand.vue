@@ -62,7 +62,7 @@ const reviews = ref<Review[]>(FALLBACK_REVIEWS)
 
 onMounted(async () => {
   try {
-    const data = await api('/public/reviews') as any[]
+    const data = await api('/api/public/reviews', { auth: false }) as any[]
     if (data?.length) {
       reviews.value = data.map(r => ({
         id: r.id,
